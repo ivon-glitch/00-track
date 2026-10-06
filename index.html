@@ -1,0 +1,2080 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>00 Track — CeroCero</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#000000">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="00 Track">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black:#000000;
+    --white:#ffffff;
+    --alice:#eaf0f5;
+    --ink:#0a0a0a;
+    --muted:#6b7280;
+    --muted-2:#9aa3ad;
+    --line:#e6e9ee;
+    --card:#ffffff;
+    --bg:#f7f8fa;
+    --sidebar:#ffffff;
+    --ok:#16a34a;
+    --ok-bg:#e9f9ee;
+    --bad:#000000;
+    --bad-bg:#f1f1f1;
+    --accent:#000000;
+    --radius:14px;
+    --shadow:0 1px 2px rgba(0,0,0,.04), 0 6px 20px rgba(0,0,0,.05);
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#f2f3f5;
+      --muted:#9aa3ad;
+      --muted-2:#7b828c;
+      --line:#232629;
+      --card:#141516;
+      --bg:#0b0b0c;
+      --sidebar:#111213;
+      --ok:#34d399;
+      --ok-bg:#0e2419;
+      --bad-bg:#1c1c1e;
+      --accent:#ffffff;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#f2f3f5;
+    --muted:#9aa3ad;
+    --muted-2:#7b828c;
+    --line:#232629;
+    --card:#141516;
+    --bg:#0b0b0c;
+    --sidebar:#111213;
+    --ok:#34d399;
+    --ok-bg:#0e2419;
+    --bad-bg:#1c1c1e;
+    --accent:#ffffff;
+    color-scheme: dark;
+  }
+
+  *{box-sizing:border-box;}
+  body{ background:var(--bg); color:var(--ink); font-family:'Montserrat',system-ui,-apple-system,sans-serif; }
+
+  .app{ display:flex; min-height:100vh; }
+
+  /* ---------- Sidebar ---------- */
+  .sidebar{
+    width:280px; min-width:280px; background:var(--sidebar); border-right:1px solid var(--line);
+    display:flex; flex-direction:column; padding:18px 14px; gap:14px;
+  }
+  .brand{ display:flex; align-items:center; gap:10px; padding:4px 6px 10px 6px; border-bottom:1px solid var(--line); margin-bottom:4px;}
+  .brand svg{ width:26px; height:26px; flex:none; }
+  .brand-text{ font-weight:900; letter-spacing:.2px; font-size:15px; line-height:1.1; }
+  .brand-text small{ display:block; font-weight:500; color:var(--muted); font-size:10.5px; letter-spacing:.4px; text-transform:uppercase; margin-top:2px;}
+
+  .search{ position:relative; }
+  .search input{
+    width:100%; padding:9px 12px; border-radius:10px; border:1px solid var(--line); background:var(--bg);
+    color:var(--ink); font-family:inherit; font-size:13px; outline:none;
+  }
+  .search input:focus{ border-color:var(--accent); }
+
+  .people-list{ flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:4px; margin-top:2px; }
+  .person-item{
+    display:flex; align-items:center; gap:10px; padding:9px 8px; border-radius:10px; cursor:pointer; border:1px solid transparent;
+  }
+  .person-item:hover{ background:var(--bg); }
+  .person-item.active{ background:var(--ink); }
+  .person-item.active .p-name, .person-item.active .p-pos{ color:var(--bg); }
+  .avatar{
+    width:32px; height:32px; border-radius:50%; background:var(--ink); color:var(--bg); flex:none;
+    display:flex; align-items:center; justify-content:center; font-weight:700; font-size:12px; letter-spacing:.3px;
+  }
+  .person-item.active .avatar{ background:var(--bg); color:var(--ink); }
+  .p-meta{ min-width:0; flex:1; }
+  .p-name{ font-size:13px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .p-pos{ font-size:11px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .p-badges{ display:flex; flex-direction:column; align-items:flex-end; gap:3px; }
+  .dot-count{ font-size:10.5px; font-weight:700; color:var(--muted); }
+  .pct-pill{ font-size:10.5px; font-weight:800; padding:1px 6px; border-radius:999px; background:var(--ok-bg); color:var(--ok); }
+  .pct-pill.low{ background:var(--bad-bg); color:var(--ink); }
+
+  .side-actions{ display:flex; flex-direction:column; gap:8px; border-top:1px solid var(--line); padding-top:10px; }
+  .btn{
+    font-family:inherit; cursor:pointer; border:none; border-radius:10px; padding:9px 12px; font-size:12.5px; font-weight:700;
+    display:inline-flex; align-items:center; justify-content:center; gap:6px; transition:opacity .15s;
+  }
+  .btn:hover{ opacity:.85; }
+  .btn-primary{ background:var(--ink); color:var(--bg); }
+  .btn-ghost{ background:transparent; color:var(--ink); border:1px solid var(--line); }
+  .btn-sm{ padding:6px 10px; font-size:11.5px; border-radius:8px;}
+  .btn-danger{ background:transparent; color:#b91c1c; border:1px solid #f0c9c9;}
+
+  /* ---------- Main ---------- */
+  .main{ flex:1; min-width:0; display:flex; flex-direction:column; }
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between; padding:22px 32px 0 32px;
+  }
+  .profile-head{ display:flex; align-items:center; gap:14px; }
+  .avatar-lg{
+    width:52px; height:52px; border-radius:50%; background:var(--ink); color:var(--bg); display:flex; align-items:center;
+    justify-content:center; font-weight:800; font-size:17px;
+  }
+  h1.pname{ font-size:20px; font-weight:800; margin:0; }
+  .ppos{ font-size:12.5px; color:var(--muted); margin-top:2px; font-weight:600; }
+  .hire-chips{ display:flex; flex-wrap:wrap; gap:6px; margin-top:7px; }
+  .hire-chip{
+    font-size:10.5px; font-weight:700; color:var(--muted); background:var(--bg); border:1px solid var(--line);
+    border-radius:999px; padding:3px 9px; white-space:nowrap;
+  }
+
+  .tabs{ display:flex; gap:6px; padding:20px 32px 0 32px; border-bottom:1px solid var(--line); }
+  .tab{
+    padding:10px 4px; margin-right:22px; font-size:13px; font-weight:700; color:var(--muted); cursor:pointer;
+    border-bottom:2px solid transparent; margin-bottom:-1px;
+  }
+  .tab.active{ color:var(--ink); border-bottom-color:var(--ink); }
+
+  .content{ padding:22px 32px 60px 32px; overflow-y:auto; flex:1; }
+  .empty-state{ display:flex; flex-direction:column; align-items:center; justify-content:center; height:70vh; text-align:center; color:var(--muted); gap:10px;}
+  .empty-state svg{ width:54px; height:54px; opacity:.3; }
+
+  .card{ background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:18px; box-shadow:var(--shadow); }
+  .section-title{ font-size:14px; font-weight:800; margin:0 0 4px 0; }
+  .section-sub{ font-size:12px; color:var(--muted); margin:0 0 14px 0; }
+
+  .filters{ display:flex; gap:8px; margin-bottom:14px; }
+  .chip{
+    padding:6px 12px; border-radius:999px; font-size:11.5px; font-weight:700; cursor:pointer; border:1px solid var(--line);
+    color:var(--muted); background:transparent;
+  }
+  .chip.active{ background:var(--ink); color:var(--bg); border-color:var(--ink); }
+
+  .todo-row{
+    display:flex; align-items:flex-start; gap:11px; padding:12px 4px; border-bottom:1px solid var(--line);
+  }
+  .todo-row:last-child{ border-bottom:none; }
+  .check{
+    width:20px; height:20px; border-radius:6px; border:2px solid var(--muted-2); flex:none; margin-top:1px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; background:var(--card);
+  }
+  .check.checked{ background:var(--ink); border-color:var(--ink); }
+  .check svg{ width:12px; height:12px; stroke:var(--bg); display:none; }
+  .check.checked svg{ display:block; }
+  .todo-body{ flex:1; min-width:0; }
+  .todo-title{ font-size:13.5px; font-weight:600; line-height:1.4; }
+  .todo-title.done{ text-decoration:line-through; color:var(--muted); }
+  .todo-meta{ display:flex; gap:8px; margin-top:4px; align-items:center; flex-wrap:wrap; }
+  .tag{ font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.3px; padding:2px 7px; border-radius:6px; background:var(--alice); color:#33475a; }
+  :root[data-theme="dark"] .tag{ background:#1b2733; color:#a9c3d9; }
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .tag{ background:#1b2733; color:#a9c3d9; } }
+  .tag.manual{ background:var(--bad-bg); color:var(--muted); }
+  .todo-date{ font-size:10.5px; color:var(--muted-2); }
+  .todo-notes{ font-size:12px; color:var(--muted); margin-top:5px; line-height:1.4; }
+  .todo-del{ background:none; border:none; cursor:pointer; color:var(--muted-2); font-size:16px; padding:2px 4px; flex:none; }
+  .todo-del:hover{ color:#b91c1c; }
+
+  .add-row{ display:flex; gap:8px; margin-top:14px; }
+  .add-row input, .add-row select, textarea, input[type=text]{
+    font-family:inherit; border:1px solid var(--line); border-radius:9px; padding:9px 11px; font-size:13px;
+    background:var(--bg); color:var(--ink); outline:none;
+  }
+  .add-row input:focus{ border-color:var(--accent); }
+  .add-row input[type=text]{ flex:1; }
+
+  .grid-2{ display:grid; grid-template-columns:1.4fr 1fr; gap:18px; align-items:start; }
+  @media (max-width: 880px){ .grid-2{ grid-template-columns:1fr; } }
+
+  .month-row{ display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+  .month-nav{ display:flex; align-items:center; gap:8px; }
+  .month-btn{ width:28px; height:28px; border-radius:8px; border:1px solid var(--line); background:var(--card); cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--ink); font-weight:700; }
+  .month-label{ font-size:13.5px; font-weight:800; min-width:120px; text-align:center; text-transform:capitalize; }
+
+  .pct-big{ display:flex; align-items:center; gap:16px; margin-bottom:16px; }
+  .pct-ring{ width:76px; height:76px; flex:none; }
+  .pct-num{ font-size:26px; font-weight:900; }
+  .pct-caption{ font-size:12px; color:var(--muted); font-weight:600; }
+
+  .criterion-row{ display:flex; align-items:center; gap:10px; padding:10px 2px; border-bottom:1px solid var(--line); }
+  .criterion-row:last-child{ border-bottom:none; }
+  .criterion-label{ flex:1; font-size:13px; font-weight:600; }
+  .toggle-group{ display:flex; gap:6px; flex:none; }
+  .toggle-btn{
+    width:34px; height:30px; border-radius:8px; border:1px solid var(--line); background:var(--card); cursor:pointer;
+    font-weight:800; font-size:14px; color:var(--muted-2);
+  }
+  .toggle-btn.ok.sel{ background:var(--ok); border-color:var(--ok); color:#fff; }
+  .toggle-btn.bad.sel{ background:var(--ink); border-color:var(--ink); color:var(--bg); }
+
+  .history-item{ display:flex; align-items:center; gap:10px; padding:8px 2px; border-bottom:1px solid var(--line); font-size:12.5px; }
+  .history-item:last-child{ border-bottom:none; }
+  .history-month{ width:80px; font-weight:700; text-transform:capitalize; color:var(--muted); }
+  .bar-track{ flex:1; height:7px; border-radius:99px; background:var(--bad-bg); overflow:hidden; }
+  .bar-fill{ height:100%; background:var(--ink); border-radius:99px; }
+  .history-pct{ width:38px; text-align:right; font-weight:800; }
+
+  .weak-item{ display:flex; align-items:flex-start; gap:10px; padding:10px 0; border-bottom:1px solid var(--line); }
+  .weak-item:last-child{ border-bottom:none; }
+  .weak-dot{ width:8px; height:8px; border-radius:50%; background:var(--ink); margin-top:5px; flex:none; }
+  .weak-text{ font-size:13px; font-weight:600; }
+  .weak-recurrence{ font-size:11px; color:var(--muted); margin-top:2px; }
+  .weak-recurrence.hot{ color:#b91c1c; font-weight:700; }
+
+  .criteria-admin-row{ display:flex; align-items:center; gap:8px; padding:6px 0; }
+  .criteria-admin-row span{ flex:1; font-size:12.5px; }
+
+  .persona-assign-row{ display:flex; align-items:center; gap:14px; padding:10px 0; border-bottom:1px solid var(--line); }
+  .persona-assign-row:last-child{ border-bottom:none; }
+  .persona-assign-who{ display:flex; align-items:center; gap:9px; flex:1.2; min-width:0; }
+  .persona-assign-who .p-name{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .persona-assign-field{ flex:1; min-width:0; }
+  .persona-assign-field label{ display:block; font-size:10px; font-weight:700; color:var(--muted); margin-bottom:3px; text-transform:uppercase; letter-spacing:.3px; }
+  .persona-assign-field select{ width:100%; font-size:12px; padding:6px 8px; }
+  @media (max-width: 620px){ .persona-assign-row{ flex-wrap:wrap; } .persona-assign-who{ flex:1 1 100%; } }
+
+  /* ---------- Modal ---------- */
+  .overlay{ position:fixed; inset:0; background:rgba(0,0,0,.45); display:flex; align-items:center; justify-content:center; z-index:50; padding:20px; }
+  .modal{ background:var(--card); border-radius:16px; padding:22px; width:100%; max-width:420px; box-shadow:0 20px 60px rgba(0,0,0,.3); max-height:86vh; overflow-y:auto; }
+  .modal.modal-wide{ max-width:640px; }
+  .modal h2{ font-size:16px; margin:0 0 4px 0; font-weight:800; }
+  .modal p.hint{ font-size:12px; color:var(--muted); margin:0 0 16px 0; }
+  .field{ margin-bottom:12px; }
+  .field label{ display:block; font-size:11.5px; font-weight:700; color:var(--muted); margin-bottom:5px; text-transform:uppercase; letter-spacing:.3px; }
+  .field input, .field select, .field textarea{ width:100%; }
+  .field textarea{ resize:vertical; min-height:60px; font-family:inherit; }
+  .modal-actions{ display:flex; justify-content:flex-end; gap:8px; margin-top:16px; }
+
+  .toast{
+    position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:var(--ink); color:var(--bg);
+    padding:10px 18px; border-radius:10px; font-size:12.5px; font-weight:700; box-shadow:var(--shadow); z-index:100;
+    opacity:0; pointer-events:none; transition:opacity .2s, transform .2s;
+  }
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(-4px); }
+
+  .divider-label{ font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.5px; color:var(--muted-2); margin:18px 0 8px 2px; }
+
+  ::-webkit-scrollbar{ width:8px; height:8px; }
+  ::-webkit-scrollbar-thumb{ background:var(--line); border-radius:8px; }
+  .local-note{ font-size:10px; color:var(--muted-2); text-align:center; padding-top:2px; }
+
+  /* ---------- Nav superior (Seguimiento / Organigrama) ---------- */
+  .app-nav{ display:flex; gap:4px; padding:10px 14px; border-bottom:1px solid var(--line); background:var(--sidebar); }
+  .app-nav-btn{
+    font-family:inherit; cursor:pointer; border:none; background:transparent; padding:8px 14px; border-radius:9px;
+    font-size:12.5px; font-weight:700; color:var(--muted);
+  }
+  .app-nav-btn:hover{ color:var(--ink); }
+  .app-nav-btn.active{ background:var(--ink); color:var(--bg); }
+
+  /* ---------- Organigrama ---------- */
+  #orgchartView{ display:none; }
+  .orgchart-topbar{ display:flex; align-items:flex-start; justify-content:space-between; gap:16px; padding:22px 32px 0 32px; }
+  .orgchart-topbar h1{ font-size:20px; font-weight:800; margin:0; }
+  .orgchart-subnav{ display:flex; gap:8px; padding:18px 32px 0 32px; }
+  .org-subtab{
+    font-family:inherit; cursor:pointer; border:1px solid var(--line); background:var(--card); color:var(--muted);
+    padding:8px 16px; border-radius:999px; font-size:12.5px; font-weight:700;
+  }
+  .org-subtab:hover{ color:var(--ink); }
+  .org-subtab.active{ background:var(--ink); color:var(--bg); border-color:var(--ink); }
+  .orgchart-wrap{ padding:10px 32px 60px 32px; }
+  .orgchart-warning{
+    background:var(--bad-bg); border:1px solid var(--line); border-radius:10px; padding:12px 14px; margin-bottom:16px;
+    font-size:12.5px; color:var(--ink); line-height:1.5;
+  }
+  .orgchart-section-title{ font-size:14px; font-weight:800; margin:26px 0 2px 0; }
+  .orgchart-section-title:first-child{ margin-top:6px; }
+  .orgchart-section-sub{ font-size:12px; color:var(--muted); margin:0 0 6px 0; }
+  .orgchart-scroll{ overflow-x:auto; padding:10px 2px 18px 2px; }
+
+  .orgchart-tree, .orgchart-tree ul{ list-style:none; margin:0; padding:0; display:flex; }
+  .orgchart-tree{ padding:4px 4px 4px 4px; width:max-content; }
+  .orgchart-tree ul{ padding-top:24px; }
+  .orgchart-tree li{ display:flex; flex-direction:column; align-items:center; padding:24px 10px 0 10px; position:relative; }
+  .orgchart-tree li::before, .orgchart-tree li::after{ content:''; position:absolute; top:0; right:50%; width:50%; height:24px; border-top:1px solid var(--line); }
+  .orgchart-tree li::after{ right:auto; left:50%; border-left:1px solid var(--line); }
+  .orgchart-tree li:only-child{ padding-top:0; }
+  .orgchart-tree li:only-child::after, .orgchart-tree li:only-child::before{ display:none; }
+  .orgchart-tree li:first-child::before, .orgchart-tree li:last-child::after{ border:0 none; }
+  .orgchart-tree li:last-child::before{ border-right:1px solid var(--line); }
+  .orgchart-tree > li{ padding-top:0; }
+  .orgchart-tree > li::before, .orgchart-tree > li::after{ display:none; }
+  .orgchart-tree li ul::before{ content:''; position:absolute; top:0; left:50%; height:24px; border-left:1px solid var(--line); }
+
+  /* Envoltorio ceñido a la tarjeta de un nodo (sin estirarse al ancho de su subárbol), para
+     poder anclar junto a él tarjetas "par" sin jefe ni equipo propio (ver .org-peers). */
+  .org-node-anchor{ position:relative; display:inline-flex; }
+  .org-peers{ position:absolute; top:0; left:100%; display:flex; align-items:flex-start; gap:20px; padding-left:20px; }
+
+  .org-card{
+    background:var(--card); border:1px solid var(--line); border-radius:12px; padding:10px 12px; width:172px;
+    box-shadow:var(--shadow); cursor:grab; display:flex; flex-direction:column; align-items:center; gap:3px;
+    position:relative; user-select:none;
+  }
+  .org-card:active{ cursor:grabbing; }
+  .org-card.dragging{ opacity:.35; }
+  .org-card.drop-target{ border-color:var(--ink); box-shadow:0 0 0 2px var(--ink); }
+  /* Zonas de destino al arrastrar: colorean el borde exacto donde se soltará la tarjeta —
+     arriba/izquierda = se coloca como hermano ANTES; derecha = hermano DESPUÉS;
+     abajo o el centro = pasa a ser reporte directo (hijo) de esta tarjeta. */
+  .org-card.org-drop-child{ border-color:var(--ink); box-shadow:0 0 0 2px var(--ink); background:var(--bg); }
+  .org-card.org-drop-top{ box-shadow:inset 0 3px 0 0 var(--ink); }
+  .org-card.org-drop-left{ box-shadow:inset 3px 0 0 0 var(--ink); }
+  .org-card.org-drop-right{ box-shadow:inset -3px 0 0 0 var(--ink); }
+  .org-card .avatar{ margin-bottom:2px; }
+  .org-card.org-card-noeval{ background:var(--bg); }
+  .org-card.org-card-noeval .avatar{ background:var(--muted-2); }
+  .org-name, .org-pos{ outline:none; border-radius:5px; padding:1px 4px; min-width:20px; max-width:100%; }
+  .org-name{ font-size:12.5px; font-weight:700; text-align:center; }
+  .org-pos{ font-size:11px; color:var(--muted); text-align:center; }
+  .org-name:focus, .org-pos:focus{ background:var(--bg); box-shadow:0 0 0 2px var(--accent); cursor:text; user-select:text; }
+  .org-noeval-tag{ font-size:9px; font-weight:800; text-transform:uppercase; letter-spacing:.3px; color:var(--muted-2); margin-top:1px; }
+  .org-actions{ position:absolute; top:-10px; right:-10px; display:flex; gap:4px; opacity:.55; }
+  .org-card:hover .org-actions, .org-card:focus-within .org-actions{ opacity:1; }
+  .org-btn{
+    width:22px; height:22px; border-radius:50%; border:1px solid var(--line); background:var(--card); cursor:pointer;
+    font-size:13px; font-weight:800; display:flex; align-items:center; justify-content:center; color:var(--muted);
+    line-height:1; padding:0;
+  }
+  .org-btn:hover{ color:var(--ink); border-color:var(--ink); }
+  .org-btn.org-btn-del:hover{ color:#b91c1c; border-color:#f0c9c9; }
+
+  /* ---------- Menú lateral en móvil ---------- */
+  .mobile-menu-btn{
+    display:none; width:34px; height:34px; border-radius:9px; border:1px solid var(--line); background:var(--card);
+    color:var(--ink); cursor:pointer; align-items:center; justify-content:center; flex:none; margin-right:4px;
+  }
+  .mobile-menu-btn svg{ width:18px; height:18px; }
+  .sidebar-close-btn{
+    display:none; position:absolute; top:14px; right:12px; width:28px; height:28px; border-radius:50%; border:none;
+    background:transparent; color:var(--muted); font-size:20px; line-height:1; cursor:pointer;
+  }
+  .sidebar-backdrop{ display:none; position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:45; }
+  .sidebar-backdrop.show{ display:block; }
+
+  /* ---------- Responsive: pantalla de teléfono (~400px) ---------- */
+  @media (max-width: 860px){
+    .mobile-menu-btn{ display:flex; }
+    .sidebar-close-btn{ display:block; }
+    .app{ position:relative; }
+    .sidebar{
+      position:fixed; top:0; left:0; bottom:0; z-index:46; width:84vw; max-width:320px;
+      transform:translateX(-105%); transition:transform .22s ease; box-shadow:0 12px 40px rgba(0,0,0,.3);
+      padding-top:calc(18px + env(safe-area-inset-top, 0px));
+    }
+    .sidebar.open{ transform:translateX(0); }
+    .main{ width:100%; }
+    .topbar{ padding:16px 16px 0 16px; flex-wrap:wrap; row-gap:10px; }
+    .content{ padding:16px 16px 48px 16px; }
+    .tabs{ padding:14px 16px 0 16px; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+    .tabs::-webkit-scrollbar{ display:none; }
+    .tab{ margin-right:16px; white-space:nowrap; }
+    .grid-2{ grid-template-columns:1fr; }
+    .overlay{ padding:12px; }
+    .modal{ max-width:100%; padding:16px; }
+    .orgchart-topbar{ padding:16px 16px 0 16px; flex-direction:column; align-items:stretch; }
+    .orgchart-topbar h1{ font-size:18px; }
+    .orgchart-subnav{ padding:14px 16px 0 16px; }
+    .orgchart-wrap{ padding:10px 16px 48px 16px; }
+    .org-card{ width:148px; }
+    .persona-assign-row{ flex-wrap:wrap; }
+  }
+  @media (max-width: 420px){
+    .avatar-lg{ width:44px; height:44px; font-size:14px; }
+    h1.pname{ font-size:17px; }
+    .org-card{ width:132px; padding:8px 9px; }
+  }
+
+  /* ---------- Pantalla de acceso y estado de sincronización ---------- */
+  body.locked .app-nav, body.locked .app, body.locked #orgchartView{ display:none !important; }
+  .login-screen{ position:fixed; inset:0; z-index:200; background:var(--bg); display:flex; align-items:center; justify-content:center; padding:16px; overflow-y:auto; }
+  .login-screen[hidden]{ display:none; }
+  .login-card{ width:100%; max-width:360px; background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:28px 24px; text-align:center; }
+  .login-logo{ width:44px; height:44px; }
+  .login-card h1{ font-size:22px; font-weight:900; margin:10px 0 4px 0; }
+  .login-sub{ font-size:12.5px; color:var(--muted); line-height:1.5; margin:6px 0 14px 0; }
+  .login-card code{ font-size:11.5px; background:var(--bg); border:1px solid var(--line); border-radius:5px; padding:1px 5px; }
+  .login-card form{ text-align:left; }
+  .login-card label{ display:block; font-size:11.5px; font-weight:700; color:var(--muted); margin-bottom:5px; text-transform:uppercase; letter-spacing:.3px; }
+  .login-card input[type=password]{ width:100%; font-family:inherit; font-size:16px; border:1px solid var(--line); border-radius:9px; padding:11px 12px; background:var(--bg); color:var(--ink); outline:none; }
+  .login-card input[type=password]:focus{ border-color:var(--accent); }
+  .login-card .login-remember{ display:flex; align-items:center; gap:8px; margin:12px 0 4px 0; text-transform:none; letter-spacing:0; font-size:12.5px; font-weight:600; cursor:pointer; }
+  .login-msg{ min-height:18px; margin:8px 0 10px 0; font-size:12.5px; font-weight:700; color:#b91c1c; }
+  .login-card .btn{ width:100%; padding:12px; font-size:13.5px; }
+  .login-card .btn:disabled{ opacity:.6; cursor:default; }
+  .app-nav{ align-items:center; flex-wrap:wrap; }
+  .app-nav-right{ margin-left:auto; display:flex; align-items:center; gap:4px; }
+  .sync-pill{ display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:700; color:var(--muted); padding:4px 9px; border:1px solid var(--line); border-radius:999px; background:var(--card); }
+  .sync-dot{ width:7px; height:7px; border-radius:50%; background:var(--muted-2); flex:none; }
+  .sync-pill[data-s="ok"] .sync-dot{ background:var(--ok); }
+  .sync-pill[data-s="saving"] .sync-dot{ background:#d97706; }
+  .sync-pill[data-s="offline"] .sync-dot, .sync-pill[data-s="error"] .sync-dot{ background:#dc2626; }
+  @media (max-width: 560px){
+    .app-nav{ padding:8px 12px; }
+    .app-nav-btn{ padding:8px 9px; font-size:12px; }
+    .sync-text{ display:none; }
+    .sync-pill{ padding:6px; }
+  }
+</style>
+</head>
+<body class="locked">
+
+<div class="app-nav">
+  <button class="mobile-menu-btn" id="btnMobileMenu" aria-label="Abrir menú del equipo">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+  </button>
+  <button class="app-nav-btn" id="navTracker">Seguimiento y evaluación</button>
+  <button class="app-nav-btn" id="navOrgchart">Organigrama</button>
+  <div class="app-nav-right">
+    <span class="sync-pill" id="syncPill" data-s="loading"><i class="sync-dot"></i><span class="sync-text">Conectando…</span></span>
+    <button class="app-nav-btn" id="btnLogout" title="Cerrar sesión en este dispositivo">Salir</button>
+  </div>
+</div>
+
+<div class="login-screen" id="loginScreen" hidden>
+  <div class="login-card">
+    <svg class="login-logo" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="28" cy="28" r="14" stroke="var(--ink)" stroke-width="10"/>
+      <line x1="78" y1="14" x2="18" y2="86" stroke="var(--ink)" stroke-width="9" stroke-linecap="round"/>
+      <circle cx="72" cy="72" r="14" stroke="var(--ink)" stroke-width="10"/>
+    </svg>
+    <h1>00 Track</h1>
+    <div id="loginLoading" hidden><p class="login-sub">Conectando con la hoja de datos…</p></div>
+    <form id="loginForm" hidden autocomplete="on">
+      <p class="login-sub">Acceso restringido a Dirección.</p>
+      <label for="loginPw">Contraseña</label>
+      <input type="password" id="loginPw" name="password" autocomplete="current-password" placeholder="Contraseña de acceso">
+      <label class="login-remember"><input type="checkbox" id="loginRemember" checked> Recordar en este dispositivo</label>
+      <p class="login-msg" id="loginMsg" role="alert"></p>
+      <button class="btn btn-primary" id="loginBtn" type="submit">Entrar</button>
+    </form>
+    <div id="loginSetup" hidden>
+      <p class="login-sub"><strong>Falta conectar la hoja de datos.</strong></p>
+      <p class="login-sub">Abre <code>config.js</code> y pega la URL de la aplicación web de Apps Script (termina en <code>/exec</code>). Los pasos están en el archivo LEEME.</p>
+    </div>
+  </div>
+</div>
+
+<div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+<div class="app" id="app">
+  <div class="sidebar" id="sidebarPanel">
+    <button class="sidebar-close-btn" id="btnCloseSidebar" aria-label="Cerrar menú">×</button>
+    <div class="brand">
+      <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="28" cy="28" r="14" stroke="var(--ink)" stroke-width="10"/>
+        <line x1="78" y1="14" x2="18" y2="86" stroke="var(--ink)" stroke-width="9" stroke-linecap="round"/>
+        <circle cx="72" cy="72" r="14" stroke="var(--ink)" stroke-width="10"/>
+      </svg>
+      <div class="brand-text">00 Track<small>CeroCero · Equipo</small></div>
+    </div>
+    <div class="search">
+      <input type="text" id="searchInput" placeholder="Buscar integrante...">
+    </div>
+    <div class="people-list" id="peopleList"></div>
+    <div class="side-actions">
+      <button class="btn btn-primary" id="btnAddPerson">+ Agregar integrante</button>
+      <button class="btn btn-ghost" id="btnAdmin">Gestionar posiciones / MÍNIMOS</button>
+      <div class="local-note">Datos en Google Sheets · compartidos con Dirección</div>
+    </div>
+  </div>
+
+  <div class="main" id="mainArea">
+    <div class="empty-state" id="emptyState">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>
+      <div>Selecciona a alguien del equipo, o agrega a la primera persona.</div>
+    </div>
+  </div>
+</div>
+
+<div id="orgchartView"></div>
+
+<div class="toast" id="toast"></div>
+
+<script src="config.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  var state = {
+    people: [],
+    criteria: [],
+    actionables: [],
+    evaluations: [],
+    notes: [],
+    selectedPersonId: null,
+    tab: 'seguimiento',
+    filter: 'abiertos',
+    monthCursor: currentMonthStr(),
+    search: '',
+    db: null,
+    user: null,
+    ready: false,
+    appView: 'tracker',
+    orgArea: 'oficina'
+  };
+
+  function currentMonthStr(d){
+    d = d || new Date();
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
+  }
+  function monthLabel(m){
+    var parts = m.split('-'); var y = parts[0], mo = parseInt(parts[1],10);
+    var names = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+    return names[mo-1] + ' ' + y;
+  }
+  function shiftMonth(m, delta){
+    var parts = m.split('-'); var y = parseInt(parts[0],10), mo = parseInt(parts[1],10) - 1;
+    mo += delta;
+    y += Math.floor(mo/12);
+    mo = ((mo % 12) + 12) % 12;
+    return y + '-' + String(mo+1).padStart(2,'0');
+  }
+  function uid(prefix){
+    return prefix + '_' + Date.now().toString(36) + Math.random().toString(36).slice(2,8);
+  }
+  function initials(name){
+    var parts = (name||'').trim().split(/\s+/);
+    if(parts.length===0 || !parts[0]) return '?';
+    return (parts[0][0] + (parts[1]? parts[1][0] : '')).toUpperCase();
+  }
+  function esc(s){
+    var d = document.createElement('div'); d.textContent = s==null?'':String(s); return d.innerHTML;
+  }
+  function showToast(msg){
+    var t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    clearTimeout(t._h);
+    t._h = setTimeout(function(){ t.classList.remove('show'); }, 2200);
+  }
+
+  // ---------------- Fechas de ingreso / antigüedad / renovación ----------------
+  var MESES_ES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  function parseYMD(s){
+    if(!s) return null;
+    var parts = String(s).split('-');
+    if(parts.length!==3) return null;
+    var d = new Date(Number(parts[0]), Number(parts[1])-1, Number(parts[2]));
+    return isNaN(d.getTime()) ? null : d;
+  }
+  function todayAtMidnight(){ var n = new Date(); return new Date(n.getFullYear(), n.getMonth(), n.getDate()); }
+  function formatDateEs(s){
+    var d = parseYMD(s);
+    if(!d) return '';
+    return d.getDate()+' de '+MESES_ES[d.getMonth()]+' de '+d.getFullYear();
+  }
+  function daysSince(hireDateStr){
+    var d = parseYMD(hireDateStr);
+    if(!d) return null;
+    var diffMs = todayAtMidnight().getTime() - d.getTime();
+    return Math.round(diffMs / 86400000);
+  }
+  function nextAnniversary(hireDateStr){
+    var d = parseYMD(hireDateStr);
+    if(!d) return null;
+    var today = todayAtMidnight();
+    var years = today.getFullYear() - d.getFullYear();
+    var candidate = new Date(d.getFullYear()+years, d.getMonth(), d.getDate());
+    if(candidate.getTime() < today.getTime()) candidate = new Date(d.getFullYear()+years+1, d.getMonth(), d.getDate());
+    var isToday = candidate.getTime() === today.getTime();
+    return { date: candidate, years: candidate.getFullYear()-d.getFullYear(), isToday: isToday };
+  }
+  function antiguedadTexto(hireDateStr){
+    var d = parseYMD(hireDateStr);
+    if(!d) return '';
+    var today = todayAtMidnight();
+    var years = today.getFullYear() - d.getFullYear();
+    var months = today.getMonth() - d.getMonth();
+    if(today.getDate() < d.getDate()) months--;
+    if(months < 0){ years--; months += 12; }
+    var parts = [];
+    if(years>0) parts.push(years + (years===1?' año':' años'));
+    if(months>0 || !years) parts.push(months + (months===1?' mes':' meses'));
+    return parts.join(' y ');
+  }
+  function snapDocs(snap){
+    if(!snap) return [];
+    if(Array.isArray(snap)) return snap.map(function(d){ return Object.assign({id:d.id}, (d.data?d.data():d)); });
+    if(snap.docs) return snap.docs.map(function(d){ return Object.assign({id:d.id}, (d.data?d.data():d)); });
+    return [];
+  }
+
+  // ---------------- Base de datos: Google Sheets vía Apps Script ----------------
+  // Misma interfaz tipo Firestore que usa el resto de la app
+  // (state.db.collection(x).doc(id).set/update/delete/get(), .where(...).onSnapshot(cb)),
+  // pero guardando en la hoja de Google Sheets de Dirección a través del web app de Apps Script.
+  // Los cambios se ven al instante en pantalla (optimista), se envían en lotes y cada ~15 s se
+  // vuelve a leer la hoja para traer lo que hayan cambiado las otras dos personas.
+  var CFG = window.TRACK_CONFIG || {};
+  var COLS = ['people','criteria','actionables','evaluations','notes'];
+  var PW_KEY = 'cerocero_00track_pw';
+  var POLL_MS = 15000;
+
+  function clone(x){ return x === undefined ? undefined : JSON.parse(JSON.stringify(x)); }
+
+  function createSheetsDB(url, pw){
+    var data = {}, listeners = {}, lastSig = {};
+    COLS.forEach(function(c){ data[c] = {}; listeners[c] = []; lastSig[c] = null; });
+    var pending = [], inflight = false, flushTimer = null, ver = null, pollTimer = null;
+    var writeSeq = 0, loaded = false, stopped = false, retryDelay = 0;
+    var api = { onStatus: null, onUnauthorized: null };
+
+    function status(s){ if(api.onStatus) api.onStatus(s); }
+
+    function rpc(payload){
+      payload.pw = pw;
+      var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+      var t = ctrl ? setTimeout(function(){ ctrl.abort(); }, 30000) : null;
+      return fetch(url, {
+        method: 'POST', redirect: 'follow',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload), signal: ctrl ? ctrl.signal : undefined
+      }).then(function(r){ return r.json(); }).then(function(j){
+        if(t) clearTimeout(t);
+        if(j && j.code === 'unauthorized'){ stopped = true; if(api.onUnauthorized) api.onUnauthorized(); }
+        return j;
+      }, function(e){ if(t) clearTimeout(t); throw e; });
+    }
+
+    function rowsOf(col){
+      var m = data[col];
+      return Object.keys(m).map(function(id){ var o = Object.assign({}, m[id]); o.id = id; return o; });
+    }
+    function notify(col){
+      var rows = rowsOf(col);
+      listeners[col].slice().forEach(function(l){
+        try{ l.cb(l.filter ? rows.filter(l.filter) : rows); }catch(e){ console.error(e); }
+      });
+    }
+    function applyServer(all){
+      COLS.forEach(function(col){
+        var rows = all[col] || [];
+        var sig = JSON.stringify(rows);
+        if(sig === lastSig[col]) return;
+        lastSig[col] = sig;
+        var m = {};
+        rows.forEach(function(r){ var d = Object.assign({}, r); delete d.id; m[r.id] = d; });
+        data[col] = m;
+        notify(col);
+      });
+    }
+
+    function pull(force){
+      if(stopped || inflight || pending.length) return Promise.resolve();
+      var seq = writeSeq;
+      return rpc({ action: 'getAll', since: force ? null : ver }).then(function(res){
+        if(!res || !res.ok){ status('error'); return; }
+        if(seq !== writeSeq || pending.length || inflight) return; // escribieron mientras leíamos: no pisar
+        if(!res.unchanged) applyServer(res.data);
+        ver = res.ver; status('ok');
+      }).catch(function(){ status('offline'); });
+    }
+
+    function scheduleFlush(ms){
+      if(flushTimer) clearTimeout(flushTimer);
+      flushTimer = setTimeout(flush, ms);
+      status('saving');
+    }
+    function flush(){
+      flushTimer = null;
+      if(stopped || inflight || !pending.length) return;
+      var batch = pending.splice(0, 200);
+      inflight = true; status('saving');
+      rpc({ action: 'batch', ops: batch.map(function(o){ return { op: o.op, col: o.col, id: o.id, data: o.data }; }) })
+        .then(function(res){
+          inflight = false;
+          if(res && res.ok){
+            retryDelay = 0;
+            batch.forEach(function(o){ o.resolve(); });
+            if(pending.length){ scheduleFlush(0); } else { status('ok'); ver = null; pull(true); }
+          } else {
+            pending = batch.concat(pending);
+            if(res && res.code === 'unauthorized') return;
+            failed(false);
+          }
+        }, function(){ inflight = false; pending = batch.concat(pending); failed(true); });
+    }
+    function failed(offline){
+      status(offline ? 'offline' : 'error');
+      retryDelay = Math.min((retryDelay || 2000) * 2, 30000);
+      flushTimer = setTimeout(flush, retryDelay);
+    }
+
+    function enqueue(col, id, kind, d){
+      var m = data[col];
+      if(kind === 'delete') delete m[id];
+      else if(kind === 'set') m[id] = clone(d);
+      else m[id] = Object.assign({}, m[id] || {}, clone(d));
+      writeSeq++;
+      notify(col);
+      return new Promise(function(resolve){
+        pending.push({ op: kind, col: col, id: id, data: kind === 'delete' ? undefined : clone(d), resolve: resolve });
+        scheduleFlush(350);
+      });
+    }
+
+    api.collection = function(col){
+      if(COLS.indexOf(col) === -1) throw new Error('Colección desconocida: ' + col);
+      function sub(filter){
+        return {
+          onSnapshot: function(cb){
+            var l = { filter: filter, cb: cb };
+            listeners[col].push(l);
+            if(loaded) Promise.resolve().then(function(){
+              var rows = rowsOf(col);
+              try{ cb(filter ? rows.filter(filter) : rows); }catch(e){ console.error(e); }
+            });
+            return function(){ listeners[col] = listeners[col].filter(function(x){ return x !== l; }); };
+          },
+          get: function(){ var rows = rowsOf(col); return Promise.resolve(filter ? rows.filter(filter) : rows); }
+        };
+      }
+      var ref = sub(null);
+      ref.doc = function(id){
+        return {
+          id: id,
+          set: function(d){ return enqueue(col, id, 'set', d); },
+          update: function(d){ return enqueue(col, id, 'update', d); },
+          delete: function(){ return enqueue(col, id, 'delete'); },
+          get: function(){ var d = data[col][id]; return Promise.resolve(d ? Object.assign({ id: id }, d) : null); }
+        };
+      };
+      ref.where = function(field, op, value){
+        return sub(function(r){ return op === '!=' ? r[field] !== value : r[field] === value; });
+      };
+      return ref;
+    };
+
+    api.login = function(){ return rpc({ action: 'auth' }); };
+    api.start = function(){
+      return rpc({ action: 'getAll' }).then(function(res){
+        if(!res || !res.ok) throw new Error((res && res.error) || 'Respuesta inválida del servidor');
+        applyServer(res.data); ver = res.ver; loaded = true; status('ok');
+        pollTimer = setInterval(function(){ if(!document.hidden) pull(false); }, POLL_MS);
+        document.addEventListener('visibilitychange', function(){ if(!document.hidden) pull(false); });
+        window.addEventListener('online', function(){ pull(false); if(pending.length) scheduleFlush(0); });
+        window.addEventListener('beforeunload', function(e){
+          if(pending.length || inflight){ e.preventDefault(); e.returnValue = ''; }
+        });
+      });
+    };
+    return api;
+  }
+
+  // ---------------- Acceso (contraseña compartida) ----------------
+  function readSavedPw(){
+    try{ return localStorage.getItem(PW_KEY) || sessionStorage.getItem(PW_KEY) || ''; }catch(e){ return ''; }
+  }
+  function savePw(pw, remember){
+    try{
+      localStorage.removeItem(PW_KEY); sessionStorage.removeItem(PW_KEY);
+      (remember ? localStorage : sessionStorage).setItem(PW_KEY, pw);
+    }catch(e){}
+  }
+  function clearPw(){ try{ localStorage.removeItem(PW_KEY); sessionStorage.removeItem(PW_KEY); }catch(e){} }
+
+  function showPanel(name, message){
+    document.body.classList.add('locked');
+    document.getElementById('loginScreen').hidden = false;
+    ['loginLoading','loginForm','loginSetup'].forEach(function(id){
+      document.getElementById(id).hidden = (id !== name);
+    });
+    if(name === 'loginForm'){
+      document.getElementById('loginMsg').textContent = message || '';
+      var btn = document.getElementById('loginBtn'); btn.disabled = false; btn.textContent = 'Entrar';
+      setTimeout(function(){ document.getElementById('loginPw').focus(); }, 50);
+    }
+  }
+
+  var SYNC_LABELS = { ok:'Sincronizado', saving:'Guardando…', offline:'Sin conexión', error:'Error al guardar', loading:'Conectando…' };
+  var lastSyncState = 'loading';
+  function setSyncStatus(s){
+    var pill = document.getElementById('syncPill');
+    if(pill){ pill.setAttribute('data-s', s); pill.querySelector('.sync-text').textContent = SYNC_LABELS[s] || s; }
+    if((s === 'offline' || s === 'error') && lastSyncState !== s){
+      showToast(s === 'offline' ? 'Sin conexión: tus cambios se enviarán al reconectar' : 'No se pudo guardar; se reintentará solo');
+    }
+    lastSyncState = s;
+  }
+
+  function attemptLogin(pw, remember){
+    var db = createSheetsDB(CFG.scriptUrl, pw);
+    db.onStatus = setSyncStatus;
+    db.onUnauthorized = function(){ clearPw(); location.reload(); };
+    return db.login().then(function(res){
+      if(!res || !res.ok){
+        return { ok: false, error: (res && res.code === 'unauthorized') ? 'Contraseña incorrecta.' : ((res && res.error) || 'No se pudo iniciar sesión.') };
+      }
+      return startApp(db).then(function(r){ if(r.ok) savePw(pw, remember); return r; });
+    }, function(){ return { ok: false, error: 'No se pudo conectar con el servidor. Revisa tu conexión e intenta de nuevo.' }; });
+  }
+
+  function startApp(db){
+    return db.start().then(function(){
+      state.db = db;
+      subscribeCollection('people', function(rows){
+        state.people = rows.sort(function(a,b){ return (a.name||'').localeCompare(b.name||''); });
+        if(!state.selectedPersonId && state.people.length) state.selectedPersonId = state.people[0].id;
+        render();
+      });
+      subscribeCollection('criteria', function(rows){ state.criteria = rows; render(); });
+      document.getElementById('loginScreen').hidden = true;
+      document.body.classList.remove('locked');
+      render();
+      return { ok: true };
+    }, function(e){ return { ok: false, error: 'No se pudieron cargar los datos: ' + (e && e.message || e) }; });
+  }
+
+  async function boot(){
+    var url = CFG.scriptUrl || '';
+    if(!/^https:\/\/script\.google\.com\/macros\/s\/.+\/exec/.test(url)){ showPanel('loginSetup'); return; }
+    var saved = readSavedPw();
+    if(saved){
+      showPanel('loginLoading');
+      var res = await attemptLogin(saved, !!(function(){ try{ return localStorage.getItem(PW_KEY); }catch(e){ return ''; } })());
+      if(res.ok) return;
+      if(/incorrecta/.test(res.error)) clearPw();
+      showPanel('loginForm', res.error);
+      return;
+    }
+    showPanel('loginForm');
+  }
+
+  function subscribeCollection(path, cb){
+    try{
+      var ref = state.db.collection(path);
+      if(ref && typeof ref.onSnapshot === 'function'){
+        ref.onSnapshot(function(snap){ cb(snapDocs(snap)); }, function(err){ console.error(path, err); });
+      } else {
+        ref.get().then(function(snap){ cb(snapDocs(snap)); });
+      }
+    }catch(e){ console.error('subscribe failed', path, e); }
+  }
+
+  function subscribePersonData(personId){
+    if(!state.db || !personId) return;
+    try{
+      state.db.collection('actionables').where('personId','==',personId).onSnapshot(function(snap){
+        var rows = snapDocs(snap);
+        state.actionables = state.actionables.filter(function(a){ return a.personId !== personId; }).concat(rows);
+        render();
+      }, function(err){ console.error('actionables', err); });
+    }catch(e){ console.error(e); }
+    try{
+      state.db.collection('evaluations').where('personId','==',personId).onSnapshot(function(snap){
+        var rows = snapDocs(snap);
+        state.evaluations = state.evaluations.filter(function(ev){ return ev.personId !== personId; }).concat(rows);
+        render();
+      }, function(err){ console.error('evaluations', err); });
+    }catch(e){ console.error(e); }
+    try{
+      state.db.collection('notes').where('personId','==',personId).onSnapshot(function(snap){
+        var rows = snapDocs(snap);
+        state.notes = state.notes.filter(function(n){ return n.personId !== personId; }).concat(rows);
+        render();
+      }, function(err){ console.error('notes', err); });
+    }catch(e){ console.error(e); }
+  }
+
+  var subscribedPeople = {};
+  function ensurePersonSubscribed(personId){
+    if(!personId || subscribedPeople[personId]) return;
+    subscribedPeople[personId] = true;
+    subscribePersonData(personId);
+  }
+
+  // ---------------- Data helpers ----------------
+  // Un MÍNIMO aplica a una persona si coincide su posición, o si fue asignado
+  // explícitamente a esa persona (personIds), independientemente de la posición.
+  // Así queda "opcional": si no está claro a quién pertenece, se asigna a mano.
+  function criteriaForPerson(person, kind){
+    if(!person) return [];
+    return state.criteria.filter(function(c){
+      if(c.active === false) return false;
+      if(kind && (c.kind || 'minimos') !== kind) return false;
+      var byPosition = c.position && c.position === person.position;
+      var byPersonOverride = Array.isArray(c.personIds) && c.personIds.indexOf(person.id) > -1;
+      return byPosition || byPersonOverride;
+    }).sort(function(a,b){ return (a.order||0)-(b.order||0); });
+  }
+  function evalDocId(personId, month){ return personId + '__' + month; }
+  function getEvaluation(personId, month){
+    return state.evaluations.find(function(e){ return e.personId===personId && e.month===month; });
+  }
+  // Sin "kind", BASES y MÍNIMOS se promedian entre sí (ambos forman un mismo criterio de
+  // evaluación, con el mismo peso, sin importar cuántos puntos tenga cada checklist).
+  function computePct(personId, month, kind){
+    if(!kind){
+      var b = computePct(personId, month, 'bases');
+      var m = computePct(personId, month, 'minimos');
+      if(b==null && m==null) return null;
+      if(b==null) return m;
+      if(m==null) return b;
+      return Math.round((b+m)/2);
+    }
+    var person = state.people.find(function(p){ return p.id===personId; });
+    if(!person) return null;
+    var crit = criteriaForPerson(person, kind);
+    if(!crit.length) return null;
+    var ev = getEvaluation(personId, month);
+    var results = (ev && ev.results) || {};
+    var total = crit.length, done = 0, answered = 0;
+    crit.forEach(function(c){
+      if(results[c.id] === true){ done++; answered++; }
+      else if(results[c.id] === false){ answered++; }
+    });
+    if(answered === 0) return null;
+    return Math.round((done/total)*100);
+  }
+  function getManualScore(personId, month){
+    var ev = getEvaluation(personId, month);
+    return (ev && typeof ev.manualScore === 'number') ? ev.manualScore : null;
+  }
+  function lastMonths(month, n){
+    var arr = [];
+    for(var i=n-1;i>=0;i--) arr.push(shiftMonth(month, -i));
+    return arr;
+  }
+  function openCount(personId){
+    return state.actionables.filter(function(a){ return a.personId===personId && a.status!=='cerrado'; }).length;
+  }
+  // Área del integrante: usa el campo explícito si existe; si no (datos viejos/capturados a mano),
+  // lo infiere del texto del puesto para poder seguir agrupando oficina vs. almacén.
+  function personArea(person){
+    if(!person) return 'oficina';
+    if(person.area === 'almacen' || person.area === 'oficina') return person.area;
+    var pos = (person.position||'').toLowerCase();
+    if(/almac[eé]n|fulfillment|tr[aá]fico|devoluciones|producci[oó]n de (yoga|corte)|log[ií]sticas/.test(pos)) return 'almacen';
+    return 'oficina';
+  }
+
+  // ---------------- Render ----------------
+  function render(){
+    var isOrg = state.appView === 'orgchart';
+    document.getElementById('app').style.display = isOrg ? 'none' : 'flex';
+    document.getElementById('orgchartView').style.display = isOrg ? 'block' : 'none';
+    document.getElementById('navTracker').classList.toggle('active', !isOrg);
+    document.getElementById('navOrgchart').classList.toggle('active', isOrg);
+    document.getElementById('btnMobileMenu').style.display = isOrg ? 'none' : '';
+    if(isOrg){ renderOrgChart(); }
+    else { renderSidebar(); renderMain(); }
+  }
+
+  function renderSidebar(){
+    var list = document.getElementById('peopleList');
+    var q = state.search.trim().toLowerCase();
+    var people = state.people.filter(function(p){
+      if(p.trackEvaluation===false) return false;
+      if(!q) return true;
+      return (p.name||'').toLowerCase().indexOf(q)>-1 || (p.position||'').toLowerCase().indexOf(q)>-1;
+    });
+    if(!people.length){
+      list.innerHTML = '<div style="padding:14px 6px;color:var(--muted);font-size:12.5px;">Sin resultados. Agrega a tu primer integrante.</div>';
+      return;
+    }
+    function personRow(p){
+      var pct = computePct(p.id, state.monthCursor);
+      var oc = openCount(p.id);
+      var active = p.id === state.selectedPersonId ? ' active' : '';
+      var pctHtml = pct==null ? '' : '<span class="pct-pill'+(pct<80?' low':'')+'">'+pct+'%</span>';
+      return '<div class="person-item'+active+'" data-id="'+p.id+'">'
+        + '<div class="avatar">'+esc(initials(p.name))+'</div>'
+        + '<div class="p-meta"><div class="p-name">'+esc(p.name)+'</div><div class="p-pos">'+esc(p.position||'—')+'</div></div>'
+        + '<div class="p-badges">'+(oc>0? '<span class="dot-count">'+oc+' pend.</span>':'')+pctHtml+'</div>'
+        + '</div>';
+    }
+    var oficina = people.filter(function(p){ return personArea(p)==='oficina'; });
+    var almacen = people.filter(function(p){ return personArea(p)==='almacen'; });
+    var out = '';
+    if(oficina.length) out += '<div class="divider-label">Oficina</div>' + oficina.map(personRow).join('');
+    if(almacen.length) out += '<div class="divider-label">Almacén</div>' + almacen.map(personRow).join('');
+    list.innerHTML = out;
+    Array.prototype.forEach.call(list.querySelectorAll('.person-item'), function(el){
+      el.addEventListener('click', function(){
+        state.selectedPersonId = el.getAttribute('data-id');
+        state.tab = 'seguimiento';
+        ensurePersonSubscribed(state.selectedPersonId);
+        closeMobileSidebar();
+        render();
+      });
+    });
+  }
+
+  function renderMain(){
+    var main = document.getElementById('mainArea');
+    var person = state.people.find(function(p){ return p.id === state.selectedPersonId; });
+    if(!person){
+      main.innerHTML = '<div class="empty-state">'
+        + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>'
+        + '<div>Selecciona a alguien del equipo, o agrega a la primera persona.</div></div>';
+      return;
+    }
+    ensurePersonSubscribed(person.id);
+
+    var html = '';
+    html += '<div class="topbar"><div class="profile-head">'
+      + '<div class="avatar-lg">'+esc(initials(person.name))+'</div>'
+      + '<div><h1 class="pname">'+esc(person.name)+'</h1><div class="ppos">'+esc(person.position||'Sin posición asignada')+'</div>'
+        + hireInfoHtml(person)
+      + '</div>'
+      + '</div>'
+      + '<button class="btn btn-ghost btn-sm" id="btnEditPerson">Editar</button>'
+      + '</div>';
+
+    html += '<div class="tabs">'
+      + '<div class="tab'+(state.tab==='seguimiento'?' active':'')+'" data-tab="seguimiento">Seguimiento de trabajo</div>'
+      + '<div class="tab'+(state.tab==='bases'?' active':'')+'" data-tab="bases">BASES</div>'
+      + '<div class="tab'+(state.tab==='minimos'?' active':'')+'" data-tab="minimos">MÍNIMOS</div>'
+      + '<div class="tab'+(state.tab==='diagnostico'?' active':'')+'" data-tab="diagnostico">Diagnóstico</div>'
+      + '</div>';
+
+    html += '<div class="content" id="tabContent"></div>';
+    main.innerHTML = html;
+
+    document.getElementById('btnEditPerson').addEventListener('click', function(){ openPersonModal(person); });
+    Array.prototype.forEach.call(main.querySelectorAll('.tab'), function(el){
+      el.addEventListener('click', function(){ state.tab = el.getAttribute('data-tab'); render(); });
+    });
+
+    var content = document.getElementById('tabContent');
+    if(state.tab === 'seguimiento') content.innerHTML = seguimientoHtml(person);
+    else if(state.tab === 'bases') content.innerHTML = evalKindHtml(person, 'bases');
+    else if(state.tab === 'minimos') content.innerHTML = minimosHtml(person);
+    else content.innerHTML = diagnosticoHtml(person);
+
+    wireTabEvents(person);
+  }
+
+  function hireInfoHtml(person){
+    if(!person.hireDate) return '';
+    var days = daysSince(person.hireDate);
+    var antig = antiguedadTexto(person.hireDate);
+    var anniv = nextAnniversary(person.hireDate);
+    var annivTxt = anniv ? (anniv.isToday ? '¡Hoy! · '+anniv.years+' año'+(anniv.years===1?'':'s') : formatDateEs(anniv.date.getFullYear()+'-'+String(anniv.date.getMonth()+1).padStart(2,'0')+'-'+String(anniv.date.getDate()).padStart(2,'0'))+' · cumple '+anniv.years+' año'+(anniv.years===1?'':'s')) : '';
+    var chips = [];
+    chips.push('<span class="hire-chip" title="Fecha de ingreso">Ingresó '+esc(formatDateEs(person.hireDate))+'</span>');
+    chips.push('<span class="hire-chip" title="Días en 00 a día de hoy">'+days+' días en 00'+(antig?' ('+esc(antig)+')':'')+'</span>');
+    if(annivTxt) chips.push('<span class="hire-chip" title="Próximo aniversario">Aniversario: '+esc(annivTxt)+'</span>');
+    if(person.renewalDate) chips.push('<span class="hire-chip" title="Próxima renovación de contrato">Renovación: '+esc(formatDateEs(person.renewalDate))+'</span>');
+    return '<div class="hire-chips">'+chips.join('')+'</div>';
+  }
+  function seguimientoHtml(person){
+    var items = state.actionables.filter(function(a){ return a.personId === person.id; })
+      .sort(function(a,b){ return (b.createdAt||0)-(a.createdAt||0); });
+    var filtered = items.filter(function(a){
+      if(state.filter==='abiertos') return a.status !== 'cerrado';
+      if(state.filter==='cerrados') return a.status === 'cerrado';
+      return true;
+    });
+    var rows = filtered.map(function(a){
+      var checked = a.status === 'cerrado';
+      var originTag = a.origin === 'reunion' ? '<span class="tag">Reunión'+(a.meetingDate? ' · '+esc(a.meetingDate):'')+'</span>' : '<span class="tag manual">Manual</span>';
+      return '<div class="todo-row" data-id="'+a.id+'">'
+        + '<div class="check'+(checked?' checked':'')+'" data-action="toggle"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M4 12l5 5L20 6"/></svg></div>'
+        + '<div class="todo-body">'
+          + '<div class="todo-title'+(checked?' done':'')+'">'+esc(a.title)+'</div>'
+          + (a.notes? '<div class="todo-notes">'+esc(a.notes)+'</div>' : '')
+          + '<div class="todo-meta">'+originTag+'</div>'
+        + '</div>'
+        + '<button class="todo-del" data-action="delete" title="Eliminar">×</button>'
+        + '</div>';
+    }).join('') || '<div style="padding:22px 4px;color:var(--muted);font-size:13px;">No hay pendientes en este filtro.</div>';
+
+    return '<div class="card">'
+      + '<div class="section-title">Pendientes y accionables</div>'
+      + '<div class="section-sub">Nacen de reuniones (Granola) o se agregan manualmente. Se quedan visibles hasta cerrarse.</div>'
+      + '<div class="filters">'
+        + chip('abiertos','Abiertos') + chip('cerrados','Cerrados') + chip('todos','Todos')
+      + '</div>'
+      + '<div id="todoRows">'+rows+'</div>'
+      + '<div class="add-row">'
+        + '<input type="text" id="newActionable" placeholder="Nuevo pendiente… (Enter para agregar, o pega una lista de Granola)">'
+        + '<button class="btn btn-primary btn-sm" id="btnAddActionable">Agregar</button>'
+      + '</div>'
+      + '<div class="section-sub" style="margin-top:6px;">Tip: pega aquí el resumen de "Pendientes y accionables" de Granola — se separa automáticamente en pendientes individuales por cada "- [ ]".</div>'
+    + '</div>';
+  }
+
+  // Convierte el texto pegado desde la plantilla de Granola ("00 · Action Tracker") en una lista de pendientes
+  // individuales. Soporta tanto el caso con saltos de línea reales ("- [ ] item" por línea) como el caso en que
+  // el copiado aplana todo en un solo párrafo y el separador entre puntos sigue siendo "- [ ]".
+  function parseGranolaItems(text){
+    if(!text) return [];
+    var t = text.replace(/ /g,' ').trim();
+    if(!t) return [];
+    var byLines = t.split(/\r?\n/).map(function(l){ return l.trim(); }).filter(Boolean);
+    var fromLines = byLines
+      .filter(function(l){ return /^[-*]\s*\[[ xX]?\]/.test(l); })
+      .map(function(l){ return l.replace(/^[-*]\s*\[[ xX]?\]\s*/,'').trim(); })
+      .filter(Boolean);
+    if(fromLines.length > 1) return fromLines;
+    if(/[-*]\s*\[\s*[xX ]?\s*\]/.test(t)){
+      var parts = t.split(/[-*]\s*\[\s*[xX ]?\s*\]\s*/).map(function(s){ return s.trim(); }).filter(Boolean);
+      if(parts.length > 1) return parts;
+    }
+    return fromLines;
+  }
+
+  function chip(val,label){
+    return '<div class="chip'+(state.filter===val?' active':'')+'" data-filter="'+val+'">'+label+'</div>';
+  }
+
+  // ---- helpers compartidos entre la pestaña BASES y la pestaña MÍNIMOS ----
+  function critRowsHtml(person, kind, month){
+    var crit = criteriaForPerson(person, kind);
+    var ev = getEvaluation(person.id, month);
+    var results = (ev && ev.results) || {};
+    var emptyMsg = kind === 'bases'
+      ? 'Aún no hay BASES asignadas a esta persona. Usa "Gestionar posiciones / MÍNIMOS" en la barra lateral, o el desplegable "Tipo de BASES" al editar a la persona.'
+      : 'Aún no hay MÍNIMOS asignados a esta persona. Usa "Gestionar posiciones / MÍNIMOS" en la barra lateral, o el desplegable "Tipo de MÍNIMOS" al editar a la persona.';
+    return crit.map(function(c){
+      var val = results[c.id];
+      return '<div class="criterion-row" data-crit="'+c.id+'">'
+        + '<div class="criterion-label">'+esc(c.label)+'</div>'
+        + '<div class="toggle-group">'
+          + '<button class="toggle-btn ok'+(val===true?' sel':'')+'" data-val="true">✓</button>'
+          + '<button class="toggle-btn bad'+(val===false?' sel':'')+'" data-val="false">✕</button>'
+        + '</div>'
+      + '</div>';
+    }).join('') || '<div style="padding:14px 2px;color:var(--muted);font-size:12.5px;">'+emptyMsg+'</div>';
+  }
+  function historyRowsHtml(person, kind, month){
+    var months6 = lastMonths(month, 6);
+    return months6.map(function(m){
+      var p = computePct(person.id, m, kind);
+      var pShow = p==null ? '—' : p+'%';
+      var width = p==null ? 0 : p;
+      return '<div class="history-item"><div class="history-month">'+monthLabel(m).split(' ')[0].slice(0,3)+' \''+monthLabel(m).split(' ')[1].slice(2)+'</div>'
+        + '<div class="bar-track"><div class="bar-fill" style="width:'+width+'%;"></div></div>'
+        + '<div class="history-pct">'+pShow+'</div></div>';
+    }).join('');
+  }
+  function weakListFor(person, kind, month){
+    var crit = criteriaForPerson(person, kind);
+    var ev = getEvaluation(person.id, month);
+    var results = (ev && ev.results) || {};
+    var last3 = lastMonths(month, 3);
+    return crit.filter(function(c){ return results[c.id] === false; }).map(function(c){
+      var failCount = last3.reduce(function(acc,m){
+        var e = getEvaluation(person.id, m);
+        if(e && e.results && e.results[c.id] === false) acc++;
+        return acc;
+      },0);
+      return { label:c.label, failCount: failCount };
+    });
+  }
+  function weakHtmlFor(person, kind, month){
+    var weak = weakListFor(person, kind, month);
+    return weak.length ? weak.map(function(w){
+      var rec = w.failCount>=2 ? '<div class="weak-recurrence hot">Recurrente: '+w.failCount+' de los últimos 3 meses</div>' : '<div class="weak-recurrence">Incumplimiento de este mes</div>';
+      return '<div class="weak-item"><div class="weak-dot"></div><div><div class="weak-text">'+esc(w.label)+'</div>'+rec+'</div></div>';
+    }).join('') : '<div style="padding:8px 2px;color:var(--muted);font-size:12.5px;">Sin puntos por fortalecer este mes.</div>';
+  }
+
+  // Pestaña BASES (genérica: checklist + histórico + puntos por fortalecer, sin calificación manual ni anotaciones)
+  function evalKindHtml(person, kind){
+    var month = state.monthCursor;
+    var pct = computePct(person.id, month, kind);
+    var pctColor = pct==null ? 'var(--muted-2)' : (pct>=80?'var(--ok)':'var(--ink)');
+    var ring = ringSvg(pct);
+    return '<div class="month-row">'
+      + '<div class="section-title" style="margin:0;">BASES mensuales</div>'
+      + '<div class="month-nav">'
+        + '<button class="month-btn" id="prevMonth">‹</button>'
+        + '<div class="month-label">'+monthLabel(month)+'</div>'
+        + '<button class="month-btn" id="nextMonth">›</button>'
+      + '</div>'
+    + '</div>'
+    + '<div class="grid-2">'
+      + '<div class="card">'
+        + '<div class="pct-big">'+ring+'<div><div class="pct-num" style="color:'+pctColor+';">'+(pct==null?'—':pct+'%')+'</div><div class="pct-caption">Cumplimiento de '+monthLabel(month)+'</div></div></div>'
+        + '<div id="critRows">'+critRowsHtml(person, kind, month)+'</div>'
+      + '</div>'
+      + '<div>'
+        + '<div class="card" style="margin-bottom:16px;">'
+          + '<div class="section-title">Histórico</div>'
+          + '<div class="section-sub">Últimos 6 meses</div>'
+          + historyRowsHtml(person, kind, month)
+        + '</div>'
+        + '<div class="card">'
+          + '<div class="section-title">Puntos por fortalecer</div>'
+          + '<div class="section-sub">Generado a partir de los ✕ de '+monthLabel(month)+'</div>'
+          + weakHtmlFor(person, kind, month)
+        + '</div>'
+      + '</div>'
+    + '</div>';
+  }
+
+  function minimosHtml(person){
+    var kind = 'minimos';
+    var month = state.monthCursor;
+    var pct = computePct(person.id, month, kind);
+    var pctColor = pct==null ? 'var(--muted-2)' : (pct>=80?'var(--ok)':'var(--ink)');
+    var ring = ringSvg(pct);
+    var manualScore = getManualScore(person.id, month);
+
+    // anotaciones del mes (observaciones libres, para la junta mensual)
+    var monthNotes = state.notes.filter(function(n){ return n.personId===person.id && n.month===month; })
+      .sort(function(a,b){ return (b.createdAt||0)-(a.createdAt||0); });
+    var notesHtml = monthNotes.map(function(n){
+      var d = n.createdAt ? new Date(n.createdAt).toLocaleDateString('es-MX', {day:'2-digit', month:'short'}) : '';
+      return '<div class="weak-item" data-note="'+n.id+'">'
+        + '<div class="weak-dot" style="background:var(--muted-2);"></div>'
+        + '<div style="flex:1;"><div class="weak-text" style="font-weight:500;">'+esc(n.text)+'</div><div class="weak-recurrence">'+d+'</div></div>'
+        + '<button class="todo-del" data-action="del-note" data-id="'+n.id+'" title="Eliminar">×</button>'
+      + '</div>';
+    }).join('') || '<div style="padding:8px 2px;color:var(--muted);font-size:12.5px;">Sin anotaciones este mes.</div>';
+
+    return '<div class="month-row">'
+      + '<div class="section-title" style="margin:0;">MÍNIMOS mensuales</div>'
+      + '<div class="month-nav">'
+        + '<button class="month-btn" id="prevMonth">‹</button>'
+        + '<div class="month-label">'+monthLabel(month)+'</div>'
+        + '<button class="month-btn" id="nextMonth">›</button>'
+      + '</div>'
+    + '</div>'
+    + '<div class="grid-2">'
+      + '<div class="card" style="margin-bottom:16px;">'
+        + '<div class="pct-big">'+ring+'<div><div class="pct-num" style="color:'+pctColor+';">'+(pct==null?'—':pct+'%')+'</div><div class="pct-caption">Cumplimiento automático de '+monthLabel(month)+'</div></div></div>'
+        + '<div id="critRows">'+critRowsHtml(person, kind, month)+'</div>'
+      + '</div>'
+      + '<div>'
+        + '<div class="card" style="margin-bottom:16px;">'
+          + '<div class="section-title">Calificación del evaluador</div>'
+          + '<div class="section-sub">Segunda medición: tu criterio sobre el desempeño general de '+monthLabel(month)+', además del % automático</div>'
+          + '<div style="display:flex;align-items:center;gap:14px;">'
+            + '<input type="range" id="manualScoreRange" min="0" max="100" step="5" value="'+(manualScore==null?50:manualScore)+'" style="flex:1;">'
+            + '<div id="manualScoreNum" style="font-size:20px;font-weight:900;min-width:52px;text-align:right;">'+(manualScore==null?'—':manualScore+'%')+'</div>'
+          + '</div>'
+          + '<div class="section-sub" style="margin:8px 0 0 0;">'+(manualScore==null?'Sin calificar todavía — mueve la barra para guardar.':'')+'</div>'
+        + '</div>'
+        + '<div class="card" style="margin-bottom:16px;">'
+          + '<div class="section-title">Histórico</div>'
+          + '<div class="section-sub">Últimos 6 meses</div>'
+          + historyRowsHtml(person, kind, month)
+        + '</div>'
+        + '<div class="card" style="margin-bottom:16px;">'
+          + '<div class="section-title">Puntos por fortalecer</div>'
+          + '<div class="section-sub">Generado a partir de los ✕ de '+monthLabel(month)+'</div>'
+          + weakHtmlFor(person, kind, month)
+        + '</div>'
+        + '<div class="card">'
+          + '<div class="section-title">Anotaciones del mes</div>'
+          + '<div class="section-sub">Observaciones libres para platicar en la junta mensual de '+monthLabel(month)+'</div>'
+          + '<div id="notesRows">'+notesHtml+'</div>'
+          + '<div class="add-row">'
+            + '<input type="text" id="newNote" placeholder="Ej. Mala actitud el día 14… (Enter)">'
+            + '<button class="btn btn-primary btn-sm" id="btnAddNote">Agregar</button>'
+          + '</div>'
+        + '</div>'
+      + '</div>'
+    + '</div>';
+  }
+
+  // Pestaña Diagnóstico: analiza TODO el histórico de la persona (BASES + MÍNIMOS + calificación del evaluador)
+  function diagnosticoHtml(person){
+    var evals = state.evaluations.filter(function(e){ return e.personId===person.id; }).sort(function(a,b){ return a.month<b.month?-1:(a.month>b.month?1:0); });
+    if(!evals.length){
+      return '<div class="section-title" style="margin-bottom:10px;">Diagnóstico general</div>'
+        + '<div class="card"><div class="section-sub">Este diagnóstico se construye automáticamente conforme se van capturando meses de BASES y MÍNIMOS.</div>'
+        + '<div style="padding:14px 2px;color:var(--muted);font-size:12.5px;">Aún no hay meses evaluados para esta persona.</div></div>';
+    }
+    function avg(arr){ return arr.length ? Math.round(arr.reduce(function(a,b){return a+b;},0)/arr.length) : null; }
+    var months = evals.map(function(e){ return e.month; });
+    var basesVals = months.map(function(m){ return computePct(person.id, m, 'bases'); }).filter(function(v){ return v!=null; });
+    var minimosVals = months.map(function(m){ return computePct(person.id, m, 'minimos'); }).filter(function(v){ return v!=null; });
+    var manualVals = evals.map(function(e){ return (typeof e.manualScore==='number') ? e.manualScore : null; }).filter(function(v){ return v!=null; });
+    var basesAvg = avg(basesVals), minimosAvg = avg(minimosVals), manualAvg = avg(manualVals);
+
+    var combinedByMonth = months.map(function(m){
+      var b = computePct(person.id, m, 'bases'), mi = computePct(person.id, m, 'minimos');
+      var vals = []; if(b!=null) vals.push(b); if(mi!=null) vals.push(mi);
+      return vals.length ? avg(vals) : null;
+    }).filter(function(v){ return v!=null; });
+    var recentAvg = avg(combinedByMonth.slice(-3));
+    var priorAvg = avg(combinedByMonth.slice(-6,-3));
+    var trendHtml;
+    if(recentAvg==null) trendHtml = 'Aún no hay suficientes datos para calcular una tendencia.';
+    else if(priorAvg==null) trendHtml = 'Todavía no hay histórico previo suficiente para comparar la tendencia.';
+    else {
+      var diff = recentAvg - priorAvg;
+      trendHtml = diff>3 ? ('Tendencia al alza: +'+diff+' pts vs. el periodo anterior.')
+        : diff<-3 ? ('Tendencia a la baja: '+diff+' pts vs. el periodo anterior.')
+        : ('Tendencia estable ('+(diff>=0?'+':'')+diff+' pts vs. el periodo anterior).');
+    }
+
+    var crit = criteriaForPerson(person, 'bases').concat(criteriaForPerson(person, 'minimos'));
+    var statsByCrit = crit.map(function(c){
+      var total=0, fails=0, oks=0;
+      evals.forEach(function(e){
+        var v = e.results && e.results[c.id];
+        if(v===true){ total++; oks++; } else if(v===false){ total++; fails++; }
+      });
+      return { label:c.label, total:total, fails:fails, oks:oks, failRate: total ? fails/total : null };
+    }).filter(function(s){ return s.total>=2; });
+
+    var strong = statsByCrit.filter(function(s){ return s.failRate!=null && s.failRate<=0.15; }).sort(function(a,b){ return a.failRate-b.failRate; }).slice(0,6);
+    var alerts = statsByCrit.filter(function(s){ return s.failRate!=null && s.failRate>=0.4; }).sort(function(a,b){ return b.failRate-a.failRate; });
+
+    var strongHtml = strong.length ? strong.map(function(s){
+      return '<div class="weak-item"><div class="weak-dot" style="background:var(--ok);"></div><div><div class="weak-text">'+esc(s.label)+'</div><div class="weak-recurrence">Cumplido '+s.oks+' de '+s.total+' meses evaluados</div></div></div>';
+    }).join('') : '<div style="padding:8px 2px;color:var(--muted);font-size:12.5px;">Aún no hay suficiente histórico para identificar puntos fuertes consistentes.</div>';
+
+    var alertsHtml = alerts.length ? alerts.map(function(s){
+      return '<div class="weak-item"><div class="weak-dot"></div><div><div class="weak-text">'+esc(s.label)+'</div><div class="weak-recurrence hot">Incumplido '+s.fails+' de '+s.total+' meses evaluados — tema recurrente, vale la pena verificarlo</div></div></div>';
+    }).join('') : '<div style="padding:8px 2px;color:var(--muted);font-size:12.5px;">Sin temas recurrentes de incumplimiento por ahora.</div>';
+
+    var generalAvg = avg(combinedByMonth);
+    var ringG = ringSvg(generalAvg), ringB = ringSvg(basesAvg), ringM = ringSvg(minimosAvg);
+
+    return '<div class="section-title" style="margin-bottom:6px;">Diagnóstico general</div>'
+      + '<div class="section-sub" style="margin-bottom:14px;">Con base en '+evals.length+' mes(es) evaluados en total. '+trendHtml+'</div>'
+      + '<div class="card" style="margin-bottom:16px;">'
+        + '<div class="pct-big">'+ringG+'<div><div class="pct-num">'+(generalAvg==null?'—':generalAvg+'%')+'</div><div class="pct-caption">Promedio general (BASES + MÍNIMOS, un mismo criterio de evaluación)</div></div></div>'
+        + (manualAvg!=null ? '<div class="section-sub" style="margin-top:8px;">Calificación del evaluador (promedio histórico): <strong>'+manualAvg+'%</strong></div>' : '<div class="section-sub" style="margin-top:8px;">Aún no hay calificaciones del evaluador capturadas.</div>')
+      + '</div>'
+      + '<div class="grid-2" style="margin-bottom:16px;">'
+        + '<div class="card"><div class="pct-big">'+ringB+'<div><div class="pct-num">'+(basesAvg==null?'—':basesAvg+'%')+'</div><div class="pct-caption">Promedio histórico BASES</div></div></div></div>'
+        + '<div class="card"><div class="pct-big">'+ringM+'<div><div class="pct-num">'+(minimosAvg==null?'—':minimosAvg+'%')+'</div><div class="pct-caption">Promedio histórico MÍNIMOS</div></div></div></div>'
+      + '</div>'
+      + '<div class="grid-2">'
+        + '<div class="card"><div class="section-title">Puntos fuertes</div><div class="section-sub">Criterios con cumplimiento consistente en el histórico</div>'+strongHtml+'</div>'
+        + '<div class="card"><div class="section-title">Alertas — temas recurrentes</div><div class="section-sub">Incumplimientos que se repiten mes con mes; vale la pena verificarlos</div>'+alertsHtml+'</div>'
+      + '</div>';
+  }
+
+  function ringSvg(pct){
+    var p = pct==null?0:pct;
+    var r = 30, c = 2*Math.PI*r;
+    var offset = c - (c*p/100);
+    var color = pct==null? '#c9ced4' : (p>=80?'#16a34a':'#000');
+    return '<svg class="pct-ring" viewBox="0 0 76 76">'
+      + '<circle cx="38" cy="38" r="'+r+'" fill="none" stroke="var(--line)" stroke-width="8"/>'
+      + '<circle cx="38" cy="38" r="'+r+'" fill="none" stroke="'+color+'" stroke-width="8" stroke-linecap="round" '
+      + 'stroke-dasharray="'+c+'" stroke-dashoffset="'+offset+'" transform="rotate(-90 38 38)"/>'
+      + '</svg>';
+  }
+
+  function wireTabEvents(person){
+    if(state.tab === 'seguimiento'){
+      Array.prototype.forEach.call(document.querySelectorAll('.chip'), function(el){
+        el.addEventListener('click', function(){ state.filter = el.getAttribute('data-filter'); render(); });
+      });
+      Array.prototype.forEach.call(document.querySelectorAll('[data-action="toggle"]'), function(el){
+        el.addEventListener('click', function(){
+          var id = el.closest('.todo-row').getAttribute('data-id');
+          var a = state.actionables.find(function(x){ return x.id===id; });
+          if(!a) return;
+          var newStatus = a.status==='cerrado' ? 'abierto' : 'cerrado';
+          updateActionable(id, { status:newStatus, closedAt: newStatus==='cerrado' ? Date.now() : null });
+        });
+      });
+      Array.prototype.forEach.call(document.querySelectorAll('[data-action="delete"]'), function(el){
+        el.addEventListener('click', function(){
+          var id = el.closest('.todo-row').getAttribute('data-id');
+          deleteActionable(id);
+        });
+      });
+      var addBtn = document.getElementById('btnAddActionable');
+      var input = document.getElementById('newActionable');
+      function submit(){
+        var v = input.value.trim();
+        if(!v) return;
+        addActionable(person.id, v);
+        input.value='';
+      }
+      addBtn.addEventListener('click', submit);
+      input.addEventListener('keydown', function(e){ if(e.key==='Enter') submit(); });
+      function importGranolaText(text){
+        var items = parseGranolaItems(text);
+        if(items.length <= 1) return false;
+        items.forEach(function(it){ addActionable(person.id, it, { origin:'reunion' }); });
+        showToast(items.length+' pendientes importados de Granola');
+        return true;
+      }
+      input.addEventListener('paste', function(e){
+        var text = (e.clipboardData || window.clipboardData).getData('text');
+        if(importGranolaText(text)){ e.preventDefault(); input.value=''; }
+      });
+    } else if(state.tab === 'bases' || state.tab === 'minimos'){
+      document.getElementById('prevMonth').addEventListener('click', function(){ state.monthCursor = shiftMonth(state.monthCursor,-1); render(); });
+      document.getElementById('nextMonth').addEventListener('click', function(){ state.monthCursor = shiftMonth(state.monthCursor,1); render(); });
+      Array.prototype.forEach.call(document.querySelectorAll('.toggle-btn'), function(el){
+        el.addEventListener('click', function(){
+          var row = el.closest('.criterion-row');
+          var critId = row.getAttribute('data-crit');
+          var val = el.getAttribute('data-val') === 'true';
+          setEvaluation(person.id, state.monthCursor, critId, val);
+        });
+      });
+      if(state.tab === 'minimos'){
+        Array.prototype.forEach.call(document.querySelectorAll('[data-action="del-note"]'), function(el){
+          el.addEventListener('click', function(){ deleteNote(el.getAttribute('data-id')); });
+        });
+        var noteBtn = document.getElementById('btnAddNote');
+        var noteInput = document.getElementById('newNote');
+        function submitNote(){
+          var v = noteInput.value.trim();
+          if(!v) return;
+          addNote(person.id, state.monthCursor, v);
+          noteInput.value='';
+        }
+        noteBtn.addEventListener('click', submitNote);
+        noteInput.addEventListener('keydown', function(e){ if(e.key==='Enter') submitNote(); });
+
+        var range = document.getElementById('manualScoreRange');
+        var num = document.getElementById('manualScoreNum');
+        if(range){
+          range.addEventListener('input', function(){ num.textContent = range.value+'%'; });
+          range.addEventListener('change', function(){ setManualScore(person.id, state.monthCursor, parseInt(range.value,10)); });
+        }
+      }
+    }
+    // 'diagnostico' no requiere eventos interactivos por ahora
+  }
+
+  // ---------------- Writes ----------------
+  function addActionable(personId, title, opts){
+    if(!state.db){ showToast('Sin conexión a datos.'); return; }
+    opts = opts || {};
+    var id = uid('a');
+    var data = {
+      personId: personId, title: title, notes: opts.notes||'', status:'abierto',
+      origin: opts.origin||'manual', meetingDate: opts.meetingDate||null, createdAt: Date.now(), closedAt: null
+    };
+    state.db.collection('actionables').doc(id).set(data).then(function(){
+      showToast('Pendiente agregado');
+    }).catch(function(e){ console.error(e); showToast('No se pudo guardar'); });
+  }
+  function updateActionable(id, patch){
+    if(!state.db) return;
+    state.db.collection('actionables').doc(id).update(patch).catch(function(e){ console.error(e); showToast('No se pudo actualizar'); });
+  }
+  function deleteActionable(id){
+    if(!state.db) return;
+    state.db.collection('actionables').doc(id).delete().catch(function(e){ console.error(e); });
+  }
+  function addNote(personId, month, text){
+    if(!state.db){ showToast('Sin conexión a datos.'); return; }
+    var id = uid('n');
+    state.db.collection('notes').doc(id).set({ personId:personId, month:month, text:text, createdAt:Date.now() })
+      .catch(function(e){ console.error(e); showToast('No se pudo guardar'); });
+  }
+  function deleteNote(id){
+    if(!state.db) return;
+    state.db.collection('notes').doc(id).delete().catch(function(e){ console.error(e); });
+  }
+  function setEvaluation(personId, month, critId, val){
+    if(!state.db){ showToast('Sin conexión a datos.'); return; }
+    var docId = evalDocId(personId, month);
+    var ev = getEvaluation(personId, month);
+    var results = Object.assign({}, ev && ev.results);
+    results[critId] = val;
+    var data = { personId: personId, month: month, results: results, updatedAt: Date.now() };
+    state.db.collection('evaluations').doc(docId).set(data).catch(function(e){ console.error(e); showToast('No se pudo guardar'); });
+  }
+  function setManualScore(personId, month, score){
+    if(!state.db){ showToast('Sin conexión a datos.'); return; }
+    var docId = evalDocId(personId, month);
+    var ev = getEvaluation(personId, month);
+    var data = { personId: personId, month: month, results: (ev && ev.results) || {}, manualScore: score, updatedAt: Date.now() };
+    state.db.collection('evaluations').doc(docId).set(data).then(function(){ showToast('Calificación guardada'); }).catch(function(e){ console.error(e); showToast('No se pudo guardar'); });
+  }
+  function groupsByKind(kind){
+    var set = {};
+    state.criteria.forEach(function(c){ if((c.kind||'minimos')===kind && c.position) set[c.position]=true; });
+    return Object.keys(set).sort();
+  }
+  function currentGroupForPerson(person, kind){
+    if(!person) return '';
+    var c = state.criteria.find(function(c){ return (c.kind||'minimos')===kind && Array.isArray(c.personIds) && c.personIds.indexOf(person.id)>-1 && c.position; });
+    return c ? c.position : '';
+  }
+  function assignPersonToGroup(personId, kind, groupLabel){
+    state.criteria.forEach(function(c){
+      if((c.kind||'minimos') !== kind) return;
+      var ids = Array.isArray(c.personIds) ? c.personIds.slice() : [];
+      var idx = ids.indexOf(personId);
+      var shouldHave = !!groupLabel && c.position === groupLabel;
+      if(shouldHave && idx===-1){ ids.push(personId); saveCriterion({ personIds: ids }, c.id); }
+      else if(!shouldHave && idx>-1){ ids.splice(idx,1); saveCriterion({ personIds: ids }, c.id); }
+    });
+  }
+  function savePerson(data, existingId){
+    if(!state.db){ showToast('Sin conexión a datos.'); return; }
+    var id = existingId || uid('p');
+    var payload = Object.assign({ createdAt: Date.now() }, data);
+    var op = existingId ? state.db.collection('people').doc(id).update(data) : state.db.collection('people').doc(id).set(payload);
+    op.then(function(){ showToast('Guardado'); if(!existingId){ state.selectedPersonId = id; } }).catch(function(e){ console.error(e); showToast('No se pudo guardar'); });
+  }
+  function deletePerson(id){
+    if(!state.db) return;
+    state.db.collection('people').doc(id).delete().then(function(){
+      if(state.selectedPersonId===id) state.selectedPersonId = null;
+    }).catch(function(e){ console.error(e); });
+  }
+  function saveCriterion(data, existingId){
+    if(!state.db){ showToast('Sin conexión a datos.'); return; }
+    var id = existingId || uid('c');
+    var op = existingId ? state.db.collection('criteria').doc(id).update(data) : state.db.collection('criteria').doc(id).set(data);
+    op.then(function(){ showToast('Guardado'); }).catch(function(e){ console.error(e); });
+  }
+  function deleteCriterion(id){
+    if(!state.db) return;
+    state.db.collection('criteria').doc(id).delete().catch(function(e){ console.error(e); });
+  }
+
+  // ---------------- Modals ----------------
+  function openOverlay(innerHtml, opts){
+    opts = opts || {};
+    var ov = document.createElement('div');
+    ov.className = 'overlay';
+    ov.innerHTML = '<div class="modal'+(opts.wide?' modal-wide':'')+'">'+innerHtml+'</div>';
+    ov.addEventListener('click', function(e){ if(e.target===ov) document.body.removeChild(ov); });
+    document.body.appendChild(ov);
+    return ov;
+  }
+
+  // El diálogo nativo confirm() no funciona dentro del visor de Artifacts (siempre responde
+  // "cancelar" al instante) — se reemplaza por un modal propio con los mismos dos botones.
+  function confirmDialog(message, onConfirm){
+    var html = '<h2>Confirmar</h2>'
+      + '<p class="hint" style="margin-bottom:18px;">'+esc(message)+'</p>'
+      + '<div class="modal-actions">'
+        + '<button class="btn btn-ghost btn-sm" id="cdCancel">Cancelar</button>'
+        + '<button class="btn btn-danger btn-sm" id="cdOk">Eliminar</button>'
+      + '</div>';
+    var ov = openOverlay(html);
+    ov.querySelector('#cdCancel').addEventListener('click', function(){ document.body.removeChild(ov); });
+    ov.querySelector('#cdOk').addEventListener('click', function(){ document.body.removeChild(ov); onConfirm(); });
+  }
+
+  function openPersonModal(existing, opts){
+    opts = opts || {};
+    var positions = Array.from(new Set(state.criteria.map(function(c){ return c.position; })));
+    var posOptions = positions.map(function(p){ return '<option value="'+esc(p)+'"'+(existing&&existing.position===p?' selected':'')+'>'+esc(p)+'</option>'; }).join('');
+    var basesGroups = groupsByKind('bases');
+    var minimosGroups = groupsByKind('minimos');
+    var curBases = currentGroupForPerson(existing, 'bases');
+    var curMinimos = currentGroupForPerson(existing, 'minimos');
+    var basesOpts = '<option value="">Automático (según posición)</option>' + basesGroups.map(function(g){ return '<option value="'+esc(g)+'"'+(curBases===g?' selected':'')+'>'+esc(g)+'</option>'; }).join('');
+    var minimosOpts = '<option value="">Automático (según posición)</option>' + minimosGroups.map(function(g){ return '<option value="'+esc(g)+'"'+(curMinimos===g?' selected':'')+'>'+esc(g)+'</option>'; }).join('');
+    var curArea = existing ? personArea(existing) : (opts.area || 'oficina');
+    var curReportsTo = existing ? (existing.reportsTo || '') : (opts.reportsTo || '');
+    var reportsToOptions = state.people
+      .filter(function(p){ return (!existing || p.id!==existing.id) && !(existing && isDescendant(existing.id, p.id)); })
+      .sort(function(a,b){ return (a.name||'').localeCompare(b.name||''); })
+      .map(function(p){ return '<option value="'+p.id+'"'+(curReportsTo===p.id?' selected':'')+'>'+esc(p.name)+(p.position?' — '+esc(p.position):'')+'</option>'; }).join('');
+    var html = '<h2>'+(existing?'Editar integrante':'Agregar integrante')+'</h2>'
+      + '<p class="hint">'+(existing?'Actualiza los datos de '+esc(existing.name)+'.':'Se agregará a la lista del equipo.')+'</p>'
+      + '<div class="field"><label>Nombre</label><input type="text" id="fName" value="'+(existing?esc(existing.name):'')+'" placeholder="Nombre completo"></div>'
+      + '<div class="field"><label>Puesto</label><input type="text" id="fPos" list="posList" value="'+(existing?esc(existing.position||''):'')+'" placeholder="Ej. Supervisor de Almacén">'
+      + '<datalist id="posList">'+posOptions+'</datalist></div>'
+      + '<div class="field"><label>Reporta a</label><select id="fReportsTo"><option value="">— Sin jefe directo (raíz) —</option>'+reportsToOptions+'</select>'
+      + '<p class="hint" style="margin:4px 0 0 0;">Define su lugar en el organigrama; también puedes arrastrarlo ahí directamente.</p></div>'
+      + '<div class="field"><label>Área</label><select id="fArea">'
+        + '<option value="oficina"'+(curArea==='oficina'?' selected':'')+'>Oficina</option>'
+        + '<option value="almacen"'+(curArea==='almacen'?' selected':'')+'>Almacén</option>'
+      + '</select><p class="hint" style="margin:4px 0 0 0;">Para ubicarlo rápido en la lista lateral y en el organigrama.</p></div>'
+      + '<div class="field"><label>Fecha de ingreso</label><input type="date" id="fHireDate" value="'+(existing&&existing.hireDate?esc(existing.hireDate):'')+'">'
+      + '<p class="hint" style="margin:4px 0 0 0;">Con ella se calculan solos los días en 00 y el próximo aniversario.</p></div>'
+      + '<div class="field"><label>Próxima renovación de contrato</label><input type="date" id="fRenewalDate" value="'+(existing&&existing.renewalDate?esc(existing.renewalDate):'')+'">'
+      + '<p class="hint" style="margin:4px 0 0 0;">Se captura a mano — cada quien tiene su propio periodo de renovación.</p></div>'
+      + '<div class="field"><label>Tipo de BASES</label><select id="fBasesGroup">'+basesOpts+'</select>'
+      + '<p class="hint" style="margin:4px 0 0 0;">Si no es claro cuáles BASES le corresponden por su posición, elígelas aquí manualmente.</p></div>'
+      + '<div class="field"><label>Tipo de MÍNIMOS</label><select id="fMinimosGroup">'+minimosOpts+'</select>'
+      + '<p class="hint" style="margin:4px 0 0 0;">Si no es claro cuáles MÍNIMOS le corresponden por su posición, elígelos aquí manualmente.</p></div>'
+      + '<div class="modal-actions">'
+        + (existing? '<button class="btn btn-danger btn-sm" id="mDelete">Eliminar</button>':'')
+        + '<button class="btn btn-ghost btn-sm" id="mCancel">Cancelar</button>'
+        + '<button class="btn btn-primary btn-sm" id="mSave">Guardar</button>'
+      + '</div>';
+    var ov = openOverlay(html);
+    ov.querySelector('#mCancel').addEventListener('click', function(){ document.body.removeChild(ov); });
+    if(existing){
+      ov.querySelector('#mDelete').addEventListener('click', function(){
+        deletePerson(existing.id); document.body.removeChild(ov);
+      });
+    }
+    ov.querySelector('#mSave').addEventListener('click', function(){
+      var name = ov.querySelector('#fName').value.trim();
+      var pos = ov.querySelector('#fPos').value.trim();
+      if(!name){ showToast('Falta el nombre'); return; }
+      if(!state.db){ showToast('Sin conexión a datos.'); return; }
+      var basesGroup = ov.querySelector('#fBasesGroup').value;
+      var minimosGroup = ov.querySelector('#fMinimosGroup').value;
+      var area = ov.querySelector('#fArea').value;
+      var reportsTo = ov.querySelector('#fReportsTo').value || null;
+      var hireDate = ov.querySelector('#fHireDate').value || null;
+      var renewalDate = ov.querySelector('#fRenewalDate').value || null;
+      var id = existing ? existing.id : uid('p');
+      var data = { name:name, position:pos, area:area, reportsTo:reportsTo, hireDate:hireDate, renewalDate:renewalDate };
+      var op = existing
+        ? state.db.collection('people').doc(id).update(data)
+        : state.db.collection('people').doc(id).set(Object.assign({ createdAt: Date.now() }, data));
+      op.then(function(){
+        showToast('Guardado');
+        state.selectedPersonId = id;
+        assignPersonToGroup(id, 'bases', basesGroup);
+        assignPersonToGroup(id, 'minimos', minimosGroup);
+      }).catch(function(e){ console.error(e); showToast('No se pudo guardar'); });
+      document.body.removeChild(ov);
+    });
+  }
+
+  function togglePersonOnCriterion(critId, personId){
+    var c = state.criteria.find(function(x){ return x.id===critId; });
+    if(!c) return;
+    var ids = Array.isArray(c.personIds) ? c.personIds.slice() : [];
+    var idx = ids.indexOf(personId);
+    if(idx>-1) ids.splice(idx,1); else ids.push(personId);
+    saveCriterion({ personIds: ids }, critId);
+  }
+
+  function openAdminModal(){
+    var expanded = {}; // critId -> bool, qué panel de "asignar personas" está abierto
+    var NONE_LABEL = 'General / sin posición asignada';
+    var adminView = 'persona'; // 'persona' (lista rápida) | 'criterio' (detalle por criterio)
+
+    function personaRow(p){
+      var basesGroups = groupsByKind('bases');
+      var minimosGroups = groupsByKind('minimos');
+      var curBases = currentGroupForPerson(p, 'bases');
+      var curMinimos = currentGroupForPerson(p, 'minimos');
+      var basesOpts = '<option value="">Automático (según posición)</option>' + basesGroups.map(function(g){ return '<option value="'+esc(g)+'"'+(curBases===g?' selected':'')+'>'+esc(g)+'</option>'; }).join('');
+      var minimosOpts = '<option value="">Automático (según posición)</option>' + minimosGroups.map(function(g){ return '<option value="'+esc(g)+'"'+(curMinimos===g?' selected':'')+'>'+esc(g)+'</option>'; }).join('');
+      return '<div class="persona-assign-row">'
+        + '<div class="persona-assign-who"><div class="avatar">'+esc(initials(p.name))+'</div>'
+          + '<div><div class="p-name" style="font-size:13px;">'+esc(p.name)+'</div><div class="p-pos">'+esc(p.position||'—')+'</div></div></div>'
+        + '<div class="persona-assign-field"><label>Tipo de BASES</label><select data-persona-assign="bases" data-person-id="'+p.id+'">'+basesOpts+'</select></div>'
+        + '<div class="persona-assign-field"><label>Tipo de MÍNIMOS</label><select data-persona-assign="minimos" data-person-id="'+p.id+'">'+minimosOpts+'</select></div>'
+      + '</div>';
+    }
+    function renderPersonaView(){
+      var people = state.people.filter(function(p){ return p.trackEvaluation !== false; });
+      var oficina = people.filter(function(p){ return personArea(p)==='oficina'; }).sort(function(a,b){ return (a.name||'').localeCompare(b.name||''); });
+      var almacen = people.filter(function(p){ return personArea(p)==='almacen'; }).sort(function(a,b){ return (a.name||'').localeCompare(b.name||''); });
+      if(!people.length) return '<div style="color:var(--muted);font-size:12.5px;padding:6px 0;">Agrega integrantes primero.</div>';
+      var out = '';
+      if(oficina.length) out += '<div class="divider-label">Oficina</div>' + oficina.map(personaRow).join('');
+      if(almacen.length) out += '<div class="divider-label">Almacén</div>' + almacen.map(personaRow).join('');
+      return out;
+    }
+
+    function renderCritRow(c){
+      var ids = Array.isArray(c.personIds) ? c.personIds : [];
+      var names = ids.map(function(pid){ var pp = state.people.find(function(x){return x.id===pid;}); return pp?pp.name:null; }).filter(Boolean);
+      var assignLine = names.length ? '<div class="weak-recurrence">También asignado a: '+esc(names.join(', '))+'</div>' : '';
+      var peopleChecks = expanded[c.id] ? '<div style="margin:6px 0 10px 0; padding:8px 10px; background:var(--bg); border-radius:8px;">'
+        + (state.people.length ? state.people.map(function(pp){
+            var checked = ids.indexOf(pp.id)>-1;
+            return '<label style="display:flex;align-items:center;gap:7px;font-size:12px;padding:3px 0;cursor:pointer;">'
+              + '<input type="checkbox" data-assign-crit="'+c.id+'" data-assign-person="'+pp.id+'" '+(checked?'checked':'')+'> '+esc(pp.name)
+            + '</label>';
+          }).join('') : '<span style="font-size:12px;color:var(--muted);">Agrega integrantes primero.</span>')
+        + '</div>' : '';
+      return '<div class="criteria-admin-row" style="flex-direction:column;align-items:stretch;">'
+        + '<div style="display:flex;align-items:center;gap:8px;">'
+          + '<span style="flex:1;">'+esc(c.label)+'</span>'
+          + '<button class="btn btn-ghost btn-sm" data-toggle-assign="'+c.id+'">Asignar personas'+(names.length?' ('+names.length+')':'')+'</button>'
+          + '<button class="btn btn-ghost btn-sm" data-del-crit="'+c.id+'">Quitar</button>'
+        + '</div>'
+        + assignLine + peopleChecks
+      + '</div>';
+    }
+    function renderKindBlock(kind, title){
+      var groups = {};
+      state.criteria.forEach(function(c){
+        if((c.kind||'minimos') !== kind) return;
+        var key = c.position || NONE_LABEL;
+        (groups[key] = groups[key]||[]).push(c);
+      });
+      var posNames = Object.keys(groups).sort();
+      if(!posNames.length) return '<div style="color:var(--muted);font-size:12.5px;padding:2px 0 14px;">Aún no hay '+title+' definidas.</div>';
+      return posNames.map(function(p){
+        var rows = groups[p].map(renderCritRow).join('');
+        return '<div class="divider-label">'+esc(p)+'</div>'+rows;
+      }).join('');
+    }
+    function renderList(){
+      return '<div class="divider-label" style="font-weight:800;">BASES</div>' + renderKindBlock('bases','BASES')
+        + '<div class="divider-label" style="font-weight:800;">MÍNIMOS</div>' + renderKindBlock('minimos','MÍNIMOS');
+    }
+    var positionsExisting = Array.from(new Set(state.criteria.map(function(c){ return c.position; }).filter(Boolean)));
+    function addFormHtml(){
+      return '<div class="divider-label">Agregar BASES / MÍNIMO</div>'
+        + '<div class="field"><label>Tipo</label><select id="nKind"><option value="minimos">MÍNIMOS</option><option value="bases">BASES</option></select></div>'
+        + '<div class="field"><label>Posición / grupo (opcional)</label><input type="text" id="nPos" list="posList2" placeholder="Déjalo vacío si no aplica a una posición completa">'
+        + '<datalist id="posList2">'+positionsExisting.map(function(p){return '<option value="'+esc(p)+'">';}).join('')+'</datalist></div>'
+        + '<div class="field"><label>Criterio</label><input type="text" id="nLabel" placeholder="Ej. Entrega reporte semanal a tiempo"></div>'
+        + '<div style="display:flex;justify-content:flex-end;"><button class="btn btn-primary btn-sm" id="mAddCrit">Agregar</button></div>';
+    }
+    var html = '<h2>BASES y MÍNIMOS</h2>'
+      + '<p class="hint">"Por persona" para ver y editar rápido quién tiene asignado qué. "Por criterio" para crear, quitar o afinar los criterios uno por uno.</p>'
+      + '<div class="orgchart-subnav" style="padding:0 0 14px 0;">'
+        + '<button class="org-subtab'+(adminView==='persona'?' active':'')+'" data-admin-view="persona">Por persona</button>'
+        + '<button class="org-subtab'+(adminView==='criterio'?' active':'')+'" data-admin-view="criterio">Por criterio</button>'
+      + '</div>'
+      + '<div id="adminBody"></div>'
+      + '<div class="modal-actions">'
+        + '<button class="btn btn-ghost btn-sm" id="mClose">Cerrar</button>'
+      + '</div>';
+    var ov = openOverlay(html, { wide:true });
+    ov.querySelector('#mClose').addEventListener('click', function(){ document.body.removeChild(ov); });
+
+    function renderBody(){
+      var body = ov.querySelector('#adminBody');
+      if(adminView==='persona'){
+        body.innerHTML = '<div id="personaList">'+renderPersonaView()+'</div>';
+        wirePersonaList();
+      } else {
+        body.innerHTML = '<div id="critList">'+renderList()+'</div>' + addFormHtml();
+        wireCritList();
+        ov.querySelector('#mAddCrit').addEventListener('click', function(){
+          var kind = ov.querySelector('#nKind').value;
+          var pos = ov.querySelector('#nPos').value.trim();
+          var label = ov.querySelector('#nLabel').value.trim();
+          if(!label){ showToast('Falta el criterio'); return; }
+          saveCriterion({ kind:kind, position:pos, label:label, active:true, order:Date.now(), personIds:[] });
+          ov.querySelector('#nLabel').value='';
+          setTimeout(refresh, 250);
+        });
+      }
+    }
+    function refresh(){ renderBody(); }
+    function wirePersonaList(){
+      Array.prototype.forEach.call(ov.querySelectorAll('[data-persona-assign]'), function(el){
+        el.addEventListener('change', function(){
+          var kind = el.getAttribute('data-persona-assign');
+          var personId = el.getAttribute('data-person-id');
+          assignPersonToGroup(personId, kind, el.value);
+        });
+      });
+    }
+    function wireCritList(){
+      Array.prototype.forEach.call(ov.querySelectorAll('[data-del-crit]'), function(el){
+        el.addEventListener('click', function(){
+          deleteCriterion(el.getAttribute('data-del-crit'));
+          setTimeout(refresh, 250);
+        });
+      });
+      Array.prototype.forEach.call(ov.querySelectorAll('[data-toggle-assign]'), function(el){
+        el.addEventListener('click', function(){
+          var id = el.getAttribute('data-toggle-assign');
+          expanded[id] = !expanded[id];
+          refresh();
+        });
+      });
+      Array.prototype.forEach.call(ov.querySelectorAll('[data-assign-crit]'), function(el){
+        el.addEventListener('click', function(){
+          togglePersonOnCriterion(el.getAttribute('data-assign-crit'), el.getAttribute('data-assign-person'));
+          setTimeout(refresh, 250);
+        });
+      });
+    }
+    Array.prototype.forEach.call(ov.querySelectorAll('[data-admin-view]'), function(el){
+      el.addEventListener('click', function(){ adminView = el.getAttribute('data-admin-view'); renderHeader(); renderBody(); });
+    });
+    function renderHeader(){
+      Array.prototype.forEach.call(ov.querySelectorAll('[data-admin-view]'), function(el){
+        el.classList.toggle('active', el.getAttribute('data-admin-view')===adminView);
+      });
+    }
+    renderBody();
+  }
+
+  // ---------------- Organigrama ----------------
+  // true si "nodeId" cuelga (directa o indirectamente) de "ancestorId" en la cadena de reportsTo
+  function isDescendant(ancestorId, nodeId){
+    var current = state.people.find(function(p){ return p.id===nodeId; });
+    var guard = 0;
+    while(current && current.reportsTo && guard++ < 200){
+      if(current.reportsTo === ancestorId) return true;
+      current = state.people.find(function(p){ return p.id===current.reportsTo; });
+    }
+    return false;
+  }
+  // Orden manual (arrastrar y soltar de lado) — quien no tiene `order` capturado todavía
+  // se ordena alfabéticamente al final, así los datos existentes no cambian de lugar
+  // hasta que alguien los reacomode a mano.
+  function orgOrderVal(p){ return (typeof p.order==='number') ? p.order : 999999999; }
+  function orgSort(list){
+    return list.sort(function(a,b){
+      var oa = orgOrderVal(a), ob = orgOrderVal(b);
+      if(oa!==ob) return oa-ob;
+      return (a.name||'').localeCompare(b.name||'');
+    });
+  }
+  function orgRoots(area){
+    var areaPeople = state.people.filter(function(p){ return personArea(p)===area; });
+    var ids = areaPeople.map(function(p){ return p.id; });
+    return orgSort(areaPeople.filter(function(p){ return !p.reportsTo || ids.indexOf(p.reportsTo)===-1; }));
+  }
+  function orgChildren(area, personId){
+    return orgSort(state.people.filter(function(p){ return personArea(p)===area && p.reportsTo===personId; }));
+  }
+  function orgCardHtml(p){
+    var noEval = p.trackEvaluation === false;
+    return '<div class="org-card'+(noEval?' org-card-noeval':'')+'" draggable="true" data-org-id="'+p.id+'">'
+      + '<div class="avatar">'+esc(initials(p.name))+'</div>'
+      + '<div class="org-name" data-org-field="name" contenteditable="true" spellcheck="false">'+esc(p.name)+'</div>'
+      + '<div class="org-pos" data-org-field="position" contenteditable="true" spellcheck="false">'+esc(p.position||'Puesto')+'</div>'
+      + (noEval ? '<div class="org-noeval-tag">Fuera de evaluación</div>' : '')
+      + '<div class="org-actions">'
+        + '<button class="org-btn" data-org-action="add" title="Agregar reporte directo">+</button>'
+        + '<button class="org-btn org-btn-del" data-org-action="del" title="Eliminar">×</button>'
+      + '</div>'
+    + '</div>';
+  }
+  function renderTreeNode(p, peers){
+    var kids = orgChildren(personArea(p), p.id);
+    var childrenHtml = kids.length ? '<ul>'+kids.map(function(k){ return '<li>'+renderTreeNode(k)+'</li>'; }).join('')+'</ul>' : '';
+    var peersHtml = (peers && peers.length) ? '<div class="org-peers">'+peers.map(orgCardHtml).join('')+'</div>' : '';
+    return '<div class="org-node-anchor">'+orgCardHtml(p)+peersHtml+'</div>' + childrenHtml;
+  }
+  function renderOrgTree(area){
+    var roots = orgRoots(area);
+    if(!roots.length) return '<div style="padding:16px 2px;color:var(--muted);font-size:12.5px;">Sin integrantes en esta área todavía.</div>';
+    // Raíces sin ningún reporte directo (p.ej. un director que encabeza junto al CEO pero sin
+    // equipo propio) se anclan como tarjetas flotantes justo al lado de la primera raíz CON
+    // equipo, en vez de tratarse como hermanas normales del árbol — así no las aleja el ancho
+    // del subárbol de esa raíz (que puede ser muy grande) y quedan "mano a mano" con ella.
+    var withKids = roots.filter(function(r){ return orgChildren(area, r.id).length > 0; });
+    var noKids = roots.filter(function(r){ return orgChildren(area, r.id).length === 0; });
+    var lis;
+    if(withKids.length && noKids.length){
+      var anchor = withKids[0];
+      var restWithKids = withKids.slice(1);
+      lis = ['<li>'+renderTreeNode(anchor, noKids)+'</li>']
+        .concat(restWithKids.map(function(r){ return '<li>'+renderTreeNode(r)+'</li>'; }));
+    } else {
+      lis = roots.map(function(r){ return '<li>'+renderTreeNode(r)+'</li>'; });
+    }
+    return '<ul class="orgchart-tree">'+lis.join('')+'</ul>';
+  }
+  function renderOrgChart(){
+    var root = document.getElementById('orgchartView');
+    var area = state.orgArea;
+    var sub = area==='almacen' ? 'Operación de almacén, logística y producción.' : 'Dirección, coordinaciones, ventas y soporte.';
+
+    root.innerHTML = '<div class="orgchart-topbar">'
+        + '<div><h1>Organigrama</h1><div class="section-sub" style="margin:2px 0 0 0;">Arrastra una tarjeta y suéltala sobre otra: encima/al centro la vuelve su reporte directo, arriba o al lado la coloca como hermana en ese orden — el borde se colorea para confirmar dónde va a quedar (en computadora). Haz clic en el nombre o el puesto para editarlos — el puesto se sincroniza con Seguimiento y evaluación. En celular, usa los botones + y × de cada tarjeta para agregar o quitar gente.</div></div>'
+        + '<button class="btn btn-primary btn-sm" id="btnOrgAddRoot" style="flex:none;">+ Agregar a '+(area==='almacen'?'Almacén':'Dirección')+'</button>'
+      + '</div>'
+      + '<div class="orgchart-subnav">'
+        + '<button class="org-subtab'+(area==='oficina'?' active':'')+'" data-org-area="oficina">Oficina</button>'
+        + '<button class="org-subtab'+(area==='almacen'?' active':'')+'" data-org-area="almacen">Almacén</button>'
+      + '</div>'
+      + '<div class="orgchart-wrap">'
+        + '<div class="orgchart-section-sub">'+sub+'</div>'
+        + '<div class="orgchart-scroll" data-area="'+area+'">'+renderOrgTree(area)+'</div>'
+      + '</div>';
+    wireOrgChartEvents();
+  }
+  function wireOrgChartEvents(){
+    var root = document.getElementById('orgchartView');
+    var addRootBtn = document.getElementById('btnOrgAddRoot');
+    if(addRootBtn) addRootBtn.addEventListener('click', function(){ openPersonModal(null, { area:state.orgArea, reportsTo:null }); });
+    Array.prototype.forEach.call(root.querySelectorAll('.org-subtab'), function(el){
+      el.addEventListener('click', function(){ state.orgArea = el.getAttribute('data-org-area'); renderOrgChart(); });
+    });
+    Array.prototype.forEach.call(root.querySelectorAll('.org-card'), function(card){
+      var id = card.getAttribute('data-org-id');
+
+      card.addEventListener('dragstart', function(e){
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', id);
+        setTimeout(function(){ card.classList.add('dragging'); }, 0);
+      });
+      card.addEventListener('dragend', function(){ card.classList.remove('dragging'); clearOrgDropZones(card); });
+      card.addEventListener('dragover', function(e){
+        e.preventDefault(); e.stopPropagation();
+        var rect = card.getBoundingClientRect();
+        var x = e.clientX - rect.left, y = e.clientY - rect.top;
+        setOrgDropZone(card, orgDropZoneFor(x, y, rect.width, rect.height));
+      });
+      card.addEventListener('dragleave', function(e){
+        // Ignora salidas hacia un elemento hijo (p.ej. el nombre editable) — solo limpia
+        // cuando el cursor de verdad deja la tarjeta.
+        if(card.contains(e.relatedTarget)) return;
+        clearOrgDropZones(card);
+      });
+      card.addEventListener('drop', function(e){
+        e.preventDefault(); e.stopPropagation();
+        var edge = card.getAttribute('data-drop-edge');
+        clearOrgDropZones(card);
+        var draggedId = e.dataTransfer.getData('text/plain');
+        if(!draggedId || draggedId===id) return;
+        if(isDescendant(draggedId, id)){ showToast('No puedes mover a alguien debajo de su propio reporte.'); return; }
+        if(edge==='top' || edge==='left'){
+          reorderSibling(draggedId, id, 'before');
+        } else if(edge==='right'){
+          reorderSibling(draggedId, id, 'after');
+        } else {
+          reparentPerson(draggedId, id);
+        }
+      });
+
+      Array.prototype.forEach.call(card.querySelectorAll('[contenteditable]'), function(el){
+        el.addEventListener('focus', function(){ card.draggable = false; });
+        el.addEventListener('keydown', function(e){ if(e.key==='Enter'){ e.preventDefault(); el.blur(); } });
+        el.addEventListener('blur', function(){
+          card.draggable = true;
+          var field = el.getAttribute('data-org-field');
+          var val = el.textContent.trim();
+          var person = state.people.find(function(p){ return p.id===id; });
+          if(field==='name' && !val){ el.textContent = person ? person.name : ''; return; }
+          if(person && (person[field]||'') === val) return;
+          commitOrgField(id, field, val);
+        });
+      });
+
+      var addBtn = card.querySelector('[data-org-action="add"]');
+      if(addBtn) addBtn.addEventListener('click', function(e){ e.stopPropagation(); addDirectReport(id); });
+      var delBtn = card.querySelector('[data-org-action="del"]');
+      if(delBtn) delBtn.addEventListener('click', function(e){ e.stopPropagation(); deleteOrgPerson(id); });
+    });
+
+    Array.prototype.forEach.call(root.querySelectorAll('.orgchart-scroll'), function(zone){
+      zone.addEventListener('dragover', function(e){ e.preventDefault(); });
+      zone.addEventListener('drop', function(e){
+        if(e.target && e.target.closest && e.target.closest('.org-card')) return;
+        e.preventDefault();
+        var draggedId = e.dataTransfer.getData('text/plain');
+        if(!draggedId) return;
+        reparentPerson(draggedId, null, zone.getAttribute('data-area'));
+      });
+    });
+  }
+  // Detecta en qué borde de la tarjeta objetivo está el cursor mientras se arrastra otra tarjeta:
+  // arriba o al lado izquierdo = "antes" (hermano, se coloca justo antes); a la derecha = "después"
+  // (hermano, justo después); abajo o al centro = "hijo" (pasa a reportarle a esta tarjeta).
+  var ORG_EDGE_BAND = 0.3;
+  function orgDropZoneFor(x, y, w, h){
+    if(y < h*ORG_EDGE_BAND) return 'top';
+    if(y > h*(1-ORG_EDGE_BAND)) return 'child';
+    if(x < w*0.25) return 'left';
+    if(x > w*0.75) return 'right';
+    return 'child';
+  }
+  var ORG_DROP_ZONE_CLASSES = ['org-drop-top','org-drop-bottom','org-drop-left','org-drop-right','org-drop-child'];
+  function clearOrgDropZones(card){
+    ORG_DROP_ZONE_CLASSES.forEach(function(c){ card.classList.remove(c); });
+    card.removeAttribute('data-drop-edge');
+  }
+  function setOrgDropZone(card, edge){
+    if(card.getAttribute('data-drop-edge')===edge) return;
+    clearOrgDropZones(card);
+    card.setAttribute('data-drop-edge', edge);
+    card.classList.add('org-drop-'+(edge==='child'?'child':edge));
+  }
+  function reorderSibling(personId, targetId, position){
+    if(!state.db || personId===targetId) return;
+    var target = state.people.find(function(p){ return p.id===targetId; });
+    if(!target) return;
+    var area = personArea(target);
+    var newParent = target.reportsTo || null;
+    // Hermanos actuales bajo ese mismo jefe (sin contar a quien arrastramos), en su orden visual de hoy.
+    var siblings = (newParent ? orgChildren(area, newParent) : orgRoots(area))
+      .filter(function(p){ return p.id !== personId; });
+    var idx = siblings.findIndex(function(p){ return p.id === targetId; });
+    if(idx===-1) idx = siblings.length;
+    var insertAt = position==='before' ? idx : idx+1;
+    var orderedIds = siblings.map(function(p){ return p.id; });
+    orderedIds.splice(insertAt, 0, personId);
+    // Renumeramos a todos los hermanos (0,1,2…) para fijar la secuencia visual completa.
+    var ops = orderedIds.map(function(pid, i){
+      var patch = { order: i };
+      if(pid === personId){ patch.reportsTo = newParent; patch.area = area; }
+      return state.db.collection('people').doc(pid).update(patch);
+    });
+    Promise.all(ops).then(function(){ showToast('Organigrama actualizado'); }).catch(function(e){ console.error(e); showToast('No se pudo mover'); });
+  }
+  function commitOrgField(id, field, val){
+    if(!state.db){ showToast('Sin conexión a datos.'); return; }
+    var patch = {};
+    patch[field] = val;
+    state.db.collection('people').doc(id).update(patch).then(function(){ showToast('Guardado'); }).catch(function(e){ console.error(e); showToast('No se pudo guardar'); });
+  }
+  function reparentPerson(personId, newManagerId, forcedArea){
+    if(!state.db || personId===newManagerId) return;
+    var patch = { reportsTo: newManagerId || null };
+    var newArea = forcedArea;
+    if(forcedArea){
+      patch.area = forcedArea;
+    } else if(newManagerId){
+      var mgr = state.people.find(function(p){ return p.id===newManagerId; });
+      if(mgr){ newArea = personArea(mgr); patch.area = newArea; }
+    }
+    // Lo coloca al final de sus nuevos hermanos, para que no se mezcle al azar con el orden manual ya fijado.
+    var self = state.people.find(function(p){ return p.id===personId; });
+    var effectiveArea = newArea || (self ? personArea(self) : 'oficina');
+    var newSiblings = newManagerId ? orgChildren(effectiveArea, newManagerId) : orgRoots(effectiveArea);
+    patch.order = newSiblings.filter(function(p){ return p.id!==personId; }).length;
+    state.db.collection('people').doc(personId).update(patch)
+      .then(function(){ showToast('Organigrama actualizado'); })
+      .catch(function(e){ console.error(e); showToast('No se pudo mover'); });
+  }
+  function addDirectReport(managerId){
+    var mgr = state.people.find(function(p){ return p.id===managerId; });
+    openPersonModal(null, { reportsTo: managerId, area: mgr ? personArea(mgr) : 'oficina' });
+  }
+  function deleteOrgPerson(id){
+    var person = state.people.find(function(p){ return p.id===id; });
+    if(!person) return;
+    confirmDialog('¿Eliminar a '+person.name+' del organigrama y de Seguimiento y evaluación? Sus reportes directos pasarán a depender de su jefe inmediato.', function(){
+      doDeleteOrgPerson(id, person);
+    });
+  }
+  function doDeleteOrgPerson(id, person){
+    state.people.filter(function(p){ return p.reportsTo===id; }).forEach(function(k){
+      state.db.collection('people').doc(k.id).update({ reportsTo: person.reportsTo || null });
+    });
+    deletePerson(id);
+  }
+
+  // ---------------- Menú lateral en móvil (drawer) ----------------
+  function openMobileSidebar(){
+    document.getElementById('sidebarPanel').classList.add('open');
+    document.getElementById('sidebarBackdrop').classList.add('show');
+  }
+  function closeMobileSidebar(){
+    document.getElementById('sidebarPanel').classList.remove('open');
+    document.getElementById('sidebarBackdrop').classList.remove('show');
+  }
+
+  // ---------------- Wire static UI ----------------
+  document.getElementById('loginForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    var pw = document.getElementById('loginPw').value;
+    if(!pw) return;
+    var btn = document.getElementById('loginBtn'); btn.disabled = true; btn.textContent = 'Verificando…';
+    document.getElementById('loginMsg').textContent = '';
+    attemptLogin(pw, document.getElementById('loginRemember').checked).then(function(res){
+      if(!res.ok) showPanel('loginForm', res.error);
+    });
+  });
+  document.getElementById('btnLogout').addEventListener('click', function(){ clearPw(); location.reload(); });
+  document.getElementById('btnMobileMenu').addEventListener('click', openMobileSidebar);
+  document.getElementById('btnCloseSidebar').addEventListener('click', closeMobileSidebar);
+  document.getElementById('sidebarBackdrop').addEventListener('click', closeMobileSidebar);
+  document.getElementById('searchInput').addEventListener('input', function(e){ state.search = e.target.value; renderSidebar(); });
+  document.getElementById('btnAddPerson').addEventListener('click', function(){ openPersonModal(null); });
+  document.getElementById('btnAdmin').addEventListener('click', function(){ openAdminModal(); });
+  document.getElementById('navTracker').addEventListener('click', function(){ state.appView='tracker'; render(); });
+  document.getElementById('navOrgchart').addEventListener('click', function(){ state.appView='orgchart'; render(); });
+
+  boot();
+})();
+</script>
+</body>
+</html>
