@@ -441,6 +441,29 @@
     .sync-text{ display:none; }
     .sync-pill{ padding:6px; }
   }
+
+  /* ---------- Ajustes de pantalla: fotos, scroll en celular y vista fija en escritorio ---------- */
+  .avatar-lg{ flex:none; aspect-ratio:1/1; }
+  .org-card{ touch-action:pan-x pan-y; }
+  .orgchart-scroll{ overflow-y:hidden; overscroll-behavior-x:contain; -webkit-overflow-scrolling:touch; }
+  .people-list{ min-height:0; scrollbar-width:thin; scrollbar-color:var(--muted-2) transparent; }
+  .people-list::-webkit-scrollbar{ width:8px; }
+  .people-list::-webkit-scrollbar-thumb{ background:var(--line); border-radius:99px; }
+  .people-list::-webkit-scrollbar-thumb:hover{ background:var(--muted-2); }
+  @media (max-width: 860px){
+    .app-nav{ position:sticky; top:0; z-index:40; }
+  }
+  @media (min-width: 861px){
+    html, body{ height:100%; }
+    body{ display:flex; flex-direction:column; height:100vh; height:100dvh; overflow:hidden; }
+    .app-nav{ flex:none; }
+    .app{ flex:1; min-height:0; }
+    .sidebar{ height:100%; overflow:hidden; }
+    .main{ overflow-y:auto; }
+    #orgchartView{ flex:1; min-height:0; overflow:auto; }
+    .mobile-menu-btn{ display:flex; }
+    .app.sidebar-collapsed .sidebar{ display:none; }
+  }
 </style>
 </head>
 <body class="locked">
@@ -1979,7 +2002,7 @@
   }
   function orgCardHtml(p){
     var noEval = p.trackEvaluation === false;
-    return '<div class="org-card'+(noEval?' org-card-noeval':'')+'" draggable="true" data-org-id="'+p.id+'">'
+    return '<div class="org-card'+(noEval?' org-card-noeval':'')+'"'+(window.matchMedia && window.matchMedia('(pointer: coarse)').matches ? '' : ' draggable="true"')+' data-org-id="'+p.id+'">'
       + '<div class="avatar">'+avatarInner(p)+'</div>'
       + '<div class="org-name" data-org-field="name" contenteditable="true" spellcheck="false">'+esc(p.name)+'</div>'
       + '<div class="org-pos" data-org-field="position" contenteditable="true" spellcheck="false">'+esc(p.position||'Puesto')+'</div>'
@@ -2198,7 +2221,18 @@
   }
 
   // ---------------- Menú lateral en móvil (drawer) ----------------
+  var SIDEBAR_KEY = 'cerocero_00track_sidebar_collapsed';
+  function applySidebarPref(){
+    var c = false; try{ c = localStorage.getItem(SIDEBAR_KEY) === '1'; }catch(e){}
+    document.getElementById('app').classList.toggle('sidebar-collapsed', c && window.innerWidth > 860);
+  }
   function openMobileSidebar(){
+    if(window.innerWidth > 860){ // escritorio: la lista del equipo se oculta/muestra
+      var appEl = document.getElementById('app'), nowCollapsed = !appEl.classList.contains('sidebar-collapsed');
+      appEl.classList.toggle('sidebar-collapsed', nowCollapsed);
+      try{ localStorage.setItem(SIDEBAR_KEY, nowCollapsed ? '1' : '0'); }catch(e){}
+      return;
+    }
     document.getElementById('sidebarPanel').classList.add('open');
     document.getElementById('sidebarBackdrop').classList.add('show');
   }
@@ -2220,6 +2254,8 @@
   });
   document.getElementById('btnLogout').addEventListener('click', function(){ clearPw(); location.reload(); });
   document.getElementById('btnMobileMenu').addEventListener('click', openMobileSidebar);
+  applySidebarPref();
+  window.addEventListener('resize', applySidebarPref);
   document.getElementById('btnCloseSidebar').addEventListener('click', closeMobileSidebar);
   document.getElementById('sidebarBackdrop').addEventListener('click', closeMobileSidebar);
   document.getElementById('searchInput').addEventListener('input', function(e){ state.search = e.target.value; renderSidebar(); });
