@@ -683,9 +683,9 @@
       var t = ctrl ? setTimeout(function(){ ctrl.abort(); }, 30000) : null;
       var body = JSON.stringify(payload), p;
       if(viaGet){
-        var u = url + '?q=' + encodeURIComponent(b64url(body));
+        var u = url + '?q=' + encodeURIComponent(b64url(body)) + '&_=' + Date.now();
         if(u.length > 7800){ if(t) clearTimeout(t); return Promise.reject(new Error('Petición demasiado grande para este modo')); }
-        p = fetch(u, { method: 'GET', redirect: 'follow', signal: ctrl ? ctrl.signal : undefined });
+        p = fetch(u, { method: 'GET', redirect: 'follow', cache: 'no-store', signal: ctrl ? ctrl.signal : undefined });
       } else {
         p = fetch(url, { method: 'POST', redirect: 'follow', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: body, signal: ctrl ? ctrl.signal : undefined });
       }
@@ -812,10 +812,17 @@
       return ref;
     };
 
-    api.login = function(){ return rpc({ action: 'auth' }); };
+    var STALE_MSG = 'El servidor de Google respondió con una versión anterior del script. En Apps Script ve a Implementar > Administrar implementaciones > lápiz > Versión: Nueva versión > Implementar, y vuelve a intentar.';
+    api.login = function(){
+      return rpc({ action: 'auth' }).then(function(res){
+        if(res && res.ok && res.ver === undefined) return { ok: false, error: STALE_MSG }; // respuesta de la versión vieja: no es un inicio de sesión real
+        return res;
+      });
+    };
     api.start = function(){
       return rpc({ action: 'getAll' }).then(function(res){
         if(!res || !res.ok) throw new Error((res && res.error) || 'Respuesta inválida del servidor');
+        if(!res.data) throw new Error(STALE_MSG);
         applyServer(res.data); ver = res.ver; loaded = true; status('ok');
         pollTimer = setInterval(function(){ if(!document.hidden) pull(false); }, POLL_MS);
         document.addEventListener('visibilitychange', function(){ if(!document.hidden) pull(false); });
