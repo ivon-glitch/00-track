@@ -480,44 +480,42 @@
     .app.sidebar-collapsed .sidebar{ display:none; }
   }
 
-  /* ---------- TOP de colaboradores (ranking / focos rojos) ---------- */
-  .top-wrap{ padding:10px 32px 60px 32px; max-width:1180px; }
-  .top-cards{ display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin:14px 0 14px 0; }
-  .top-card{ background:var(--card); border:1px solid var(--line); border-radius:12px; padding:12px 14px; box-shadow:var(--shadow); cursor:pointer; }
-  .top-card .n{ font-size:26px; font-weight:900; line-height:1.1; }
-  .top-card .l{ font-size:11.5px; font-weight:700; color:var(--muted); margin-top:2px; }
-  .top-card.active{ outline:2px solid var(--ink); }
-  .st{ display:inline-block; font-size:10.5px; font-weight:800; padding:3px 9px; border-radius:99px; color:#fff; white-space:nowrap; letter-spacing:.2px; }
-  .st-red{ background:#dc2626; } .st-amber{ background:#d97706; } .st-green{ background:var(--ok); } .st-none{ background:var(--muted-2); }
-  .top-legend{ font-size:11.5px; color:var(--muted); line-height:1.55; margin:0 0 12px 0; }
-  .top-table{ background:var(--card); border:1px solid var(--line); border-radius:12px; box-shadow:var(--shadow); overflow:hidden; }
-  .top-head, .top-row{ display:grid; grid-template-columns:40px minmax(180px,1.6fr) 96px 78px 120px 74px minmax(150px,1.5fr) 52px; gap:10px; align-items:center; padding:11px 14px; }
-  .top-head{ font-size:10.5px; font-weight:800; text-transform:uppercase; letter-spacing:.3px; color:var(--muted); background:var(--bg); border-bottom:1px solid var(--line); }
-  .top-row{ border-bottom:1px solid var(--line); cursor:pointer; font-size:12.5px; }
-  .top-row:last-child{ border-bottom:none; }
-  .top-row:hover{ background:var(--bg); }
-  .top-row.red{ box-shadow:inset 4px 0 0 #dc2626; }
-  .top-row.amber{ box-shadow:inset 4px 0 0 #d97706; }
+  /* ---------- TOP colaboradores: TOP TALENT vs LOW PERFORMER ---------- */
+  .top-wrap{ padding:10px 32px 60px 32px; max-width:1280px; }
+  .top-legend{ font-size:11.5px; color:var(--muted); line-height:1.55; margin:6px 0 14px 0; }
+  .top-sides{ display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items:start; }
+  .top-panel{ background:var(--card); border:1px solid var(--line); border-radius:14px; box-shadow:var(--shadow); overflow:hidden; }
+  .top-panel-head{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:14px 16px; color:#fff; }
+  .top-panel.talent .top-panel-head{ background:var(--ok); }
+  .top-panel.low .top-panel-head{ background:#dc2626; }
+  .top-panel-title{ font-size:15px; font-weight:900; letter-spacing:.4px; }
+  .top-panel-sub{ font-size:11px; font-weight:600; opacity:.9; margin-top:2px; }
+  .top-panel-count{ font-size:26px; font-weight:900; line-height:1; }
+  .top-row2{ display:grid; grid-template-columns:34px 1fr auto; column-gap:10px; row-gap:6px; align-items:center; padding:12px 16px; border-bottom:1px solid var(--line); cursor:pointer; }
+  .top-row2:last-child{ border-bottom:none; }
+  .top-row2:hover{ background:var(--bg); }
   .top-rank{ font-weight:900; color:var(--muted); font-size:13px; }
   .top-who{ display:flex; align-items:center; gap:10px; min-width:0; }
-  .top-who .nm{ font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .top-who .nm{ font-size:13px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .top-who .ps{ font-size:11px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .top-num{ font-weight:800; }
-  .top-sub{ font-size:10.5px; color:var(--muted); font-weight:600; }
-  .top-up{ color:var(--ok); font-weight:800; } .top-down{ color:#dc2626; font-weight:800; }
-  .top-alerts{ font-size:11.5px; color:var(--ink); line-height:1.35; }
-  .top-alerts .more{ color:var(--muted); font-weight:700; }
+  .top-pct{ font-size:20px; font-weight:900; }
+  .top-panel.talent .top-pct{ color:var(--ok); }
+  .top-panel.low .top-pct{ color:#dc2626; }
+  .top-bar{ grid-column:2 / -1; height:6px; border-radius:99px; background:var(--bad-bg); overflow:hidden; }
+  .top-bar i{ display:block; height:100%; border-radius:99px; }
+  .top-panel.talent .top-bar i{ background:var(--ok); }
+  .top-panel.low .top-bar i{ background:#dc2626; }
+  .top-meta{ grid-column:2 / -1; display:flex; flex-wrap:wrap; gap:6px 8px; align-items:center; }
+  .top-sub{ font-size:11px; color:var(--muted); font-weight:600; }
+  .top-up{ color:var(--ok); font-weight:800; font-size:11px; } .top-down{ color:#dc2626; font-weight:800; font-size:11px; }
+  .top-chip{ display:inline-block; font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:99px; border:1px solid var(--line); background:var(--card); color:var(--muted); }
+  .top-chip.alert{ color:#b91c1c; border-color:#f0c9c9; }
   .top-empty{ padding:22px 16px; color:var(--muted); font-size:13px; }
+  .top-none{ margin-top:16px; font-size:12px; color:var(--muted); line-height:2; }
+  .top-none .top-chip{ cursor:pointer; }
   @media (max-width: 860px){
     .top-wrap{ padding:10px 16px 48px 16px; }
-    .top-cards{ grid-template-columns:repeat(2,1fr); }
-    .top-head{ display:none; }
-    .top-row{ grid-template-columns:30px 1fr auto; row-gap:6px; }
-    .top-row > .c-pct, .top-row > .c-last, .top-row > .c-trend, .top-row > .c-alerts, .top-row > .c-open{ grid-column:2 / -1; }
-    .top-row > .c-pct::before{ content:'Cumplimiento: '; color:var(--muted); font-weight:600; }
-    .top-row > .c-last::before{ content:'Último mes: '; color:var(--muted); font-weight:600; }
-    .top-row > .c-trend::before{ content:'Tendencia: '; color:var(--muted); font-weight:600; }
-    .top-row > .c-open::before{ content:'Pendientes abiertos: '; color:var(--muted); font-weight:600; }
+    .top-sides{ grid-template-columns:1fr; }
   }
 </style>
 </head>
@@ -1273,64 +1271,55 @@
       });
       if(fails >= 2) out.recurrent.push(c.label);
     });
-    var down = out.trend != null && out.trend < -5;
-    if(out.weighted < 60 || out.recurrent.length >= 3) out.status = 'red';
-    else if(out.weighted < 80 || out.recurrent.length >= 1 || down) out.status = 'amber';
-    else out.status = 'green';
-    out.risk = (100 - out.weighted) + Math.min(15, out.recurrent.length*3) + (down ? 5 : 0);
+    // Clasificación: por debajo de 50% = LOW PERFORMER; 50% o más = TOP TALENT
+    out.status = out.weighted < 50 ? 'low' : 'talent';
+    out.risk = 100 - out.weighted;
     return out;
   }
-  var ST_LABEL = { red:'FOCO ROJO', amber:'ATENCIÓN', green:'EN ORDEN', none:'SIN EVALUAR' };
+  function topRowHtml(r, pos){
+    var p = r.person;
+    var trend = r.trend == null ? '' : (r.trend > 3 ? '<span class="top-up">▲ +'+r.trend+' pts</span>' : (r.trend < -3 ? '<span class="top-down">▼ '+r.trend+' pts</span>' : '<span class="top-sub">= estable</span>'));
+    var last = '<span class="top-sub">'+monthLabel(r.latestMonth).split(' ')[0].slice(0,3)+': '+r.latest+'% · BASES '+(r.bases==null?'—':r.bases+'%')+' · MÍNIMOS '+(r.minimos==null?'—':r.minimos+'%')+'</span>';
+    var alerts = r.recurrent.length ? '<span class="top-chip alert" title="'+esc(r.recurrent.join(' · '))+'">'+r.recurrent.length+' alerta'+(r.recurrent.length===1?'':'s')+' recurrente'+(r.recurrent.length===1?'':'s')+'</span>' : '';
+    var open = r.open ? '<span class="top-chip">'+r.open+' pendiente'+(r.open===1?'':'s')+'</span>' : '';
+    return '<div class="top-row2" data-person="'+p.id+'">'
+      + '<div class="top-rank">#'+pos+'</div>'
+      + '<div class="top-who"><div class="avatar">'+avatarInner(p)+'</div><div style="min-width:0;"><div class="nm">'+esc(p.name)+'</div><div class="ps">'+esc(p.position||'')+'</div></div></div>'
+      + '<div class="top-pct">'+r.weighted+'%</div>'
+      + '<div class="top-bar"><i style="width:'+r.weighted+'%;"></i></div>'
+      + '<div class="top-meta">'+last+' '+trend+' '+alerts+' '+open+'</div>'
+    + '</div>';
+  }
   function renderTopView(){
     var el = document.getElementById('topView');
     var month = state.monthCursor;
     var people = state.people.filter(function(p){ return p.trackEvaluation !== false; });
     var rows = people.map(function(p){ return personMetrics(p, month); });
-    rows.sort(function(a,b){
-      if(a.risk === b.risk) return (a.person.name||'').localeCompare(b.person.name||'');
-      return b.risk - a.risk;
-    });
-    var counts = { red:0, amber:0, green:0, none:0 };
-    rows.forEach(function(r){ counts[r.status]++; });
-    var f = state.topFilter;
-    var shown = rows.filter(function(r){ return f === 'todos' || r.status === f; });
-    function card(key, label, n){ return '<div class="top-card'+(f===key?' active':'')+'" data-filter="'+key+'"><div class="n">'+n+'</div><div class="l">'+label+'</div></div>'; }
-    var body = shown.map(function(r, i){
-      var p = r.person, pos = rows.indexOf(r) + 1;
-      var trend = r.trend == null ? '<span class="top-sub">—</span>' : (r.trend > 3 ? '<span class="top-up">▲ +'+r.trend+'</span>' : (r.trend < -3 ? '<span class="top-down">▼ '+r.trend+'</span>' : '<span class="top-sub">= estable</span>'));
-      var alerts = r.recurrent.length
-        ? '<div class="top-alerts">'+esc(r.recurrent[0])+(r.recurrent.length>1 ? ' <span class="more">+'+(r.recurrent.length-1)+' más</span>' : '')+'</div>'
-        : '<span class="top-sub">Sin alertas recurrentes</span>';
-      var last = r.latest == null ? '<span class="top-sub">Sin datos</span>'
-        : '<span class="top-num">'+r.latest+'%</span> <span class="top-sub">'+monthLabel(r.latestMonth).split(' ')[0].slice(0,3)+' · B '+(r.bases==null?'—':r.bases+'%')+' · M '+(r.minimos==null?'—':r.minimos+'%')+'</span>';
-      return '<div class="top-row '+r.status+'" data-person="'+p.id+'">'
-        + '<div class="top-rank">'+(r.status==='none'?'—':'#'+pos)+'</div>'
-        + '<div class="top-who"><div class="avatar">'+avatarInner(p)+'</div><div style="min-width:0;"><div class="nm">'+esc(p.name)+'</div><div class="ps">'+esc(p.position||'')+'</div></div></div>'
-        + '<div><span class="st st-'+r.status+'">'+ST_LABEL[r.status]+'</span></div>'
-        + '<div class="c-pct">'+(r.weighted==null?'<span class="top-sub">—</span>':'<span class="top-num">'+r.weighted+'%</span>')+'</div>'
-        + '<div class="c-last">'+last+'</div>'
-        + '<div class="c-trend">'+trend+'</div>'
-        + '<div class="c-alerts">'+alerts+'</div>'
-        + '<div class="c-open top-num">'+r.open+'</div>'
+    var talent = rows.filter(function(r){ return r.status === 'talent'; }).sort(function(a,b){ return (b.weighted - a.weighted) || (a.person.name||'').localeCompare(b.person.name||''); });
+    var low = rows.filter(function(r){ return r.status === 'low'; }).sort(function(a,b){ return (a.weighted - b.weighted) || (a.person.name||'').localeCompare(b.person.name||''); });
+    var none = rows.filter(function(r){ return r.status === 'none'; }).sort(function(a,b){ return (a.person.name||'').localeCompare(b.person.name||''); });
+    function panel(cls, title, sub, list){
+      return '<div class="top-panel '+cls+'"><div class="top-panel-head"><div><div class="top-panel-title">'+title+'</div><div class="top-panel-sub">'+sub+'</div></div><div class="top-panel-count">'+list.length+'</div></div>'
+        + (list.length ? list.map(function(r, i){ return topRowHtml(r, i+1); }).join('') : '<div class="top-empty">Nadie en esta categoría por ahora.</div>')
       + '</div>';
-    }).join('') || '<div class="top-empty">Nadie en este filtro.</div>';
-    el.innerHTML = '<div class="orgchart-topbar"><div><h1>TOP DE COLABORADORES</h1>'
-        + '<div class="section-sub" style="margin:2px 0 0 0;">Ranking de riesgo según las evaluaciones mensuales (BASES + MÍNIMOS) y el diagnóstico de cada persona. Arriba están los focos rojos.</div></div>'
+    }
+    var noneHtml = none.length
+      ? '<div class="top-none"><b>Sin evaluar en el periodo ('+none.length+'):</b> '+none.map(function(r){ return '<span class="top-chip" data-person="'+r.person.id+'">'+esc(r.person.name)+'</span>'; }).join(' ')+'</div>' : '';
+    el.innerHTML = '<div class="orgchart-topbar"><div><h1>TOP COLABORADORES</h1>'
+        + '<div class="section-sub" style="margin:2px 0 0 0;">Ranking según las evaluaciones mensuales (BASES + MÍNIMOS) y el diagnóstico de cada persona.</div></div>'
         + '<div class="month-nav"><button class="month-btn" id="topPrev">‹</button><div class="month-label">'+monthLabel(month)+'</div><button class="month-btn" id="topNext">›</button></div></div>'
       + '<div class="top-wrap">'
-        + '<div class="top-cards">'+card('red','Focos rojos',counts.red)+card('amber','En atención',counts.amber)+card('green','En orden',counts.green)+card('none','Sin evaluar',counts.none)+'</div>'
         + '<div class="top-legend"><b>Cómo se calcula:</b> cumplimiento = 60% del último mes evaluado + 40% de los meses previos (últimos 3). '
-          + '<b>Foco rojo:</b> cumplimiento menor a 60% o 3+ alertas recurrentes. <b>Atención:</b> menor a 80%, alguna alerta recurrente (✕ en 2 de los últimos 3 meses) o tendencia a la baja de más de 5 pts. '
-          + 'Toca a una persona para ver su diagnóstico. '+(f!=='todos' ? '<a href="#" id="topClear" style="color:var(--ink);font-weight:700;">Quitar filtro</a>' : '')+'</div>'
-        + '<div class="top-table"><div class="top-head"><div>#</div><div>Colaborador</div><div>Estado</div><div>Cumpl.</div><div>Último mes</div><div>Tendencia</div><div>Alertas recurrentes</div><div>Pend.</div></div>'+body+'</div>'
+          + '<b>TOP TALENT:</b> 50% o más. <b>LOW PERFORMER:</b> menos de 50%. Toca a una persona para ver su diagnóstico.</div>'
+        + '<div class="top-sides">'
+          + panel('talent','TOP TALENT','50% o más de cumplimiento · de mayor a menor', talent)
+          + panel('low','LOW PERFORMER','Menos de 50% de cumplimiento · de menor a mayor', low)
+        + '</div>'
+        + noneHtml
       + '</div>';
     document.getElementById('topPrev').addEventListener('click', function(){ state.monthCursor = shiftMonth(state.monthCursor,-1); render(); });
     document.getElementById('topNext').addEventListener('click', function(){ state.monthCursor = shiftMonth(state.monthCursor,1); render(); });
-    Array.prototype.forEach.call(el.querySelectorAll('.top-card'), function(c){
-      c.addEventListener('click', function(){ var k = c.getAttribute('data-filter'); state.topFilter = (state.topFilter === k) ? 'todos' : k; render(); });
-    });
-    var clr = document.getElementById('topClear'); if(clr) clr.addEventListener('click', function(e){ e.preventDefault(); state.topFilter = 'todos'; render(); });
-    Array.prototype.forEach.call(el.querySelectorAll('.top-row'), function(row){
+    Array.prototype.forEach.call(el.querySelectorAll('[data-person]'), function(row){
       row.addEventListener('click', function(){ state.selectedPersonId = row.getAttribute('data-person'); state.tab = 'diagnostico'; state.appView = 'tracker'; render(); });
     });
   }
