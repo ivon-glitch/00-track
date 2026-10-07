@@ -653,19 +653,31 @@
 
     function status(s){ if(api.onStatus) api.onStatus(s); }
 
-    function rpc(payload){
-      payload.pw = pw;
+    var getMode = false; // si el navegador bloquea el POST (algunos celulares), se usa GET con la petición en la URL
+    function b64url(str){ return btoa(unescape(encodeURIComponent(str))).replace(/\+/g,'-').replace(/\//g,'_'); }
+    function request(payload, viaGet){
       var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
       var t = ctrl ? setTimeout(function(){ ctrl.abort(); }, 30000) : null;
-      return fetch(url, {
-        method: 'POST', redirect: 'follow',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify(payload), signal: ctrl ? ctrl.signal : undefined
-      }).then(function(r){ return r.json(); }).then(function(j){
-        if(t) clearTimeout(t);
+      var body = JSON.stringify(payload), p;
+      if(viaGet){
+        var u = url + '?q=' + encodeURIComponent(b64url(body));
+        if(u.length > 7800){ if(t) clearTimeout(t); return Promise.reject(new Error('Petición demasiado grande para este modo')); }
+        p = fetch(u, { method: 'GET', redirect: 'follow', signal: ctrl ? ctrl.signal : undefined });
+      } else {
+        p = fetch(url, { method: 'POST', redirect: 'follow', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: body, signal: ctrl ? ctrl.signal : undefined });
+      }
+      return p.then(function(r){ return r.json(); }).then(function(j){ if(t) clearTimeout(t); return j; }, function(e){ if(t) clearTimeout(t); throw e; });
+    }
+    function rpc(payload){
+      payload.pw = pw;
+      var first = request(payload, getMode);
+      var withFallback = getMode ? first : first.catch(function(e){
+        return request(payload, true).then(function(j){ getMode = true; return j; }, function(){ throw e; });
+      });
+      return withFallback.then(function(j){
         if(j && j.code === 'unauthorized'){ stopped = true; if(api.onUnauthorized) api.onUnauthorized(); }
         return j;
-      }, function(e){ if(t) clearTimeout(t); throw e; });
+      });
     }
 
     function rowsOf(col){
@@ -710,7 +722,7 @@
     function flush(){
       flushTimer = null;
       if(stopped || inflight || !pending.length) return;
-      var batch = pending.splice(0, 200);
+      var batch = pending.splice(0, getMode ? 3 : 200);
       inflight = true; status('saving');
       rpc({ action: 'batch', ops: batch.map(function(o){ return { op: o.op, col: o.col, id: o.id, data: o.data }; }) })
         .then(function(res){
