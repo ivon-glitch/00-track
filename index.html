@@ -294,6 +294,7 @@
 
   /* ---------- Organigrama ---------- */
   #orgchartView{ display:none; }
+  #topView{ display:none; }
   .orgchart-topbar{ display:flex; align-items:flex-start; justify-content:space-between; gap:16px; padding:22px 32px 0 32px; }
   .orgchart-topbar h1{ font-size:20px; font-weight:800; margin:0; }
   .orgchart-subnav{ display:flex; gap:8px; padding:18px 32px 0 32px; }
@@ -412,7 +413,7 @@
   }
 
   /* ---------- Pantalla de acceso y estado de sincronización ---------- */
-  body.locked .app-nav, body.locked .app, body.locked #orgchartView{ display:none !important; }
+  body.locked .app-nav, body.locked .app, body.locked #orgchartView, body.locked #topView{ display:none !important; }
   .login-screen{ position:fixed; inset:0; z-index:200; background:var(--bg); display:flex; align-items:center; justify-content:center; padding:16px; overflow-y:auto; }
   .login-screen[hidden]{ display:none; }
   .login-card{ width:100%; max-width:360px; background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:28px 24px; text-align:center; }
@@ -474,9 +475,49 @@
     .app{ flex:1; min-height:0; }
     .sidebar{ height:100%; overflow:hidden; }
     .main{ overflow-y:auto; }
-    #orgchartView{ flex:1; min-height:0; overflow:auto; }
+    #orgchartView, #topView{ flex:1; min-height:0; overflow:auto; }
     .mobile-menu-btn{ display:flex; }
     .app.sidebar-collapsed .sidebar{ display:none; }
+  }
+
+  /* ---------- TOP de colaboradores (ranking / focos rojos) ---------- */
+  .top-wrap{ padding:10px 32px 60px 32px; max-width:1180px; }
+  .top-cards{ display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin:14px 0 14px 0; }
+  .top-card{ background:var(--card); border:1px solid var(--line); border-radius:12px; padding:12px 14px; box-shadow:var(--shadow); cursor:pointer; }
+  .top-card .n{ font-size:26px; font-weight:900; line-height:1.1; }
+  .top-card .l{ font-size:11.5px; font-weight:700; color:var(--muted); margin-top:2px; }
+  .top-card.active{ outline:2px solid var(--ink); }
+  .st{ display:inline-block; font-size:10.5px; font-weight:800; padding:3px 9px; border-radius:99px; color:#fff; white-space:nowrap; letter-spacing:.2px; }
+  .st-red{ background:#dc2626; } .st-amber{ background:#d97706; } .st-green{ background:var(--ok); } .st-none{ background:var(--muted-2); }
+  .top-legend{ font-size:11.5px; color:var(--muted); line-height:1.55; margin:0 0 12px 0; }
+  .top-table{ background:var(--card); border:1px solid var(--line); border-radius:12px; box-shadow:var(--shadow); overflow:hidden; }
+  .top-head, .top-row{ display:grid; grid-template-columns:40px minmax(180px,1.6fr) 96px 78px 120px 74px minmax(150px,1.5fr) 52px; gap:10px; align-items:center; padding:11px 14px; }
+  .top-head{ font-size:10.5px; font-weight:800; text-transform:uppercase; letter-spacing:.3px; color:var(--muted); background:var(--bg); border-bottom:1px solid var(--line); }
+  .top-row{ border-bottom:1px solid var(--line); cursor:pointer; font-size:12.5px; }
+  .top-row:last-child{ border-bottom:none; }
+  .top-row:hover{ background:var(--bg); }
+  .top-row.red{ box-shadow:inset 4px 0 0 #dc2626; }
+  .top-row.amber{ box-shadow:inset 4px 0 0 #d97706; }
+  .top-rank{ font-weight:900; color:var(--muted); font-size:13px; }
+  .top-who{ display:flex; align-items:center; gap:10px; min-width:0; }
+  .top-who .nm{ font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .top-who .ps{ font-size:11px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .top-num{ font-weight:800; }
+  .top-sub{ font-size:10.5px; color:var(--muted); font-weight:600; }
+  .top-up{ color:var(--ok); font-weight:800; } .top-down{ color:#dc2626; font-weight:800; }
+  .top-alerts{ font-size:11.5px; color:var(--ink); line-height:1.35; }
+  .top-alerts .more{ color:var(--muted); font-weight:700; }
+  .top-empty{ padding:22px 16px; color:var(--muted); font-size:13px; }
+  @media (max-width: 860px){
+    .top-wrap{ padding:10px 16px 48px 16px; }
+    .top-cards{ grid-template-columns:repeat(2,1fr); }
+    .top-head{ display:none; }
+    .top-row{ grid-template-columns:30px 1fr auto; row-gap:6px; }
+    .top-row > .c-pct, .top-row > .c-last, .top-row > .c-trend, .top-row > .c-alerts, .top-row > .c-open{ grid-column:2 / -1; }
+    .top-row > .c-pct::before{ content:'Cumplimiento: '; color:var(--muted); font-weight:600; }
+    .top-row > .c-last::before{ content:'Último mes: '; color:var(--muted); font-weight:600; }
+    .top-row > .c-trend::before{ content:'Tendencia: '; color:var(--muted); font-weight:600; }
+    .top-row > .c-open::before{ content:'Pendientes abiertos: '; color:var(--muted); font-weight:600; }
   }
 </style>
 </head>
@@ -487,6 +528,7 @@
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
   </button>
   <button class="app-nav-btn" id="navTracker">EVALUACIÓN</button>
+  <button class="app-nav-btn" id="navTop">TOP</button>
   <button class="app-nav-btn" id="navOrgchart">ORGANIGRAMA</button>
   <div class="app-nav-right">
     <span class="sync-pill" id="syncPill" data-s="loading"><i class="sync-dot"></i><span class="sync-text">Conectando…</span></span>
@@ -551,6 +593,7 @@
 </div>
 
 <div id="orgchartView"></div>
+<div id="topView"></div>
 
 <div class="toast" id="toast"></div>
 
@@ -575,6 +618,7 @@
     user: null,
     ready: false,
     appView: 'tracker',
+    topFilter: 'todos',
     orgArea: 'oficina'
   };
 
@@ -1168,15 +1212,127 @@
   }
 
   // ---------------- Render ----------------
+  var lastRenderKey = null;
   function render(){
-    var isOrg = state.appView === 'orgchart';
-    document.getElementById('app').style.display = isOrg ? 'none' : 'flex';
-    document.getElementById('orgchartView').style.display = isOrg ? 'block' : 'none';
-    document.getElementById('navTracker').classList.toggle('active', !isOrg);
+    var isOrg = state.appView === 'orgchart', isTop = state.appView === 'top';
+    // Al marcar un criterio (o cualquier cambio de datos) la pantalla se vuelve a dibujar: se conserva la posición de
+    // desplazamiento para no regresar arriba. Solo se restaura si seguimos en la misma pantalla/pestaña/mes.
+    var key = [state.appView, state.selectedPersonId, state.tab, state.monthCursor, state.owner, state.topFilter].join('|');
+    var mainEl = document.getElementById('mainArea'), orgEl = document.getElementById('orgchartView'), topEl = document.getElementById('topView');
+    var keep = (key === lastRenderKey) ? { y: window.scrollY, m: mainEl.scrollTop, o: orgEl.scrollTop, t: topEl.scrollTop } : null;
+    document.getElementById('app').style.display = (isOrg || isTop) ? 'none' : 'flex';
+    orgEl.style.display = isOrg ? 'block' : 'none';
+    topEl.style.display = isTop ? 'block' : 'none';
+    document.getElementById('navTracker').classList.toggle('active', !isOrg && !isTop);
+    document.getElementById('navTop').classList.toggle('active', isTop);
     document.getElementById('navOrgchart').classList.toggle('active', isOrg);
-    document.getElementById('btnMobileMenu').style.display = isOrg ? 'none' : '';
+    document.getElementById('btnMobileMenu').style.display = (isOrg || isTop) ? 'none' : '';
     if(isOrg){ renderOrgChart(); }
+    else if(isTop){ ensureGlobalData(); renderTopView(); }
     else { renderSidebar(); renderMain(); }
+    if(keep){
+      window.scrollTo(0, keep.y);
+      mainEl.scrollTop = keep.m; orgEl.scrollTop = keep.o; topEl.scrollTop = keep.t;
+    }
+    lastRenderKey = key;
+  }
+
+  // ---------------- TOP de colaboradores (ranking / focos rojos) ----------------
+  var globalSubscribed = false;
+  function ensureGlobalData(){ // el ranking necesita las evaluaciones y los pendientes de TODO el equipo
+    if(globalSubscribed || !state.db) return;
+    globalSubscribed = true;
+    subscribeCollection('evaluations', function(rows){ state.evaluations = rows; if(state.appView === 'top') render(); });
+    subscribeCollection('actionables', function(rows){ state.actionables = rows; if(state.appView === 'top') render(); });
+  }
+  function avgOf(a){ return a.length ? Math.round(a.reduce(function(x,y){ return x+y; },0)/a.length) : null; }
+  // Métricas de riesgo de una persona al mes 'month' (ventana de 6 meses).
+  // Cumplimiento ponderado = 60% último mes evaluado + 40% promedio de los meses previos (hasta 2 más dentro de los últimos 3).
+  function personMetrics(p, month){
+    var months = lastMonths(month, 6);
+    var series = months.map(function(m){ return { m: m, pct: computePct(p.id, m) }; });
+    var valid = series.filter(function(x){ return x.pct != null; });
+    var out = { person: p, evaluated: valid.length, latest: null, latestMonth: null, bases: null, minimos: null, weighted: null, trend: null, recurrent: [], open: openCount(p.id), status: 'none', risk: -1 };
+    if(!valid.length) return out;
+    var latest = valid[valid.length-1];
+    out.latest = latest.pct; out.latestMonth = latest.m;
+    out.bases = computePct(p.id, latest.m, 'bases'); out.minimos = computePct(p.id, latest.m, 'minimos');
+    var last3 = months.slice(-3);
+    var prev = valid.filter(function(x){ return x.m !== latest.m && last3.indexOf(x.m) > -1; }).map(function(x){ return x.pct; });
+    out.weighted = prev.length ? Math.round(latest.pct*0.6 + avgOf(prev)*0.4) : latest.pct;
+    var recentVals = series.slice(-3).filter(function(x){ return x.pct != null; }).map(function(x){ return x.pct; });
+    var priorVals = series.slice(0,3).filter(function(x){ return x.pct != null; }).map(function(x){ return x.pct; });
+    if(recentVals.length && priorVals.length) out.trend = avgOf(recentVals) - avgOf(priorVals);
+    // criterios con ✕ (calificación < 50%) en 2 o más de los últimos 3 meses
+    var crit = criteriaForPerson(p, 'bases').concat(criteriaForPerson(p, 'minimos'));
+    crit.forEach(function(c){
+      var fails = 0;
+      last3.forEach(function(m){
+        var e = getEvaluation(p.id, m), sc = e && e.results ? critScore(e.results[c.id]) : null;
+        if(sc != null && sc < 0.5) fails++;
+      });
+      if(fails >= 2) out.recurrent.push(c.label);
+    });
+    var down = out.trend != null && out.trend < -5;
+    if(out.weighted < 60 || out.recurrent.length >= 3) out.status = 'red';
+    else if(out.weighted < 80 || out.recurrent.length >= 1 || down) out.status = 'amber';
+    else out.status = 'green';
+    out.risk = (100 - out.weighted) + Math.min(15, out.recurrent.length*3) + (down ? 5 : 0);
+    return out;
+  }
+  var ST_LABEL = { red:'FOCO ROJO', amber:'ATENCIÓN', green:'EN ORDEN', none:'SIN EVALUAR' };
+  function renderTopView(){
+    var el = document.getElementById('topView');
+    var month = state.monthCursor;
+    var people = state.people.filter(function(p){ return p.trackEvaluation !== false; });
+    var rows = people.map(function(p){ return personMetrics(p, month); });
+    rows.sort(function(a,b){
+      if(a.risk === b.risk) return (a.person.name||'').localeCompare(b.person.name||'');
+      return b.risk - a.risk;
+    });
+    var counts = { red:0, amber:0, green:0, none:0 };
+    rows.forEach(function(r){ counts[r.status]++; });
+    var f = state.topFilter;
+    var shown = rows.filter(function(r){ return f === 'todos' || r.status === f; });
+    function card(key, label, n){ return '<div class="top-card'+(f===key?' active':'')+'" data-filter="'+key+'"><div class="n">'+n+'</div><div class="l">'+label+'</div></div>'; }
+    var body = shown.map(function(r, i){
+      var p = r.person, pos = rows.indexOf(r) + 1;
+      var trend = r.trend == null ? '<span class="top-sub">—</span>' : (r.trend > 3 ? '<span class="top-up">▲ +'+r.trend+'</span>' : (r.trend < -3 ? '<span class="top-down">▼ '+r.trend+'</span>' : '<span class="top-sub">= estable</span>'));
+      var alerts = r.recurrent.length
+        ? '<div class="top-alerts">'+esc(r.recurrent[0])+(r.recurrent.length>1 ? ' <span class="more">+'+(r.recurrent.length-1)+' más</span>' : '')+'</div>'
+        : '<span class="top-sub">Sin alertas recurrentes</span>';
+      var last = r.latest == null ? '<span class="top-sub">Sin datos</span>'
+        : '<span class="top-num">'+r.latest+'%</span> <span class="top-sub">'+monthLabel(r.latestMonth).split(' ')[0].slice(0,3)+' · B '+(r.bases==null?'—':r.bases+'%')+' · M '+(r.minimos==null?'—':r.minimos+'%')+'</span>';
+      return '<div class="top-row '+r.status+'" data-person="'+p.id+'">'
+        + '<div class="top-rank">'+(r.status==='none'?'—':'#'+pos)+'</div>'
+        + '<div class="top-who"><div class="avatar">'+avatarInner(p)+'</div><div style="min-width:0;"><div class="nm">'+esc(p.name)+'</div><div class="ps">'+esc(p.position||'')+'</div></div></div>'
+        + '<div><span class="st st-'+r.status+'">'+ST_LABEL[r.status]+'</span></div>'
+        + '<div class="c-pct">'+(r.weighted==null?'<span class="top-sub">—</span>':'<span class="top-num">'+r.weighted+'%</span>')+'</div>'
+        + '<div class="c-last">'+last+'</div>'
+        + '<div class="c-trend">'+trend+'</div>'
+        + '<div class="c-alerts">'+alerts+'</div>'
+        + '<div class="c-open top-num">'+r.open+'</div>'
+      + '</div>';
+    }).join('') || '<div class="top-empty">Nadie en este filtro.</div>';
+    el.innerHTML = '<div class="orgchart-topbar"><div><h1>TOP DE COLABORADORES</h1>'
+        + '<div class="section-sub" style="margin:2px 0 0 0;">Ranking de riesgo según las evaluaciones mensuales (BASES + MÍNIMOS) y el diagnóstico de cada persona. Arriba están los focos rojos.</div></div>'
+        + '<div class="month-nav"><button class="month-btn" id="topPrev">‹</button><div class="month-label">'+monthLabel(month)+'</div><button class="month-btn" id="topNext">›</button></div></div>'
+      + '<div class="top-wrap">'
+        + '<div class="top-cards">'+card('red','Focos rojos',counts.red)+card('amber','En atención',counts.amber)+card('green','En orden',counts.green)+card('none','Sin evaluar',counts.none)+'</div>'
+        + '<div class="top-legend"><b>Cómo se calcula:</b> cumplimiento = 60% del último mes evaluado + 40% de los meses previos (últimos 3). '
+          + '<b>Foco rojo:</b> cumplimiento menor a 60% o 3+ alertas recurrentes. <b>Atención:</b> menor a 80%, alguna alerta recurrente (✕ en 2 de los últimos 3 meses) o tendencia a la baja de más de 5 pts. '
+          + 'Toca a una persona para ver su diagnóstico. '+(f!=='todos' ? '<a href="#" id="topClear" style="color:var(--ink);font-weight:700;">Quitar filtro</a>' : '')+'</div>'
+        + '<div class="top-table"><div class="top-head"><div>#</div><div>Colaborador</div><div>Estado</div><div>Cumpl.</div><div>Último mes</div><div>Tendencia</div><div>Alertas recurrentes</div><div>Pend.</div></div>'+body+'</div>'
+      + '</div>';
+    document.getElementById('topPrev').addEventListener('click', function(){ state.monthCursor = shiftMonth(state.monthCursor,-1); render(); });
+    document.getElementById('topNext').addEventListener('click', function(){ state.monthCursor = shiftMonth(state.monthCursor,1); render(); });
+    Array.prototype.forEach.call(el.querySelectorAll('.top-card'), function(c){
+      c.addEventListener('click', function(){ var k = c.getAttribute('data-filter'); state.topFilter = (state.topFilter === k) ? 'todos' : k; render(); });
+    });
+    var clr = document.getElementById('topClear'); if(clr) clr.addEventListener('click', function(e){ e.preventDefault(); state.topFilter = 'todos'; render(); });
+    Array.prototype.forEach.call(el.querySelectorAll('.top-row'), function(row){
+      row.addEventListener('click', function(){ state.selectedPersonId = row.getAttribute('data-person'); state.tab = 'diagnostico'; state.appView = 'tracker'; render(); });
+    });
   }
 
   function renderSidebar(){
@@ -1356,6 +1512,22 @@
     return fromLines;
   }
 
+  // Limpia una línea pegada desde Granola/Markdown: quita viñetas (- * • [ ]), numeración y negritas (**texto**)
+  function cleanItemText(t){
+    return String(t||'').replace(/\u00a0/g,' ')
+      .replace(/^\s*(?:[-*•–]\s*)?(?:\[[ xX]?\]\s*)?/, '')
+      .replace(/^\s*\d+[.)]\s+/, '')
+      .replace(/\*\*(.+?)\*\*/g,'$1').replace(/__(.+?)__/g,'$1').replace(/`([^`]+)`/g,'$1')
+      .replace(/\*\*/g,'').trim();
+  }
+  // Devuelve la lista de elementos de un texto pegado: una nota por cada viñeta; si no hay viñetas, el texto completo limpio.
+  function parseBulletItems(text){
+    if(!text) return [];
+    var lines = String(text).replace(/\r/g,'').split('\n').map(function(l){ return l.trim(); }).filter(Boolean);
+    var bullets = lines.filter(function(l){ return /^(?:[-*•–]\s+|\d+[.)]\s+|[-*]\s*\[[ xX]?\])/.test(l); });
+    var items = (bullets.length ? bullets : [lines.join(' ')]).map(cleanItemText).filter(Boolean);
+    return items;
+  }
   function chip(val,label){
     return '<div class="chip'+(state.filter===val?' active':'')+'" data-filter="'+val+'">'+label+'</div>';
   }
@@ -1479,7 +1651,7 @@
       var d = n.createdAt ? new Date(n.createdAt).toLocaleDateString('es-MX', {day:'2-digit', month:'short'}) : '';
       return '<div class="weak-item" data-note="'+n.id+'">'
         + '<div class="weak-dot" style="background:var(--muted-2);"></div>'
-        + '<div style="flex:1;"><div class="weak-text" style="font-weight:500;">'+esc(n.text)+'</div><div class="weak-recurrence">'+d+'</div></div>'
+        + '<div style="flex:1;"><div class="weak-text" style="font-weight:500;">'+esc(cleanItemText(n.text))+'</div><div class="weak-recurrence">'+d+'</div></div>'
         + '<button class="todo-del" data-action="del-note" data-id="'+n.id+'" title="Eliminar">×</button>'
       + '</div>';
     }).join('') || '<div style="padding:8px 2px;color:var(--muted);font-size:12.5px;">Sin anotaciones este mes.</div>';
@@ -1522,7 +1694,7 @@
           + '<div class="section-sub">Observaciones libres para platicar en la junta mensual de '+monthLabel(month)+'</div>'
           + '<div id="notesRows">'+notesHtml+'</div>'
           + '<div class="add-row">'
-            + '<input type="text" id="newNote" placeholder="Ej. Mala actitud el día 14… (Enter)">'
+            + '<input type="text" id="newNote" placeholder="Ej. Mala actitud el día 14… (Enter, o pega una lista de Granola)">'
             + '<button class="btn btn-primary btn-sm" id="btnAddNote">Agregar</button>'
           + '</div>'
         + '</div>'
@@ -1648,8 +1820,12 @@
       addBtn.addEventListener('click', submit);
       input.addEventListener('keydown', function(e){ if(e.key==='Enter') submit(); });
       function importGranolaText(text){
-        var items = parseGranolaItems(text);
-        if(items.length <= 1) return false;
+        var items = parseGranolaItems(text).map(cleanItemText).filter(Boolean);
+        if(items.length <= 1){ // una sola viñeta: se limpia y se deja en el campo para confirmar con Enter
+          var one = parseBulletItems(text);
+          if(one.length === 1 && one[0] !== String(text).trim()){ input.value = one[0]; return true; }
+          return false;
+        }
         items.forEach(function(it){ addActionable(person.id, it, { origin:'reunion' }); });
         showToast(items.length+' pendientes importados de Granola');
         return true;
@@ -1681,11 +1857,26 @@
         var noteBtn = document.getElementById('btnAddNote');
         var noteInput = document.getElementById('newNote');
         function submitNote(){
-          var v = noteInput.value.trim();
-          if(!v) return;
-          addNote(person.id, state.monthCursor, v);
+          var items = parseBulletItems(noteInput.value);
+          if(!items.length) return;
+          items.forEach(function(t){ addNote(person.id, state.monthCursor, t); });
+          if(items.length > 1) showToast(items.length+' anotaciones agregadas');
           noteInput.value='';
         }
+        // Pegar el resumen de Granola: se separa en una anotación por cada viñeta y se limpian "- " y **negritas**
+        noteInput.addEventListener('paste', function(e){
+          var text = (e.clipboardData || window.clipboardData).getData('text');
+          var items = parseBulletItems(text);
+          if(items.length > 1){
+            e.preventDefault();
+            items.forEach(function(t){ addNote(person.id, state.monthCursor, t); });
+            noteInput.value='';
+            showToast(items.length+' anotaciones importadas');
+          } else if(items.length === 1 && items[0] !== String(text).trim()){
+            e.preventDefault();
+            noteInput.value = items[0];
+          }
+        });
         noteBtn.addEventListener('click', submitNote);
         noteInput.addEventListener('keydown', function(e){ if(e.key==='Enter') submitNote(); });
 
@@ -2368,6 +2559,7 @@
   document.getElementById('btnAddPerson').addEventListener('click', function(){ openPersonModal(null); });
   document.getElementById('btnAdmin').addEventListener('click', function(){ openAdminModal(); });
   document.getElementById('navTracker').addEventListener('click', function(){ state.appView='tracker'; render(); });
+  document.getElementById('navTop').addEventListener('click', function(){ state.appView='top'; render(); });
   document.getElementById('navOrgchart').addEventListener('click', function(){ state.appView='orgchart'; render(); });
 
   boot();
