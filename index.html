@@ -100,6 +100,8 @@
     display:flex; align-items:center; justify-content:center; font-weight:700; font-size:12px; letter-spacing:.3px;
   }
   .person-item.active .avatar{ background:var(--bg); color:var(--ink); }
+  .avatar, .avatar-lg{ overflow:hidden; }
+  .avatar img, .avatar-lg img{ width:100%; height:100%; object-fit:cover; display:block; }
   .p-meta{ min-width:0; flex:1; }
   .p-name{ font-size:13px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .p-pos{ font-size:11px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
@@ -222,6 +224,11 @@
   .rating-chip{ font-size:10.5px; font-weight:700; padding:1px 7px; border-radius:99px; border:1px solid var(--line); color:var(--muted); background:var(--card); white-space:nowrap; }
   .rating-chip.lead{ border-color:var(--ink); color:var(--ink); }
   .rating-chip.diff{ border-style:dashed; }
+  .owner-tabs{ display:flex; gap:6px; margin:6px 0 12px; flex-wrap:wrap; }
+  .owner-tab{ padding:7px 13px; border-radius:99px; border:1px solid var(--line); font-size:12.5px; font-weight:700; color:var(--muted); cursor:pointer; background:var(--card); }
+  .owner-tab.active{ background:var(--ink); border-color:var(--ink); color:var(--bg); }
+  .owner-count{ display:inline-block; min-width:18px; padding:0 5px; margin-left:4px; border-radius:99px; background:var(--line); color:var(--ink); font-size:11px; text-align:center; }
+  .owner-tab.active .owner-count{ background:var(--bg); color:var(--ink); }
   .eval-as{ display:flex; align-items:center; gap:8px; font-size:12px; color:var(--muted); font-weight:600; margin:2px 0 10px; flex-wrap:wrap; }
   .eval-as select{ font:inherit; font-weight:700; color:var(--ink); background:var(--card); border:1px solid var(--line); border-radius:8px; padding:4px 8px; }
 
@@ -516,6 +523,7 @@
   "use strict";
 
   var state = {
+    photos: {},
     people: [],
     criteria: [],
     actionables: [],
@@ -556,6 +564,11 @@
     var parts = (name||'').trim().split(/\s+/);
     if(parts.length===0 || !parts[0]) return '?';
     return (parts[0][0] + (parts[1]? parts[1][0] : '')).toUpperCase();
+  }
+  var PHOTOS_KEY = 'cerocero_00track_photos';
+  function avatarInner(p){
+    var src = p && state.photos && state.photos[p.id];
+    return src ? '<img src="'+src+'" alt="'+esc(p.name)+'" loading="lazy">' : esc(initials(p && p.name));
   }
   function esc(s){
     var d = document.createElement('div'); d.textContent = s==null?'':String(s); return d.innerHTML;
@@ -777,6 +790,7 @@
         });
       });
     };
+    api.fetchPhotos = function(){ return rpc({ action: 'photos' }); };
     return api;
   }
 
@@ -828,6 +842,17 @@
     }, function(){ return { ok: false, error: 'No se pudo conectar con el servidor. Revisa tu conexión e intenta de nuevo.' }; });
   }
 
+  function loadPhotos(db){
+    if(!db || typeof db.fetchPhotos !== 'function') return;
+    db.fetchPhotos().then(function(res){
+      if(!res || !res.ok || !res.photos) return;
+      var sig = JSON.stringify(res.photos), old = JSON.stringify(state.photos || {});
+      if(sig === old) return;
+      state.photos = res.photos;
+      try{ localStorage.setItem(PHOTOS_KEY, sig); }catch(e){} // si no cabe en el navegador, se vuelve a pedir
+      render();
+    }).catch(function(){});
+  }
   function startApp(db){
     return db.start().then(function(){
       state.db = db;
@@ -839,7 +864,10 @@
       subscribeCollection('criteria', function(rows){ state.criteria = rows; render(); });
       document.getElementById('loginScreen').hidden = true;
       document.body.classList.remove('locked');
+      try{ var cached = JSON.parse(localStorage.getItem(PHOTOS_KEY) || 'null'); if(cached && typeof cached === 'object') state.photos = cached; }catch(e){}
       render();
+      loadPhotos(db);
+      setInterval(function(){ if(!document.hidden) loadPhotos(db); }, 5*60*1000);
       return { ok: true };
     }, function(e){ return { ok: false, error: 'No se pudieron cargar los datos: ' + (e && e.message || e) }; });
   }
@@ -922,13 +950,41 @@
   var EVALUATORS = [
     { key:'emmanuel', name:'Emmanuel', short:'E', weight:2 },
     { key:'jose',     name:'José',     short:'J', weight:1 },
-    { key:'dir3',     name:'Directivo 3', short:'D3', weight:1 }
+    { key:'karla',    name:'Karla',    short:'K', weight:1 }
   ];
+  // Evaluación por jefe directo (todavía NO se usa): cambia a true para que, en BASES/MÍNIMOS, aparezca como opción
+  // en "Evaluando como" el jefe directo de la persona evaluada (quien está arriba en el organigrama). Sus
+  // calificaciones se guardan igual que las de los directivos (peso 1) y ya entran en el cálculo y se ven como chips.
+  var EVAL_CONFIG = { allowDirectManager: false };
+  function bossOf(person){
+    if(!person || !person.reportsTo) return null;
+    return state.people.find(function(p){ return p.id === person.reportsTo; }) || null;
+  }
+  function initials(name){
+    return String(name||'?').split(/\s+/).filter(Boolean).slice(0,2).map(function(w){ return w.charAt(0).toUpperCase(); }).join('');
+  }
+  // Info de cualquier evaluador por su clave: directivos fijos o 'jefe_<idPersona>'
+  function evaluatorInfo(k){
+    var f = evaluatorByKey(k);
+    if(f) return f;
+    if(String(k).indexOf('jefe_') === 0){
+      var bp = state.people.find(function(p){ return p.id === String(k).slice(5); });
+      return { key:k, name:(bp ? bp.name : 'Jefe directo'), short:(bp ? initials(bp.name) : 'JD'), weight:1, boss:true };
+    }
+    return { key:k, name:String(k), short:initials(k), weight:1 };
+  }
+  function evaluatorOptions(person){
+    var opts = EVALUATORS.slice();
+    var b = EVAL_CONFIG.allowDirectManager ? bossOf(person) : null;
+    if(b && !opts.some(function(e){ return e.key === 'jefe_'+b.id; })) opts.push({ key:'jefe_'+b.id, name:'Jefe directo: '+b.name, short:initials(b.name), weight:1, boss:true });
+    return opts;
+  }
   function evaluatorByKey(k){ return EVALUATORS.find(function(e){ return e.key===k; }); }
-  function currentEvaluator(){
+  function currentEvaluator(person){
     var k = null;
     try{ k = localStorage.getItem('cerocero_00track_evaluator'); }catch(e){}
-    return evaluatorByKey(k) || EVALUATORS[0];
+    var opts = evaluatorOptions(person);
+    return opts.find(function(e){ return e.key === k; }) || EVALUATORS[0];
   }
   function setCurrentEvaluator(k){ try{ localStorage.setItem('cerocero_00track_evaluator', k); }catch(e){} }
   // Un criterio puede venir como true/false (datos anteriores, se atribuyen a Emmanuel), un número (0, .5, 1)
@@ -944,7 +1000,7 @@
   function critScore(val){
     var r = ratingsOf(val), sw = 0, sum = 0;
     Object.keys(r).forEach(function(k){
-      var ev = evaluatorByKey(k); var w = ev ? ev.weight : 1;
+      var w = evaluatorInfo(k).weight;
       sw += w; sum += w * r[k];
     });
     return sw ? sum / sw : null;
@@ -1031,7 +1087,7 @@
       var active = p.id === state.selectedPersonId ? ' active' : '';
       var pctHtml = pct==null ? '' : '<span class="pct-pill'+(pct<80?' low':'')+'">'+pct+'%</span>';
       return '<div class="person-item'+active+'" data-id="'+p.id+'">'
-        + '<div class="avatar">'+esc(initials(p.name))+'</div>'
+        + '<div class="avatar">'+avatarInner(p)+'</div>'
         + '<div class="p-meta"><div class="p-name">'+esc(p.name)+'</div><div class="p-pos">'+esc(p.position||'—')+'</div></div>'
         + '<div class="p-badges">'+(oc>0? '<span class="dot-count">'+oc+' pend.</span>':'')+pctHtml+'</div>'
         + '</div>';
@@ -1066,7 +1122,7 @@
 
     var html = '';
     html += '<div class="topbar"><div class="profile-head">'
-      + '<div class="avatar-lg">'+esc(initials(person.name))+'</div>'
+      + '<div class="avatar-lg">'+avatarInner(person)+'</div>'
       + '<div><h1 class="pname">'+esc(person.name)+'</h1><div class="ppos">'+esc(person.position||'Sin posición asignada')+'</div>'
         + hireInfoHtml(person)
       + '</div>'
@@ -1111,8 +1167,18 @@
     if(person.renewalDate) chips.push('<span class="hire-chip" title="Próxima renovación de contrato">Renovación: '+esc(formatDateEs(person.renewalDate))+'</span>');
     return '<div class="hire-chips">'+chips.join('')+'</div>';
   }
+  // Cada pendiente tiene un "dueño" (owner): de quién es ese pendiente con el integrante. Los anteriores sin dueño = Emmanuel.
+  var OWNERS = [ { key:'emmanuel', name:'Emmanuel' }, { key:'karla', name:'Karla' } ];
+  function ownerOf(a){ return (a && a.owner === 'karla') ? 'karla' : 'emmanuel'; }
+  function currentOwner(){ return state.owner === 'karla' ? 'karla' : 'emmanuel'; }
   function seguimientoHtml(person){
-    var items = state.actionables.filter(function(a){ return a.personId === person.id; })
+    var owner = currentOwner();
+    var mineAll = state.actionables.filter(function(a){ return a.personId === person.id; });
+    var ownerTabs = '<div class="owner-tabs">' + OWNERS.map(function(o){
+      var n = mineAll.filter(function(a){ return ownerOf(a)===o.key && a.status!=='cerrado'; }).length;
+      return '<div class="owner-tab'+(owner===o.key?' active':'')+'" data-owner="'+o.key+'">Pendientes de '+o.name+(n?' <span class="owner-count">'+n+'</span>':'')+'</div>';
+    }).join('') + '</div>';
+    var items = mineAll.filter(function(a){ return ownerOf(a) === owner; })
       .sort(function(a,b){ return (b.createdAt||0)-(a.createdAt||0); });
     var filtered = items.filter(function(a){
       if(state.filter==='abiertos') return a.status !== 'cerrado';
@@ -1136,12 +1202,13 @@
     return '<div class="card">'
       + '<div class="section-title">Pendientes y accionables</div>'
       + '<div class="section-sub">Nacen de reuniones (Granola) o se agregan manualmente. Se quedan visibles hasta cerrarse.</div>'
+      + ownerTabs
       + '<div class="filters">'
         + chip('abiertos','Abiertos') + chip('cerrados','Cerrados') + chip('todos','Todos')
       + '</div>'
       + '<div id="todoRows">'+rows+'</div>'
       + '<div class="add-row">'
-        + '<input type="text" id="newActionable" placeholder="Nuevo pendiente… (Enter para agregar, o pega una lista de Granola)">'
+        + '<input type="text" id="newActionable" placeholder="Nuevo pendiente de '+esc(OWNERS.find(function(o){ return o.key===owner; }).name)+'… (Enter para agregar, o pega una lista de Granola)">'
         + '<button class="btn btn-primary btn-sm" id="btnAddActionable">Agregar</button>'
       + '</div>'
       + '<div class="section-sub" style="margin-top:6px;">Tip: pega aquí el resumen de "Pendientes y accionables" de Granola — se separa automáticamente en pendientes individuales por cada "- [ ]".</div>'
@@ -1182,11 +1249,15 @@
       : 'Aún no hay MÍNIMOS asignados a esta persona. Usa "Gestionar posiciones / MÍNIMOS" en la barra lateral, o el desplegable "Tipo de MÍNIMOS" al editar a la persona.';
     return crit.map(function(c){
       var ratings = ratingsOf(results[c.id]);
-      var me = currentEvaluator();
+      var me = currentEvaluator(person);
       var mine = ratings[me.key];
       var vals = Object.keys(ratings).map(function(k){ return ratings[k]; });
       var differ = vals.length > 1 && vals.some(function(v){ return v !== vals[0]; });
-      var chips = EVALUATORS.filter(function(ev){ return ratings[ev.key] != null; }).map(function(ev){
+      var rkeys = Object.keys(ratings).sort(function(a,b){
+        var ia = EVALUATORS.findIndex(function(e){ return e.key===a; }), ib = EVALUATORS.findIndex(function(e){ return e.key===b; });
+        return (ia<0?99:ia) - (ib<0?99:ib);
+      });
+      var chips = rkeys.map(function(k){ return evaluatorInfo(k); }).map(function(ev){
         return '<span class="rating-chip'+(ev.weight>1?' lead':'')+(differ?' diff':'')+'" title="'+esc(ev.name)+(ev.weight>1?' (mayor peso)':'')+'">'+ev.short+' '+scoreSym(ratings[ev.key])+'</span>';
       }).join('');
       return '<div class="criterion-row" data-crit="'+c.id+'">'
@@ -1199,11 +1270,10 @@
       + '</div>';
     }).join('') || '<div style="padding:14px 2px;color:var(--muted);font-size:12.5px;">'+emptyMsg+'</div>';
   }
-  function evalAsHtml(){
-    var me = currentEvaluator();
+  function evalAsHtml(person){
+    var me = currentEvaluator(person);
     return '<div class="eval-as">Evaluando como '
-      + '<select id="evalAs">'+EVALUATORS.map(function(ev){ return '<option value="'+ev.key+'"'+(ev.key===me.key?' selected':'')+'>'+esc(ev.name)+'</option>'; }).join('')+'</select>'
-      + '<span>Peso de Emmanuel: ×'+EVALUATORS[0].weight+'</span></div>';
+      + '<select id="evalAs">'+evaluatorOptions(person).map(function(ev){ return '<option value="'+ev.key+'"'+(ev.key===me.key?' selected':'')+'>'+esc(ev.name)+'</option>'; }).join('')+'</select></div>';
   }
   function historyRowsHtml(person, kind, month){
     var months6 = lastMonths(month, 6);
@@ -1256,7 +1326,7 @@
     + '<div class="grid-2">'
       + '<div class="card">'
         + '<div class="pct-big">'+ring+'<div><div class="pct-num" style="color:'+pctColor+';">'+(pct==null?'—':pct+'%')+'</div><div class="pct-caption">Cumplimiento de '+monthLabel(month)+'</div></div></div>'
-        + evalAsHtml() + '<div id="critRows">'+critRowsHtml(person, kind, month)+'</div>'
+        + evalAsHtml(person) + '<div id="critRows">'+critRowsHtml(person, kind, month)+'</div>'
       + '</div>'
       + '<div>'
         + '<div class="card" style="margin-bottom:16px;">'
@@ -1304,7 +1374,7 @@
     + '<div class="grid-2">'
       + '<div class="card" style="margin-bottom:16px;">'
         + '<div class="pct-big">'+ring+'<div><div class="pct-num" style="color:'+pctColor+';">'+(pct==null?'—':pct+'%')+'</div><div class="pct-caption">Cumplimiento automático de '+monthLabel(month)+'</div></div></div>'
-        + evalAsHtml() + '<div id="critRows">'+critRowsHtml(person, kind, month)+'</div>'
+        + evalAsHtml(person) + '<div id="critRows">'+critRowsHtml(person, kind, month)+'</div>'
       + '</div>'
       + '<div>'
         + '<div class="card" style="margin-bottom:16px;">'
@@ -1425,6 +1495,9 @@
 
   function wireTabEvents(person){
     if(state.tab === 'seguimiento'){
+      Array.prototype.forEach.call(document.querySelectorAll('.owner-tab'), function(el){
+        el.addEventListener('click', function(){ state.owner = el.getAttribute('data-owner'); render(); });
+      });
       Array.prototype.forEach.call(document.querySelectorAll('.chip'), function(el){
         el.addEventListener('click', function(){ state.filter = el.getAttribute('data-filter'); render(); });
       });
@@ -1472,7 +1545,7 @@
           var row = el.closest('.criterion-row');
           var critId = row.getAttribute('data-crit');
           var val = parseFloat(el.getAttribute('data-val'));
-          var me = currentEvaluator();
+          var me = currentEvaluator(person);
           var ev0 = getEvaluation(person.id, state.monthCursor);
           var cur = ratingsOf(ev0 && ev0.results && ev0.results[critId])[me.key];
           setEvaluation(person.id, state.monthCursor, critId, cur === val ? null : val); // volver a pulsar = quitar mi calificación
@@ -1512,7 +1585,7 @@
     opts = opts || {};
     var id = uid('a');
     var data = {
-      personId: personId, title: title, notes: opts.notes||'', status:'abierto',
+      personId: personId, title: title, notes: opts.notes||'', status:'abierto', owner: opts.owner || currentOwner(),
       origin: opts.origin||'manual', meetingDate: opts.meetingDate||null, createdAt: Date.now(), closedAt: null
     };
     state.db.collection('actionables').doc(id).set(data).then(function(){
@@ -1542,7 +1615,7 @@
     var docId = evalDocId(personId, month);
     var ev = getEvaluation(personId, month);
     var results = Object.assign({}, ev && ev.results);
-    var me = currentEvaluator();
+    var me = currentEvaluator(state.people.find(function(p){ return p.id === personId; }));
     var ratings = Object.assign({}, ratingsOf(results[critId]));
     if(val == null) delete ratings[me.key]; else ratings[me.key] = val;
     if(Object.keys(ratings).length) results[critId] = ratings; else delete results[critId];
@@ -1720,7 +1793,7 @@
       var basesOpts = '<option value="">Automático (según posición)</option>' + basesGroups.map(function(g){ return '<option value="'+esc(g)+'"'+(curBases===g?' selected':'')+'>'+esc(g)+'</option>'; }).join('');
       var minimosOpts = '<option value="">Automático (según posición)</option>' + minimosGroups.map(function(g){ return '<option value="'+esc(g)+'"'+(curMinimos===g?' selected':'')+'>'+esc(g)+'</option>'; }).join('');
       return '<div class="persona-assign-row">'
-        + '<div class="persona-assign-who"><div class="avatar">'+esc(initials(p.name))+'</div>'
+        + '<div class="persona-assign-who"><div class="avatar">'+avatarInner(p)+'</div>'
           + '<div><div class="p-name" style="font-size:13px;">'+esc(p.name)+'</div><div class="p-pos">'+esc(p.position||'—')+'</div></div></div>'
         + '<div class="persona-assign-field"><label>Tipo de BASES</label><select data-persona-assign="bases" data-person-id="'+p.id+'">'+basesOpts+'</select></div>'
         + '<div class="persona-assign-field"><label>Tipo de MÍNIMOS</label><select data-persona-assign="minimos" data-person-id="'+p.id+'">'+minimosOpts+'</select></div>'
@@ -1892,7 +1965,7 @@
   function orgCardHtml(p){
     var noEval = p.trackEvaluation === false;
     return '<div class="org-card'+(noEval?' org-card-noeval':'')+'" draggable="true" data-org-id="'+p.id+'">'
-      + '<div class="avatar">'+esc(initials(p.name))+'</div>'
+      + '<div class="avatar">'+avatarInner(p)+'</div>'
       + '<div class="org-name" data-org-field="name" contenteditable="true" spellcheck="false">'+esc(p.name)+'</div>'
       + '<div class="org-pos" data-org-field="position" contenteditable="true" spellcheck="false">'+esc(p.position||'Puesto')+'</div>'
       + (noEval ? '<div class="org-noeval-tag">Fuera de evaluación</div>' : '')
