@@ -392,7 +392,7 @@
     .main{ width:100%; }
     .topbar{ padding:16px 16px 0 16px; flex-wrap:wrap; row-gap:10px; }
     .content{ padding:16px 16px 48px 16px; }
-    .tabs{ padding:14px 16px 0 16px; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+    .tabs{ padding:14px 16px 0 16px; overflow-x:auto; overflow-y:hidden; -webkit-overflow-scrolling:touch; touch-action:pan-x; overscroll-behavior:contain; }
     .tabs::-webkit-scrollbar{ display:none; }
     .tab{ margin-right:16px; white-space:nowrap; }
     .grid-2{ grid-template-columns:1fr; }
@@ -444,6 +444,10 @@
 
   /* ---------- Ajustes de pantalla: fotos, scroll en celular y vista fija en escritorio ---------- */
   .avatar-lg{ flex:none; aspect-ratio:1/1; }
+  .tabs{ scrollbar-width:none; }
+  .tabs::-webkit-scrollbar{ display:none; }
+  .tab{ flex:none; }
+  @media (max-width: 860px){ body.kb-open{ padding-bottom:45vh; } }
   .org-card{ touch-action:pan-x pan-y; }
   .orgchart-scroll{ overflow-y:hidden; overscroll-behavior-x:contain; -webkit-overflow-scrolling:touch; }
   .people-list{ min-height:0; scrollbar-width:thin; scrollbar-color:var(--muted-2) transparent; }
@@ -472,8 +476,8 @@
   <button class="mobile-menu-btn" id="btnMobileMenu" aria-label="Abrir menú del equipo">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
   </button>
-  <button class="app-nav-btn" id="navTracker">Seguimiento y evaluación</button>
-  <button class="app-nav-btn" id="navOrgchart">Organigrama</button>
+  <button class="app-nav-btn" id="navTracker">EVALUACIÓN</button>
+  <button class="app-nav-btn" id="navOrgchart">ORGANIGRAMA</button>
   <div class="app-nav-right">
     <span class="sync-pill" id="syncPill" data-s="loading"><i class="sync-dot"></i><span class="sync-text">Conectando…</span></span>
     <button class="app-nav-btn" id="btnLogout" title="Cerrar sesión en este dispositivo">Salir</button>
@@ -1176,14 +1180,25 @@
       + '</div>';
 
     html += '<div class="tabs">'
-      + '<div class="tab'+(state.tab==='seguimiento'?' active':'')+'" data-tab="seguimiento">Seguimiento de trabajo</div>'
+      + '<div class="tab'+(state.tab==='seguimiento'?' active':'')+'" data-tab="seguimiento">MINUTAS</div>'
       + '<div class="tab'+(state.tab==='bases'?' active':'')+'" data-tab="bases">BASES</div>'
       + '<div class="tab'+(state.tab==='minimos'?' active':'')+'" data-tab="minimos">MÍNIMOS</div>'
-      + '<div class="tab'+(state.tab==='diagnostico'?' active':'')+'" data-tab="diagnostico">Diagnóstico</div>'
+      + '<div class="tab'+(state.tab==='diagnostico'?' active':'')+'" data-tab="diagnostico">DIAGNÓSTICO</div>'
       + '</div>';
 
     html += '<div class="content" id="tabContent"></div>';
+    var oldTabs = main.querySelector('.tabs'), tabsLeft = oldTabs ? oldTabs.scrollLeft : 0;
     main.innerHTML = html;
+    (function(){ // la barra de pestañas conserva su posición horizontal y la pestaña activa siempre queda a la vista
+      var tb = main.querySelector('.tabs'), act = main.querySelector('.tab.active');
+      if(!tb) return;
+      tb.scrollLeft = tabsLeft;
+      if(act){
+        var l = act.offsetLeft, r = l + act.offsetWidth;
+        if(l < tb.scrollLeft + 8) tb.scrollLeft = Math.max(0, l - 16);
+        else if(r > tb.scrollLeft + tb.clientWidth - 8) tb.scrollLeft = r - tb.clientWidth + 16;
+      }
+    })();
 
     document.getElementById('btnEditPerson').addEventListener('click', function(){ openPersonModal(person); });
     Array.prototype.forEach.call(main.querySelectorAll('.tab'), function(el){
@@ -2052,7 +2067,7 @@
     var sub = area==='almacen' ? 'Operación de almacén, logística y producción.' : 'Dirección, coordinaciones, ventas y soporte.';
 
     root.innerHTML = '<div class="orgchart-topbar">'
-        + '<div><h1>Organigrama</h1><div class="section-sub" style="margin:2px 0 0 0;">Arrastra una tarjeta y suéltala sobre otra: encima/al centro la vuelve su reporte directo, arriba o al lado la coloca como hermana en ese orden — el borde se colorea para confirmar dónde va a quedar (en computadora). Haz clic en el nombre o el puesto para editarlos — el puesto se sincroniza con Seguimiento y evaluación. En celular, usa los botones + y × de cada tarjeta para agregar o quitar gente.</div></div>'
+        + '<div><h1>ORGANIGRAMA</h1><div class="section-sub" style="margin:2px 0 0 0;">Arrastra una tarjeta y suéltala sobre otra: encima/al centro la vuelve su reporte directo, arriba o al lado la coloca como hermana en ese orden — el borde se colorea para confirmar dónde va a quedar (en computadora). Haz clic en el nombre o el puesto para editarlos — el puesto se sincroniza con Seguimiento y evaluación. En celular, usa los botones + y × de cada tarjeta para agregar o quitar gente.</div></div>'
         + '<button class="btn btn-primary btn-sm" id="btnOrgAddRoot" style="flex:none;">+ Agregar a '+(area==='almacen'?'Almacén':'Dirección')+'</button>'
       + '</div>'
       + '<div class="orgchart-subnav">'
@@ -2216,7 +2231,7 @@
   function deleteOrgPerson(id){
     var person = state.people.find(function(p){ return p.id===id; });
     if(!person) return;
-    confirmDialog('¿Eliminar a '+person.name+' del organigrama y de Seguimiento y evaluación? Sus reportes directos pasarán a depender de su jefe inmediato.', function(){
+    confirmDialog('¿Eliminar a '+person.name+' del organigrama y de EVALUACIÓN? Sus reportes directos pasarán a depender de su jefe inmediato.', function(){
       doDeleteOrgPerson(id, person);
     });
   }
@@ -2247,6 +2262,29 @@
     document.getElementById('sidebarPanel').classList.remove('open');
     document.getElementById('sidebarBackdrop').classList.remove('show');
   }
+
+  // Celular: al escribir en un campo (p. ej. un pendiente), la pantalla se desplaza para que se vea lo que escribes,
+  // por encima del teclado.
+  (function(){
+    function isField(el){ return el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') && el.type !== 'checkbox' && el.type !== 'radio'; }
+    function reveal(el){
+      if(window.innerWidth > 860 || !el || !el.scrollIntoView) return;
+      try{ el.scrollIntoView({ block:'center', behavior:'smooth' }); }catch(e){ el.scrollIntoView(); }
+    }
+    document.addEventListener('focusin', function(e){
+      var el = e.target;
+      if(!isField(el) || window.innerWidth > 860 || el.closest('.login-screen') || el.closest('.overlay')) return;
+      document.body.classList.add('kb-open');
+      setTimeout(function(){ reveal(el); }, 350);
+    });
+    document.addEventListener('focusout', function(){
+      setTimeout(function(){ if(!isField(document.activeElement)) document.body.classList.remove('kb-open'); }, 150);
+    });
+    if(window.visualViewport) window.visualViewport.addEventListener('resize', function(){
+      var el = document.activeElement; if(isField(el)) setTimeout(function(){ reveal(el); }, 100);
+    });
+    document.addEventListener('input', function(e){ if(isField(e.target)) reveal(e.target); });
+  })();
 
   // ---------------- Wire static UI ----------------
   document.getElementById('loginForm').addEventListener('submit', function(e){
