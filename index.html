@@ -690,11 +690,15 @@
 
     function status(s){ if(api.onStatus) api.onStatus(s); }
 
-    var getMode = false; // si el navegador bloquea el POST (algunos celulares), se usa GET con la petición en la URL
+    var GETMODE_KEY = 'cerocero_00track_getmode', CACHE_KEY = 'cerocero_00track_cache';
+    // si el navegador bloquea el POST (algunos celulares), se usa GET con la petición en la URL; se recuerda en el dispositivo
+    var getMode = false; try{ getMode = localStorage.getItem(GETMODE_KEY) === '1'; }catch(e){}
+    function setGetMode(){ getMode = true; try{ localStorage.setItem(GETMODE_KEY, '1'); }catch(e){} }
+    function saveCache(d){ try{ var str = JSON.stringify(d); if(str.length < 3000000) localStorage.setItem(CACHE_KEY, str); }catch(e){} }
     function b64url(str){ return btoa(unescape(encodeURIComponent(str))).replace(/\+/g,'-').replace(/\//g,'_'); }
-    function request(payload, viaGet){
+    function request(payload, viaGet, ms){
       var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
-      var t = ctrl ? setTimeout(function(){ ctrl.abort(); }, 30000) : null;
+      var t = ctrl ? setTimeout(function(){ ctrl.abort(); }, ms || (viaGet ? 45000 : 12000)) : null;
       var body = JSON.stringify(payload), p;
       if(viaGet){
         var u = url + '?q=' + encodeURIComponent(b64url(body)) + '&_=' + Date.now();
@@ -705,11 +709,11 @@
       }
       return p.then(function(r){ return r.json(); }).then(function(j){ if(t) clearTimeout(t); return j; }, function(e){ if(t) clearTimeout(t); throw e; });
     }
-    function rpc(payload){
+    function rpc(payload, ms){
       payload.pw = pw;
-      var first = request(payload, getMode);
+      var first = request(payload, getMode, ms);
       var withFallback = getMode ? first : first.catch(function(e){
-        return request(payload, true).then(function(j){ getMode = true; return j; }, function(){ throw e; });
+        return request(payload, true, ms).then(function(j){ setGetMode(); return j; }, function(){ throw e; });
       });
       return withFallback.then(function(j){
         if(j && j.code === 'unauthorized'){ stopped = true; if(api.onUnauthorized) api.onUnauthorized(); }
@@ -746,7 +750,7 @@
       return rpc({ action: 'getAll', since: force ? null : ver }).then(function(res){
         if(!res || !res.ok){ status('error'); return; }
         if(seq !== writeSeq || pending.length || inflight) return; // escribieron mientras leíamos: no pisar
-        if(!res.unchanged) applyServer(res.data);
+        if(!res.unchanged){ applyServer(res.data); saveCache(res.data); }
         ver = res.ver; status('ok');
       }).catch(function(){ status('offline'); });
     }
@@ -827,26 +831,39 @@
     };
 
     var STALE_MSG = 'El servidor de Google respondió con una versión anterior del script. En Apps Script ve a Implementar > Administrar implementaciones > lápiz > Versión: Nueva versión > Implementar, y vuelve a intentar.';
+    var firstData = null;
+    api.hydrate = function(d){ try{ applyServer(d); loaded = true; }catch(e){ console.error(e); } };
+    // Un solo viaje al servidor valida la contraseña y trae todos los datos
     api.login = function(){
-      return rpc({ action: 'auth' }).then(function(res){
-        if(res && res.ok && res.ver === undefined) return { ok: false, error: STALE_MSG }; // respuesta de la versión vieja: no es un inicio de sesión real
+      return rpc({ action: 'getAll' }).then(function(res){
+        if(res && res.ok && !res.data) return { ok: false, error: STALE_MSG }; // respuesta de la versión vieja del script
+        if(res && res.ok){ firstData = res; }
         return res;
       });
     };
+    function startPolling(){
+      pollTimer = setInterval(function(){ if(!document.hidden) pull(false); }, POLL_MS);
+      document.addEventListener('visibilitychange', function(){ if(!document.hidden) pull(false); });
+      window.addEventListener('online', function(){ pull(false); if(pending.length) scheduleFlush(0); });
+      window.addEventListener('beforeunload', function(e){
+        if(pending.length || inflight){ e.preventDefault(); e.returnValue = ''; }
+      });
+    }
     api.start = function(){
-      return rpc({ action: 'getAll' }).then(function(res){
+      var seq0 = writeSeq;
+      var got = firstData ? Promise.resolve(firstData) : rpc({ action: 'getAll' });
+      firstData = null;
+      return got.then(function(res){
         if(!res || !res.ok) throw new Error((res && res.error) || 'Respuesta inválida del servidor');
         if(!res.data) throw new Error(STALE_MSG);
-        applyServer(res.data); ver = res.ver; loaded = true; status('ok');
-        pollTimer = setInterval(function(){ if(!document.hidden) pull(false); }, POLL_MS);
-        document.addEventListener('visibilitychange', function(){ if(!document.hidden) pull(false); });
-        window.addEventListener('online', function(){ pull(false); if(pending.length) scheduleFlush(0); });
-        window.addEventListener('beforeunload', function(e){
-          if(pending.length || inflight){ e.preventDefault(); e.returnValue = ''; }
-        });
+        saveCache(res.data);
+        if(seq0 === writeSeq && !pending.length && !inflight){ applyServer(res.data); ver = res.ver; }
+        else { ver = null; } // hubo cambios locales mientras cargaba: se reconcilia en la siguiente lectura
+        loaded = true; status('ok');
+        startPolling();
       });
     };
-    api.fetchPhotos = function(){ return rpc({ action: 'photos' }); };
+    api.fetchPhotos = function(offset, limit){ return rpc({ action: 'photos', offset: offset || 0, limit: limit || 0 }, 60000); };
     return api;
   }
 
@@ -860,7 +877,7 @@
       (remember ? localStorage : sessionStorage).setItem(PW_KEY, pw);
     }catch(e){}
   }
-  function clearPw(){ try{ localStorage.removeItem(PW_KEY); sessionStorage.removeItem(PW_KEY); }catch(e){} }
+  function clearPw(){ try{ localStorage.removeItem(PW_KEY); sessionStorage.removeItem(PW_KEY); localStorage.removeItem('cerocero_00track_cache'); localStorage.removeItem(PHOTOS_KEY); }catch(e){} }
 
   function showPanel(name, message){
     document.body.classList.add('locked');
@@ -901,19 +918,32 @@
     });
   }
 
-  function loadPhotos(db){
-    if(!db || typeof db.fetchPhotos !== 'function') return;
-    db.fetchPhotos().then(function(res){
-      if(!res || !res.ok || !res.photos) return;
-      var sig = JSON.stringify(res.photos), old = JSON.stringify(state.photos || {});
+  var photosBusy = false;
+  function loadPhotos(db, attempt){
+    if(!db || typeof db.fetchPhotos !== 'function' || photosBusy) return;
+    attempt = attempt || 0;
+    photosBusy = true;
+    var all = {};
+    function page(offset){
+      return db.fetchPhotos(offset, 8).then(function(res){
+        if(!res || !res.ok || !res.photos) throw new Error('fotos');
+        Object.keys(res.photos).forEach(function(k){ all[k] = res.photos[k]; });
+        if(res.next != null) return page(res.next);
+      });
+    }
+    page(0).then(function(){
+      photosBusy = false;
+      var sig = JSON.stringify(all), old = JSON.stringify(state.photos || {});
       if(sig === old) return;
-      state.photos = res.photos;
-      try{ localStorage.setItem(PHOTOS_KEY, sig); }catch(e){} // si no cabe en el navegador, se vuelve a pedir
+      state.photos = all;
+      try{ localStorage.setItem(PHOTOS_KEY, sig); }catch(e){}
       render();
-    }).catch(function(){});
+    }).catch(function(){
+      photosBusy = false;
+      if(attempt < 3) setTimeout(function(){ loadPhotos(db, attempt + 1); }, [4000, 12000, 30000][attempt]);
+    });
   }
-  function startApp(db){
-    return db.start().then(function(){
+  function mountApp(db){
       state.db = db;
       subscribeCollection('people', function(rows){
         state.people = rows.sort(function(a,b){ return (a.name||'').localeCompare(b.name||''); });
@@ -927,8 +957,26 @@
       render();
       loadPhotos(db);
       setInterval(function(){ if(!document.hidden) loadPhotos(db); }, 5*60*1000);
-      return { ok: true };
-    }, function(e){ return { ok: false, error: 'No se pudieron cargar los datos: ' + (e && e.message || e) }; });
+  }
+  function startApp(db){
+    return db.start().then(function(){ mountApp(db); return { ok: true }; },
+      function(e){ return { ok: false, error: 'No se pudieron cargar los datos: ' + (e && e.message || e) }; });
+  }
+  // Arranque instantáneo: con una sesión guardada se muestran al momento los últimos datos conocidos y se actualizan al llegar los nuevos
+  function startFromCache(pw, cache){
+    var db = createSheetsDB(CFG.scriptUrl, pw);
+    db.onStatus = setSyncStatus;
+    db.onUnauthorized = function(){ clearPw(); location.reload(); };
+    db.hydrate(cache);
+    mountApp(db);
+    setSyncStatus('saving');
+    (function tryStart(){
+      db.start().catch(function(e){
+        setSyncStatus('offline');
+        if(e && e.message === 'Contraseña incorrecta.') return;
+        setTimeout(tryStart, 8000);
+      });
+    })();
   }
 
   async function boot(){
@@ -936,6 +984,9 @@
     if(!/^https:\/\/script\.google\.com\/macros\/s\/.+\/exec/.test(url)){ showPanel('loginSetup'); return; }
     var saved = readSavedPw();
     if(saved){
+      var cache = null;
+      try{ cache = JSON.parse(localStorage.getItem('cerocero_00track_cache') || 'null'); }catch(e){}
+      if(cache && cache.people && cache.people.length){ startFromCache(saved, cache); return; }
       showPanel('loginLoading');
       var res = await attemptLogin(saved, !!(function(){ try{ return localStorage.getItem(PW_KEY); }catch(e){ return ''; } })());
       if(res.ok) return;
