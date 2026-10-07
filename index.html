@@ -214,6 +214,16 @@
   }
   .toggle-btn.ok.sel{ background:var(--ok); border-color:var(--ok); color:#fff; }
   .toggle-btn.bad.sel{ background:var(--ink); border-color:var(--ink); color:var(--bg); }
+  .toggle-btn.half{ font-size:13px; letter-spacing:-.5px; }
+  .toggle-btn.half.sel{ background:var(--muted); border-color:var(--muted); color:var(--bg); }
+  .criterion-main{ flex:1; min-width:0; }
+  .criterion-main .criterion-label{ flex:none; }
+  .rating-chips{ display:flex; flex-wrap:wrap; gap:4px; margin-top:5px; }
+  .rating-chip{ font-size:10.5px; font-weight:700; padding:1px 7px; border-radius:99px; border:1px solid var(--line); color:var(--muted); background:var(--card); white-space:nowrap; }
+  .rating-chip.lead{ border-color:var(--ink); color:var(--ink); }
+  .rating-chip.diff{ border-style:dashed; }
+  .eval-as{ display:flex; align-items:center; gap:8px; font-size:12px; color:var(--muted); font-weight:600; margin:2px 0 10px; flex-wrap:wrap; }
+  .eval-as select{ font:inherit; font-weight:700; color:var(--ink); background:var(--card); border:1px solid var(--line); border-radius:8px; padding:4px 8px; }
 
   .history-item{ display:flex; align-items:center; gap:10px; padding:8px 2px; border-bottom:1px solid var(--line); font-size:12.5px; }
   .history-item:last-child{ border-bottom:none; }
@@ -906,6 +916,40 @@
       return byPosition || byPersonOverride;
     }).sort(function(a,b){ return (a.order||0)-(b.order||0); });
   }
+  // ---- Evaluadores (directivos) y peso de cada uno ----
+  // Si dos o más directivos califican el mismo criterio, el resultado es el promedio ponderado.
+  // La evaluación de Emmanuel pesa el doble (peso 2) que la de cada otro directivo (peso 1). Ajusta aquí los pesos.
+  var EVALUATORS = [
+    { key:'emmanuel', name:'Emmanuel', short:'E', weight:2 },
+    { key:'jose',     name:'José',     short:'J', weight:1 },
+    { key:'dir3',     name:'Directivo 3', short:'D3', weight:1 }
+  ];
+  function evaluatorByKey(k){ return EVALUATORS.find(function(e){ return e.key===k; }); }
+  function currentEvaluator(){
+    var k = null;
+    try{ k = localStorage.getItem('cerocero_00track_evaluator'); }catch(e){}
+    return evaluatorByKey(k) || EVALUATORS[0];
+  }
+  function setCurrentEvaluator(k){ try{ localStorage.setItem('cerocero_00track_evaluator', k); }catch(e){} }
+  // Un criterio puede venir como true/false (datos anteriores, se atribuyen a Emmanuel), un número (0, .5, 1)
+  // o un objeto { evaluador: puntaje }. Siempre se normaliza a { evaluador: puntaje }.
+  function ratingsOf(val){
+    if(val === true) return { emmanuel:1 };
+    if(val === false) return { emmanuel:0 };
+    if(typeof val === 'number') return { emmanuel:val };
+    var out = {};
+    if(val && typeof val === 'object') Object.keys(val).forEach(function(k){ if(typeof val[k] === 'number') out[k] = val[k]; });
+    return out;
+  }
+  function critScore(val){
+    var r = ratingsOf(val), sw = 0, sum = 0;
+    Object.keys(r).forEach(function(k){
+      var ev = evaluatorByKey(k); var w = ev ? ev.weight : 1;
+      sw += w; sum += w * r[k];
+    });
+    return sw ? sum / sw : null;
+  }
+  function scoreSym(v){ return v>=1 ? '✓' : (v<=0 ? '✕' : '½'); }
   function evalDocId(personId, month){ return personId + '__' + month; }
   function getEvaluation(personId, month){
     return state.evaluations.find(function(e){ return e.personId===personId && e.month===month; });
@@ -929,8 +973,8 @@
     var results = (ev && ev.results) || {};
     var total = crit.length, done = 0, answered = 0;
     crit.forEach(function(c){
-      if(results[c.id] === true){ done++; answered++; }
-      else if(results[c.id] === false){ answered++; }
+      var sc = critScore(results[c.id]);
+      if(sc != null){ done += sc; answered++; }
     });
     if(answered === 0) return null;
     return Math.round((done/total)*100);
@@ -1137,15 +1181,29 @@
       ? 'Aún no hay BASES asignadas a esta persona. Usa "Gestionar posiciones / MÍNIMOS" en la barra lateral, o el desplegable "Tipo de BASES" al editar a la persona.'
       : 'Aún no hay MÍNIMOS asignados a esta persona. Usa "Gestionar posiciones / MÍNIMOS" en la barra lateral, o el desplegable "Tipo de MÍNIMOS" al editar a la persona.';
     return crit.map(function(c){
-      var val = results[c.id];
+      var ratings = ratingsOf(results[c.id]);
+      var me = currentEvaluator();
+      var mine = ratings[me.key];
+      var vals = Object.keys(ratings).map(function(k){ return ratings[k]; });
+      var differ = vals.length > 1 && vals.some(function(v){ return v !== vals[0]; });
+      var chips = EVALUATORS.filter(function(ev){ return ratings[ev.key] != null; }).map(function(ev){
+        return '<span class="rating-chip'+(ev.weight>1?' lead':'')+(differ?' diff':'')+'" title="'+esc(ev.name)+(ev.weight>1?' (mayor peso)':'')+'">'+ev.short+' '+scoreSym(ratings[ev.key])+'</span>';
+      }).join('');
       return '<div class="criterion-row" data-crit="'+c.id+'">'
-        + '<div class="criterion-label">'+esc(c.label)+'</div>'
+        + '<div class="criterion-main"><div class="criterion-label">'+esc(c.label)+'</div>'+(chips?'<div class="rating-chips">'+chips+'</div>':'')+'</div>'
         + '<div class="toggle-group">'
-          + '<button class="toggle-btn ok'+(val===true?' sel':'')+'" data-val="true">✓</button>'
-          + '<button class="toggle-btn bad'+(val===false?' sel':'')+'" data-val="false">✕</button>'
+          + '<button class="toggle-btn ok'+(mine===1?' sel':'')+'" data-val="1" title="Cumple">✓</button>'
+          + '<button class="toggle-btn half'+(mine===0.5?' sel':'')+'" data-val="0.5" title="Cumple parcialmente">½</button>'
+          + '<button class="toggle-btn bad'+(mine===0?' sel':'')+'" data-val="0" title="No cumple">✕</button>'
         + '</div>'
       + '</div>';
     }).join('') || '<div style="padding:14px 2px;color:var(--muted);font-size:12.5px;">'+emptyMsg+'</div>';
+  }
+  function evalAsHtml(){
+    var me = currentEvaluator();
+    return '<div class="eval-as">Evaluando como '
+      + '<select id="evalAs">'+EVALUATORS.map(function(ev){ return '<option value="'+ev.key+'"'+(ev.key===me.key?' selected':'')+'>'+esc(ev.name)+'</option>'; }).join('')+'</select>'
+      + '<span>Peso de Emmanuel: ×'+EVALUATORS[0].weight+'</span></div>';
   }
   function historyRowsHtml(person, kind, month){
     var months6 = lastMonths(month, 6);
@@ -1163,19 +1221,20 @@
     var ev = getEvaluation(person.id, month);
     var results = (ev && ev.results) || {};
     var last3 = lastMonths(month, 3);
-    return crit.filter(function(c){ return results[c.id] === false; }).map(function(c){
+    function weakScore(v){ var sc = critScore(v); return (sc != null && sc < 1) ? sc : null; }
+    return crit.filter(function(c){ return weakScore(results[c.id]) != null; }).map(function(c){
       var failCount = last3.reduce(function(acc,m){
         var e = getEvaluation(person.id, m);
-        if(e && e.results && e.results[c.id] === false) acc++;
+        if(e && e.results && weakScore(e.results[c.id]) != null) acc++;
         return acc;
       },0);
-      return { label:c.label, failCount: failCount };
+      return { label:c.label, failCount: failCount, partial: critScore(results[c.id]) >= 0.5 };
     });
   }
   function weakHtmlFor(person, kind, month){
     var weak = weakListFor(person, kind, month);
     return weak.length ? weak.map(function(w){
-      var rec = w.failCount>=2 ? '<div class="weak-recurrence hot">Recurrente: '+w.failCount+' de los últimos 3 meses</div>' : '<div class="weak-recurrence">Incumplimiento de este mes</div>';
+      var rec = w.failCount>=2 ? '<div class="weak-recurrence hot">Recurrente: '+w.failCount+' de los últimos 3 meses</div>' : '<div class="weak-recurrence">'+(w.partial?'Cumplimiento parcial este mes':'Incumplimiento de este mes')+'</div>';
       return '<div class="weak-item"><div class="weak-dot"></div><div><div class="weak-text">'+esc(w.label)+'</div>'+rec+'</div></div>';
     }).join('') : '<div style="padding:8px 2px;color:var(--muted);font-size:12.5px;">Sin puntos por fortalecer este mes.</div>';
   }
@@ -1197,7 +1256,7 @@
     + '<div class="grid-2">'
       + '<div class="card">'
         + '<div class="pct-big">'+ring+'<div><div class="pct-num" style="color:'+pctColor+';">'+(pct==null?'—':pct+'%')+'</div><div class="pct-caption">Cumplimiento de '+monthLabel(month)+'</div></div></div>'
-        + '<div id="critRows">'+critRowsHtml(person, kind, month)+'</div>'
+        + evalAsHtml() + '<div id="critRows">'+critRowsHtml(person, kind, month)+'</div>'
       + '</div>'
       + '<div>'
         + '<div class="card" style="margin-bottom:16px;">'
@@ -1207,7 +1266,7 @@
         + '</div>'
         + '<div class="card">'
           + '<div class="section-title">Puntos por fortalecer</div>'
-          + '<div class="section-sub">Generado a partir de los ✕ de '+monthLabel(month)+'</div>'
+          + '<div class="section-sub">Generado a partir de los ✕ y ½ de '+monthLabel(month)+'</div>'
           + weakHtmlFor(person, kind, month)
         + '</div>'
       + '</div>'
@@ -1245,7 +1304,7 @@
     + '<div class="grid-2">'
       + '<div class="card" style="margin-bottom:16px;">'
         + '<div class="pct-big">'+ring+'<div><div class="pct-num" style="color:'+pctColor+';">'+(pct==null?'—':pct+'%')+'</div><div class="pct-caption">Cumplimiento automático de '+monthLabel(month)+'</div></div></div>'
-        + '<div id="critRows">'+critRowsHtml(person, kind, month)+'</div>'
+        + evalAsHtml() + '<div id="critRows">'+critRowsHtml(person, kind, month)+'</div>'
       + '</div>'
       + '<div>'
         + '<div class="card" style="margin-bottom:16px;">'
@@ -1264,7 +1323,7 @@
         + '</div>'
         + '<div class="card" style="margin-bottom:16px;">'
           + '<div class="section-title">Puntos por fortalecer</div>'
-          + '<div class="section-sub">Generado a partir de los ✕ de '+monthLabel(month)+'</div>'
+          + '<div class="section-sub">Generado a partir de los ✕ y ½ de '+monthLabel(month)+'</div>'
           + weakHtmlFor(person, kind, month)
         + '</div>'
         + '<div class="card">'
@@ -1316,8 +1375,8 @@
     var statsByCrit = crit.map(function(c){
       var total=0, fails=0, oks=0;
       evals.forEach(function(e){
-        var v = e.results && e.results[c.id];
-        if(v===true){ total++; oks++; } else if(v===false){ total++; fails++; }
+        var v = critScore(e.results && e.results[c.id]);
+        if(v!=null){ total++; oks += v; fails += (1 - v); }
       });
       return { label:c.label, total:total, fails:fails, oks:oks, failRate: total ? fails/total : null };
     }).filter(function(s){ return s.total>=2; });
@@ -1326,11 +1385,11 @@
     var alerts = statsByCrit.filter(function(s){ return s.failRate!=null && s.failRate>=0.4; }).sort(function(a,b){ return b.failRate-a.failRate; });
 
     var strongHtml = strong.length ? strong.map(function(s){
-      return '<div class="weak-item"><div class="weak-dot" style="background:var(--ok);"></div><div><div class="weak-text">'+esc(s.label)+'</div><div class="weak-recurrence">Cumplido '+s.oks+' de '+s.total+' meses evaluados</div></div></div>';
+      return '<div class="weak-item"><div class="weak-dot" style="background:var(--ok);"></div><div><div class="weak-text">'+esc(s.label)+'</div><div class="weak-recurrence">Cumplido '+(Math.round(s.oks*10)/10)+' de '+s.total+' meses evaluados</div></div></div>';
     }).join('') : '<div style="padding:8px 2px;color:var(--muted);font-size:12.5px;">Aún no hay suficiente histórico para identificar puntos fuertes consistentes.</div>';
 
     var alertsHtml = alerts.length ? alerts.map(function(s){
-      return '<div class="weak-item"><div class="weak-dot"></div><div><div class="weak-text">'+esc(s.label)+'</div><div class="weak-recurrence hot">Incumplido '+s.fails+' de '+s.total+' meses evaluados — tema recurrente, vale la pena verificarlo</div></div></div>';
+      return '<div class="weak-item"><div class="weak-dot"></div><div><div class="weak-text">'+esc(s.label)+'</div><div class="weak-recurrence hot">Incumplido '+(Math.round(s.fails*10)/10)+' de '+s.total+' meses evaluados — tema recurrente, vale la pena verificarlo</div></div></div>';
     }).join('') : '<div style="padding:8px 2px;color:var(--muted);font-size:12.5px;">Sin temas recurrentes de incumplimiento por ahora.</div>';
 
     var generalAvg = avg(combinedByMonth);
@@ -1412,10 +1471,15 @@
         el.addEventListener('click', function(){
           var row = el.closest('.criterion-row');
           var critId = row.getAttribute('data-crit');
-          var val = el.getAttribute('data-val') === 'true';
-          setEvaluation(person.id, state.monthCursor, critId, val);
+          var val = parseFloat(el.getAttribute('data-val'));
+          var me = currentEvaluator();
+          var ev0 = getEvaluation(person.id, state.monthCursor);
+          var cur = ratingsOf(ev0 && ev0.results && ev0.results[critId])[me.key];
+          setEvaluation(person.id, state.monthCursor, critId, cur === val ? null : val); // volver a pulsar = quitar mi calificación
         });
       });
+      var evalAsSel = document.getElementById('evalAs');
+      if(evalAsSel) evalAsSel.addEventListener('change', function(){ setCurrentEvaluator(evalAsSel.value); render(); });
       if(state.tab === 'minimos'){
         Array.prototype.forEach.call(document.querySelectorAll('[data-action="del-note"]'), function(el){
           el.addEventListener('click', function(){ deleteNote(el.getAttribute('data-id')); });
@@ -1478,7 +1542,10 @@
     var docId = evalDocId(personId, month);
     var ev = getEvaluation(personId, month);
     var results = Object.assign({}, ev && ev.results);
-    results[critId] = val;
+    var me = currentEvaluator();
+    var ratings = Object.assign({}, ratingsOf(results[critId]));
+    if(val == null) delete ratings[me.key]; else ratings[me.key] = val;
+    if(Object.keys(ratings).length) results[critId] = ratings; else delete results[critId];
     var data = { personId: personId, month: month, results: results, updatedAt: Date.now() };
     state.db.collection('evaluations').doc(docId).set(data).catch(function(e){ console.error(e); showToast('No se pudo guardar'); });
   }
