@@ -839,7 +839,10 @@
         return { ok: false, error: (res && res.code === 'unauthorized') ? 'Contraseña incorrecta.' : ((res && res.error) || 'No se pudo iniciar sesión.') };
       }
       return startApp(db).then(function(r){ if(r.ok) savePw(pw, remember); return r; });
-    }, function(){ return { ok: false, error: 'No se pudo conectar con el servidor. Revisa tu conexión e intenta de nuevo.' }; });
+    }, function(e){
+      var det = e ? (e.name === 'AbortError' ? 'tiempo agotado' : String(e.message || e.name || e)) : '';
+      return { ok: false, error: 'No se pudo conectar con el servidor. Revisa tu conexión e intenta de nuevo.' + (det ? ' (detalle: ' + det + ')' : '') };
+    });
   }
 
   function loadPhotos(db){
