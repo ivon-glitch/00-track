@@ -230,6 +230,7 @@
   .owner-count{ display:inline-block; min-width:18px; padding:0 5px; margin-left:4px; border-radius:99px; background:var(--line); color:var(--ink); font-size:11px; text-align:center; }
   .owner-tab.active .owner-count{ background:var(--bg); color:var(--ink); }
   .eval-as{ display:flex; align-items:center; gap:8px; font-size:12px; color:var(--muted); font-weight:600; margin:2px 0 10px; flex-wrap:wrap; }
+  .eval-omit{ display:inline-flex; align-items:center; gap:6px; margin-left:auto; font-size:11.5px; font-weight:600; color:var(--muted); cursor:pointer; }
   .eval-as select{ font:inherit; font-weight:700; color:var(--ink); background:var(--card); border:1px solid var(--line); border-radius:8px; padding:4px 8px; }
 
   .history-item{ display:flex; align-items:center; gap:10px; padding:8px 2px; border-bottom:1px solid var(--line); font-size:12.5px; }
@@ -431,7 +432,7 @@
   .login-card .btn:disabled{ opacity:.6; cursor:default; }
   .app-nav{ align-items:center; flex-wrap:wrap; }
   .app-nav-right{ margin-left:auto; display:flex; align-items:center; gap:4px; }
-  .sync-pill{ display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:700; color:var(--muted); padding:4px 9px; border:1px solid var(--line); border-radius:999px; background:var(--card); }
+  .sync-pill{ cursor:pointer; display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:700; color:var(--muted); padding:4px 9px; border:1px solid var(--line); border-radius:999px; background:var(--card); }
   .sync-dot{ width:7px; height:7px; border-radius:50%; background:var(--muted-2); flex:none; }
   .sync-pill[data-s="ok"] .sync-dot{ background:var(--ok); }
   .sync-pill[data-s="saving"] .sync-dot{ background:#d97706; }
@@ -481,41 +482,61 @@
   }
 
   /* ---------- TOP colaboradores: TOP TALENT vs LOW PERFORMER ---------- */
-  .top-wrap{ padding:10px 32px 60px 32px; max-width:1280px; }
-  .top-legend{ font-size:11.5px; color:var(--muted); line-height:1.55; margin:6px 0 14px 0; }
-  .top-sides{ display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items:start; }
-  .top-panel{ background:var(--card); border:1px solid var(--line); border-radius:14px; box-shadow:var(--shadow); overflow:hidden; }
-  .top-panel-head{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:14px 16px; color:#fff; }
+  .pct-pill.b-g{ background:var(--ok); color:#fff; }
+  .pct-pill.b-y{ background:#eab308; color:#3b2e00; }
+  .pct-pill.b-r{ background:#dc2626; color:#fff; }
+  .pct-pill.b-n{ background:var(--bad-bg); color:var(--muted); }
+  #topView{ flex-direction:column; }
+  .top-page{ display:flex; flex-direction:column; min-height:0; flex:1; }
+  .top-wrap{ padding:10px 32px 24px 32px; max-width:1280px; width:100%; display:flex; flex-direction:column; min-height:0; flex:1; }
+  .top-legend{ font-size:11.5px; color:var(--muted); line-height:1.7; margin:6px 0 12px 0; }
+  .lg{ display:inline-block; padding:0 7px; border-radius:99px; font-weight:800; font-size:10.5px; }
+  .lg.g{ background:var(--ok); color:#fff; } .lg.y{ background:#eab308; color:#3b2e00; } .lg.r{ background:#dc2626; color:#fff; }
+  .top-sides{ display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items:stretch; min-height:0; flex:1; }
+  .top-panel{ background:var(--card); border:1px solid var(--line); border-radius:14px; box-shadow:var(--shadow); overflow:hidden; display:flex; flex-direction:column; min-height:0; }
+  .top-panel-head{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:14px 16px; color:#fff; flex:none; }
   .top-panel.talent .top-panel-head{ background:var(--ok); }
   .top-panel.low .top-panel-head{ background:#dc2626; }
   .top-panel-title{ font-size:15px; font-weight:900; letter-spacing:.4px; }
   .top-panel-sub{ font-size:11px; font-weight:600; opacity:.9; margin-top:2px; }
   .top-panel-count{ font-size:26px; font-weight:900; line-height:1; }
-  .top-row2{ display:grid; grid-template-columns:34px 1fr auto; column-gap:10px; row-gap:6px; align-items:center; padding:12px 16px; border-bottom:1px solid var(--line); cursor:pointer; }
+  .top-list{ overflow-y:auto; flex:1; min-height:0; scrollbar-width:thin; }
+  .top-list::-webkit-scrollbar{ width:8px; } .top-list::-webkit-scrollbar-thumb{ background:var(--line); border-radius:99px; }
+  .top-row2{ --bc:var(--muted-2); display:grid; grid-template-columns:34px 1fr auto; column-gap:10px; row-gap:6px; align-items:center; padding:12px 16px; border-bottom:1px solid var(--line); cursor:pointer; box-shadow:inset 4px 0 0 var(--bc); }
+  .top-row2.b-g{ --bc:var(--ok); } .top-row2.b-y{ --bc:#eab308; } .top-row2.b-r{ --bc:#dc2626; }
   .top-row2:last-child{ border-bottom:none; }
   .top-row2:hover{ background:var(--bg); }
   .top-rank{ font-weight:900; color:var(--muted); font-size:13px; }
   .top-who{ display:flex; align-items:center; gap:10px; min-width:0; }
   .top-who .nm{ font-size:13px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .top-who .ps{ font-size:11px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .top-pct{ font-size:20px; font-weight:900; }
-  .top-panel.talent .top-pct{ color:var(--ok); }
-  .top-panel.low .top-pct{ color:#dc2626; }
+  .top-pct{ font-size:20px; font-weight:900; color:var(--bc); }
   .top-bar{ grid-column:2 / -1; height:6px; border-radius:99px; background:var(--bad-bg); overflow:hidden; }
-  .top-bar i{ display:block; height:100%; border-radius:99px; }
-  .top-panel.talent .top-bar i{ background:var(--ok); }
-  .top-panel.low .top-bar i{ background:#dc2626; }
+  .top-bar i{ display:block; height:100%; border-radius:99px; background:var(--bc); }
   .top-meta{ grid-column:2 / -1; display:flex; flex-wrap:wrap; gap:6px 8px; align-items:center; }
+  .top-ev{ grid-column:2 / -1; font-size:10px; color:var(--muted-2); font-weight:600; letter-spacing:.2px; }
   .top-sub{ font-size:11px; color:var(--muted); font-weight:600; }
   .top-up{ color:var(--ok); font-weight:800; font-size:11px; } .top-down{ color:#dc2626; font-weight:800; font-size:11px; }
   .top-chip{ display:inline-block; font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:99px; border:1px solid var(--line); background:var(--card); color:var(--muted); }
   .top-chip.alert{ color:#b91c1c; border-color:#f0c9c9; }
   .top-empty{ padding:22px 16px; color:var(--muted); font-size:13px; }
-  .top-none{ margin-top:16px; font-size:12px; color:var(--muted); line-height:2; }
-  .top-none .top-chip{ cursor:pointer; }
+  .top-none{ margin-top:14px; flex:none; }
+  .top-none-title{ font-size:12.5px; font-weight:800; }
+  .top-none-hint{ font-size:11px; color:var(--muted); margin:2px 0 8px 0; }
+  .top-none-list{ display:flex; flex-wrap:wrap; gap:8px; max-height:112px; overflow-y:auto; padding-bottom:2px; }
+  .top-none-item{ display:inline-flex; align-items:center; gap:8px; border:1px solid var(--line); background:var(--card); border-radius:99px; padding:4px 6px 4px 12px; font-size:12px; }
+  .top-none-item .nm{ font-weight:700; cursor:pointer; }
+  .top-none-item.omitted{ border-style:dashed; color:var(--muted); }
+  .top-none-item.omitted .nm{ text-decoration:line-through; }
+  .top-omit-btn{ font-family:inherit; font-size:10.5px; font-weight:800; border:1px solid var(--line); background:var(--bg); color:var(--ink); border-radius:99px; padding:3px 10px; cursor:pointer; }
+  .top-omit-btn:hover{ border-color:var(--ink); }
+  @media (min-width: 861px){
+    #topView{ overflow:hidden; }
+  }
   @media (max-width: 860px){
     .top-wrap{ padding:10px 16px 48px 16px; }
     .top-sides{ grid-template-columns:1fr; }
+    .top-list{ overflow:visible; }
   }
 </style>
 </head>
@@ -690,6 +711,19 @@
     var isToday = candidate.getTime() === today.getTime();
     return { date: candidate, years: candidate.getFullYear()-d.getFullYear(), isToday: isToday };
   }
+  // Renovación: todas las vigencias se cuentan desde la fecha de ingreso a 00, no desde la renovación anterior.
+  // Hitos (días desde el ingreso): 90 → 180 → 365 → 730 → luego cada 365 (1,095 · 1,460 · …).
+  // El hito vigente es el primero que aún no ha pasado (el mismo día del hito cuenta como "hoy").
+  function renewalInfo(hireDateStr){
+    var d = parseYMD(hireDateStr);
+    if(!d) return null;
+    var days = daysSince(hireDateStr), steps = [90, 180, 365, 730], milestone = null;
+    for(var i = 0; i < steps.length; i++){ if(days <= steps[i]){ milestone = steps[i]; break; } }
+    if(milestone == null) milestone = Math.ceil(days / 365) * 365;
+    var date = new Date(d.getFullYear(), d.getMonth(), d.getDate() + milestone);
+    var ymd = date.getFullYear()+'-'+String(date.getMonth()+1).padStart(2,'0')+'-'+String(date.getDate()).padStart(2,'0');
+    return { milestone: milestone, ymd: ymd, daysLeft: milestone - days, days: days };
+  }
   function antiguedadTexto(hireDateStr){
     var d = parseYMD(hireDateStr);
     if(!d) return '';
@@ -735,6 +769,8 @@
     var GETMODE_KEY = 'cerocero_00track_getmode', CACHE_KEY = 'cerocero_00track_cache';
     // si el navegador bloquea el POST (algunos celulares), se usa GET con la petición en la URL; se recuerda en el dispositivo
     var getMode = false; try{ getMode = localStorage.getItem(GETMODE_KEY) === '1'; }catch(e){}
+    // En iPhone/iPad (Safari y, sobre todo, la app agregada a inicio) el POST entre dominios falla seguido: se usa GET desde el inicio
+    try{ if(/iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1) || navigator.standalone) getMode = true; }catch(e){}
     function setGetMode(){ getMode = true; try{ localStorage.setItem(GETMODE_KEY, '1'); }catch(e){} }
     function saveCache(d){ try{ var str = JSON.stringify(d); if(str.length < 3000000) localStorage.setItem(CACHE_KEY, str); }catch(e){} }
     function b64url(str){ return btoa(unescape(encodeURIComponent(str))).replace(/\+/g,'-').replace(/\//g,'_'); }
@@ -786,16 +822,20 @@
       });
     }
 
-    function pull(force){
+    // Al volver a la app (iPhone la suspende) la primera petición suele fallar: se reintenta rápido antes de marcar "sin conexión"
+    function pull(force, attempt){
+      attempt = attempt || 0;
       if(stopped || inflight || pending.length) return Promise.resolve();
       var seq = writeSeq;
+      function retry(){ if(attempt < 3){ setTimeout(function(){ pull(force, attempt + 1); }, [1500, 4000, 9000][attempt]); } }
       return rpc({ action: 'getAll', since: force ? null : ver }).then(function(res){
-        if(!res || !res.ok){ status('error'); return; }
+        if(!res || !res.ok){ api.lastError = (res && res.error) || 'respuesta inválida'; if(attempt >= 2) status('error'); retry(); return; }
         if(seq !== writeSeq || pending.length || inflight) return; // escribieron mientras leíamos: no pisar
         if(!res.unchanged){ applyServer(res.data); saveCache(res.data); }
-        ver = res.ver; status('ok');
-      }).catch(function(){ status('offline'); });
+        ver = res.ver; api.lastError = null; status('ok');
+      }).catch(function(e){ api.lastError = (e && (e.name === 'AbortError' ? 'tiempo agotado' : e.message)) || 'sin respuesta'; if(attempt >= 2) status('offline'); retry(); });
     }
+    api.refresh = function(){ ver = null; return pull(true); };
 
     function scheduleFlush(ms){
       if(flushTimer) clearTimeout(flushTimer);
@@ -886,6 +926,8 @@
     function startPolling(){
       pollTimer = setInterval(function(){ if(!document.hidden) pull(false); }, POLL_MS);
       document.addEventListener('visibilitychange', function(){ if(!document.hidden) pull(false); });
+      window.addEventListener('pageshow', function(){ pull(false); });
+      window.addEventListener('focus', function(){ pull(false); });
       window.addEventListener('online', function(){ pull(false); if(pending.length) scheduleFlush(0); });
       window.addEventListener('beforeunload', function(e){
         if(pending.length || inflight){ e.preventDefault(); e.returnValue = ''; }
@@ -936,6 +978,15 @@
 
   var SYNC_LABELS = { ok:'Sincronizado', saving:'Guardando…', offline:'Sin conexión', error:'Error al guardar', loading:'Conectando…' };
   var lastSyncState = 'loading';
+  document.getElementById('syncPill').addEventListener('click', function(){
+    if(!state.db || !state.db.refresh){ return; }
+    showToast('Sincronizando…');
+    state.db.refresh().then(function(){
+      var pill = document.getElementById('syncPill');
+      if(pill.getAttribute('data-s') !== 'ok' && state.db.lastError) showToast('Sin conexión: ' + state.db.lastError);
+      else showToast('Sincronizado');
+    });
+  });
   function setSyncStatus(s){
     var pill = document.getElementById('syncPill');
     if(pill){ pill.setAttribute('data-s', s); pill.querySelector('.sync-text').textContent = SYNC_LABELS[s] || s; }
@@ -997,6 +1048,7 @@
       document.body.classList.remove('locked');
       try{ var cached = JSON.parse(localStorage.getItem(PHOTOS_KEY) || 'null'); if(cached && typeof cached === 'object') state.photos = cached; }catch(e){}
       render();
+      ensureGlobalData();
       loadPhotos(db);
       setInterval(function(){ if(!document.hidden) loadPhotos(db); }, 5*60*1000);
   }
@@ -1178,6 +1230,7 @@
     var crit = criteriaForPerson(person, kind);
     if(!crit.length) return null;
     var ev = getEvaluation(personId, month);
+    if(ev && ev.omit === true) return null; // persona omitida en ese mes: no entra en evaluaciones
     var results = (ev && ev.results) || {};
     var total = crit.length, done = 0, answered = 0;
     crit.forEach(function(c){
@@ -1186,6 +1239,17 @@
     });
     if(answered === 0) return null;
     return Math.round((done/total)*100);
+  }
+  function isOmitted(personId, month){ var ev = getEvaluation(personId, month); return !!(ev && ev.omit === true); }
+  // Marca/quita "no se evalúa a esta persona este mes". Conserva intactos los resultados y la calificación ya capturados.
+  function setOmit(personId, month, flag){
+    if(!state.db){ showToast('Sin conexión a datos.'); return; }
+    var ev = getEvaluation(personId, month);
+    var data = { personId: personId, month: month, results: (ev && ev.results) || {}, omit: !!flag, updatedAt: Date.now() };
+    if(ev && typeof ev.manualScore === 'number') data.manualScore = ev.manualScore;
+    state.db.collection('evaluations').doc(evalDocId(personId, month)).set(data)
+      .then(function(){ showToast(flag ? 'Omitido en '+monthLabel(month) : 'Se vuelve a evaluar en '+monthLabel(month)); })
+      .catch(function(e){ console.error(e); showToast('No se pudo guardar'); });
   }
   function getManualScore(personId, month){
     var ev = getEvaluation(personId, month);
@@ -1220,7 +1284,7 @@
     var keep = (key === lastRenderKey) ? { y: window.scrollY, m: mainEl.scrollTop, o: orgEl.scrollTop, t: topEl.scrollTop } : null;
     document.getElementById('app').style.display = (isOrg || isTop) ? 'none' : 'flex';
     orgEl.style.display = isOrg ? 'block' : 'none';
-    topEl.style.display = isTop ? 'block' : 'none';
+    topEl.style.display = isTop ? 'flex' : 'none';
     document.getElementById('navTracker').classList.toggle('active', !isOrg && !isTop);
     document.getElementById('navTop').classList.toggle('active', isTop);
     document.getElementById('navOrgchart').classList.toggle('active', isOrg);
@@ -1240,17 +1304,40 @@
   function ensureGlobalData(){ // el ranking necesita las evaluaciones y los pendientes de TODO el equipo
     if(globalSubscribed || !state.db) return;
     globalSubscribed = true;
-    subscribeCollection('evaluations', function(rows){ state.evaluations = rows; if(state.appView === 'top') render(); });
-    subscribeCollection('actionables', function(rows){ state.actionables = rows; if(state.appView === 'top') render(); });
+    subscribeCollection('evaluations', function(rows){ state.evaluations = rows; render(); });
+    subscribeCollection('actionables', function(rows){ state.actionables = rows; render(); });
   }
   function avgOf(a){ return a.length ? Math.round(a.reduce(function(x,y){ return x+y; },0)/a.length) : null; }
-  // Métricas de riesgo de una persona al mes 'month' (ventana de 6 meses).
-  // Cumplimiento ponderado = 60% último mes evaluado + 40% promedio de los meses previos (hasta 2 más dentro de los últimos 3).
+  // Bandas de color por cumplimiento: 100–80 verde · 79–60 amarillo · 59–0 rojo
+  function bandOf(pct){ return pct == null ? 'n' : (pct >= 80 ? 'g' : (pct >= 60 ? 'y' : 'r')); }
+  // Cumplimiento de UN evaluador en un mes (solo sobre los criterios que él calificó)
+  function pctByEvaluator(person, month, key){
+    var ev = getEvaluation(person.id, month);
+    if(!ev || !ev.results) return null;
+    function one(kind){
+      var crit = criteriaForPerson(person, kind), done = 0, answered = 0;
+      crit.forEach(function(c){ var v = ratingsOf(ev.results[c.id])[key]; if(typeof v === 'number'){ done += v; answered++; } });
+      return answered ? done / answered : null;
+    }
+    var b = one('bases'), m = one('minimos'), vals = [];
+    if(b != null) vals.push(b);
+    if(m != null) vals.push(m);
+    return vals.length ? Math.round(vals.reduce(function(x,y){ return x+y; },0)/vals.length*100) : null;
+  }
+  function evaluatorsOfMonth(person, month){
+    var ev = getEvaluation(person.id, month), keys = {};
+    if(ev && ev.results) Object.keys(ev.results).forEach(function(cid){ Object.keys(ratingsOf(ev.results[cid])).forEach(function(k){ keys[k] = true; }); });
+    return Object.keys(keys);
+  }
+  // Métricas de una persona al mes 'month' (ventana de 6 meses).
+  // Cumplimiento ponderado = 60% último mes evaluado + 40% promedio de los meses previos (dentro de los últimos 3).
   function personMetrics(p, month){
+    var out = { person: p, evaluated: 0, latest: null, latestMonth: null, bases: null, minimos: null, weighted: null, trend: null, recurrent: [], open: openCount(p.id), status: 'none', omitted: false, band: 'n', evaluators: [] };
+    if(isOmitted(p.id, month)){ out.omitted = true; out.status = 'omit'; return out; }
     var months = lastMonths(month, 6);
     var series = months.map(function(m){ return { m: m, pct: computePct(p.id, m) }; });
     var valid = series.filter(function(x){ return x.pct != null; });
-    var out = { person: p, evaluated: valid.length, latest: null, latestMonth: null, bases: null, minimos: null, weighted: null, trend: null, recurrent: [], open: openCount(p.id), status: 'none', risk: -1 };
+    out.evaluated = valid.length;
     if(!valid.length) return out;
     var latest = valid[valid.length-1];
     out.latest = latest.pct; out.latestMonth = latest.m;
@@ -1261,7 +1348,6 @@
     var recentVals = series.slice(-3).filter(function(x){ return x.pct != null; }).map(function(x){ return x.pct; });
     var priorVals = series.slice(0,3).filter(function(x){ return x.pct != null; }).map(function(x){ return x.pct; });
     if(recentVals.length && priorVals.length) out.trend = avgOf(recentVals) - avgOf(priorVals);
-    // criterios con ✕ (calificación < 50%) en 2 o más de los últimos 3 meses
     var crit = criteriaForPerson(p, 'bases').concat(criteriaForPerson(p, 'minimos'));
     crit.forEach(function(c){
       var fails = 0;
@@ -1273,7 +1359,9 @@
     });
     // Clasificación: por debajo de 50% = LOW PERFORMER; 50% o más = TOP TALENT
     out.status = out.weighted < 50 ? 'low' : 'talent';
-    out.risk = 100 - out.weighted;
+    out.band = bandOf(out.weighted);
+    out.evaluators = evaluatorsOfMonth(p, latest.m).map(function(k){ var info = evaluatorInfo(k); return { short: info.short, name: info.name, pct: pctByEvaluator(p, latest.m, k) }; })
+      .filter(function(x){ return x.pct != null; });
     return out;
   }
   function topRowHtml(r, pos){
@@ -1282,12 +1370,14 @@
     var last = '<span class="top-sub">'+monthLabel(r.latestMonth).split(' ')[0].slice(0,3)+': '+r.latest+'% · BASES '+(r.bases==null?'—':r.bases+'%')+' · MÍNIMOS '+(r.minimos==null?'—':r.minimos+'%')+'</span>';
     var alerts = r.recurrent.length ? '<span class="top-chip alert" title="'+esc(r.recurrent.join(' · '))+'">'+r.recurrent.length+' alerta'+(r.recurrent.length===1?'':'s')+' recurrente'+(r.recurrent.length===1?'':'s')+'</span>' : '';
     var open = r.open ? '<span class="top-chip">'+r.open+' pendiente'+(r.open===1?'':'s')+'</span>' : '';
-    return '<div class="top-row2" data-person="'+p.id+'">'
+    var evs = r.evaluators.length ? '<div class="top-ev" title="Cumplimiento según cada evaluador (sobre los criterios que calificó)">'+r.evaluators.map(function(x){ return '<span title="'+esc(x.name)+'">'+esc(x.short)+' '+x.pct+'%</span>'; }).join(' · ')+'</div>' : '';
+    return '<div class="top-row2 b-'+r.band+'" data-person="'+p.id+'">'
       + '<div class="top-rank">#'+pos+'</div>'
       + '<div class="top-who"><div class="avatar">'+avatarInner(p)+'</div><div style="min-width:0;"><div class="nm">'+esc(p.name)+'</div><div class="ps">'+esc(p.position||'')+'</div></div></div>'
       + '<div class="top-pct">'+r.weighted+'%</div>'
       + '<div class="top-bar"><i style="width:'+r.weighted+'%;"></i></div>'
       + '<div class="top-meta">'+last+' '+trend+' '+alerts+' '+open+'</div>'
+      + evs
     + '</div>';
   }
   function renderTopView(){
@@ -1295,32 +1385,47 @@
     var month = state.monthCursor;
     var people = state.people.filter(function(p){ return p.trackEvaluation !== false; });
     var rows = people.map(function(p){ return personMetrics(p, month); });
-    var talent = rows.filter(function(r){ return r.status === 'talent'; }).sort(function(a,b){ return (b.weighted - a.weighted) || (a.person.name||'').localeCompare(b.person.name||''); });
-    var low = rows.filter(function(r){ return r.status === 'low'; }).sort(function(a,b){ return (a.weighted - b.weighted) || (a.person.name||'').localeCompare(b.person.name||''); });
-    var none = rows.filter(function(r){ return r.status === 'none'; }).sort(function(a,b){ return (a.person.name||'').localeCompare(b.person.name||''); });
+    var byName = function(a,b){ return (a.person.name||'').localeCompare(b.person.name||''); };
+    var talent = rows.filter(function(r){ return r.status === 'talent'; }).sort(function(a,b){ return (b.weighted - a.weighted) || byName(a,b); });
+    var low = rows.filter(function(r){ return r.status === 'low'; }).sort(function(a,b){ return (a.weighted - b.weighted) || byName(a,b); });
+    var pend = rows.filter(function(r){ return r.status === 'none'; }).sort(byName);
+    var omit = rows.filter(function(r){ return r.status === 'omit'; }).sort(byName);
     function panel(cls, title, sub, list){
       return '<div class="top-panel '+cls+'"><div class="top-panel-head"><div><div class="top-panel-title">'+title+'</div><div class="top-panel-sub">'+sub+'</div></div><div class="top-panel-count">'+list.length+'</div></div>'
-        + (list.length ? list.map(function(r, i){ return topRowHtml(r, i+1); }).join('') : '<div class="top-empty">Nadie en esta categoría por ahora.</div>')
+        + '<div class="top-list">'+(list.length ? list.map(function(r, i){ return topRowHtml(r, i+1); }).join('') : '<div class="top-empty">Nadie en esta categoría por ahora.</div>')+'</div>'
       + '</div>';
     }
-    var noneHtml = none.length
-      ? '<div class="top-none"><b>Sin evaluar en el periodo ('+none.length+'):</b> '+none.map(function(r){ return '<span class="top-chip" data-person="'+r.person.id+'">'+esc(r.person.name)+'</span>'; }).join(' ')+'</div>' : '';
-    el.innerHTML = '<div class="orgchart-topbar"><div><h1>TOP COLABORADORES</h1>'
+    function noneChip(r, omitted){
+      return '<span class="top-none-item'+(omitted?' omitted':'')+'"><span class="nm" data-person="'+r.person.id+'">'+esc(r.person.name)+'</span>'
+        + '<button class="top-omit-btn" data-omit="'+r.person.id+'" data-flag="'+(omitted?'0':'1')+'" title="'+(omitted?'Volver a evaluar en este mes':'No evaluar a esta persona este mes')+'">'+(omitted?'↺ Reactivar':'Omitir')+'</button></span>';
+    }
+    var noneHtml = '<div class="top-none"><div class="top-none-title">Sin evaluación en '+esc(monthLabel(month))+' ('+(pend.length+omit.length)+')</div>'
+      + '<div class="top-none-hint">Quien no se evaluará este mes puede omitirse: deja de contar en las evaluaciones y en el ranking.</div>'
+      + '<div class="top-none-list">'
+        + pend.map(function(r){ return noneChip(r,false); }).join('')
+        + omit.map(function(r){ return noneChip(r,true); }).join('')
+        + (!pend.length && !omit.length ? '<span class="top-sub">Todos tienen evaluación este mes.</span>' : '')
+      + '</div></div>';
+    el.innerHTML = '<div class="top-page">'
+      + '<div class="orgchart-topbar"><div><h1>TOP COLABORADORES</h1>'
         + '<div class="section-sub" style="margin:2px 0 0 0;">Ranking según las evaluaciones mensuales (BASES + MÍNIMOS) y el diagnóstico de cada persona.</div></div>'
         + '<div class="month-nav"><button class="month-btn" id="topPrev">‹</button><div class="month-label">'+monthLabel(month)+'</div><button class="month-btn" id="topNext">›</button></div></div>'
       + '<div class="top-wrap">'
-        + '<div class="top-legend"><b>Cómo se calcula:</b> cumplimiento = 60% del último mes evaluado + 40% de los meses previos (últimos 3). '
-          + '<b>TOP TALENT:</b> 50% o más. <b>LOW PERFORMER:</b> menos de 50%. Toca a una persona para ver su diagnóstico.</div>'
+        + '<div class="top-legend"><b>TOP TALENT:</b> 50% o más · <b>LOW PERFORMER:</b> menos de 50%. Color de cada persona: <span class="lg g">80–100%</span> <span class="lg y">60–79%</span> <span class="lg r">0–59%</span>. '
+          + 'Cumplimiento = 60% del último mes evaluado + 40% de los previos. Toca a una persona para ver su diagnóstico.</div>'
         + '<div class="top-sides">'
           + panel('talent','TOP TALENT','50% o más de cumplimiento · de mayor a menor', talent)
           + panel('low','LOW PERFORMER','Menos de 50% de cumplimiento · de menor a mayor', low)
         + '</div>'
         + noneHtml
-      + '</div>';
+      + '</div></div>';
     document.getElementById('topPrev').addEventListener('click', function(){ state.monthCursor = shiftMonth(state.monthCursor,-1); render(); });
     document.getElementById('topNext').addEventListener('click', function(){ state.monthCursor = shiftMonth(state.monthCursor,1); render(); });
-    Array.prototype.forEach.call(el.querySelectorAll('[data-person]'), function(row){
+    Array.prototype.forEach.call(el.querySelectorAll('.top-row2[data-person], .top-none-item .nm[data-person]'), function(row){
       row.addEventListener('click', function(){ state.selectedPersonId = row.getAttribute('data-person'); state.tab = 'diagnostico'; state.appView = 'tracker'; render(); });
+    });
+    Array.prototype.forEach.call(el.querySelectorAll('[data-omit]'), function(btn){
+      btn.addEventListener('click', function(e){ e.stopPropagation(); setOmit(btn.getAttribute('data-omit'), month, btn.getAttribute('data-flag') === '1'); });
     });
   }
 
@@ -1337,10 +1442,11 @@
       return;
     }
     function personRow(p){
-      var pct = computePct(p.id, state.monthCursor);
+      var met = personMetrics(p, state.monthCursor), pct = met.weighted;
       var oc = openCount(p.id);
       var active = p.id === state.selectedPersonId ? ' active' : '';
-      var pctHtml = pct==null ? '' : '<span class="pct-pill'+(pct<80?' low':'')+'">'+pct+'%</span>';
+      var pctHtml = met.omitted ? '<span class="pct-pill b-n" title="Omitido este mes">omitido</span>'
+        : (pct==null ? '' : '<span class="pct-pill b-'+met.band+'" title="Cumplimiento global">'+pct+'%</span>');
       return '<div class="person-item'+active+'" data-id="'+p.id+'">'
         + '<div class="avatar">'+avatarInner(p)+'</div>'
         + '<div class="p-meta"><div class="p-name">'+esc(p.name)+'</div><div class="p-pos">'+esc(p.position||'—')+'</div></div>'
@@ -1430,7 +1536,11 @@
     chips.push('<span class="hire-chip" title="Fecha de ingreso">Ingresó '+esc(formatDateEs(person.hireDate))+'</span>');
     chips.push('<span class="hire-chip" title="Días en 00 a día de hoy">'+days+' días en 00'+(antig?' ('+esc(antig)+')':'')+'</span>');
     if(annivTxt) chips.push('<span class="hire-chip" title="Próximo aniversario">Aniversario: '+esc(annivTxt)+'</span>');
-    if(person.renewalDate) chips.push('<span class="hire-chip" title="Próxima renovación de contrato">Renovación: '+esc(formatDateEs(person.renewalDate))+'</span>');
+    var ren = renewalInfo(person.hireDate);
+    if(ren){
+      var left = ren.daysLeft === 0 ? '¡hoy!' : (ren.daysLeft === 1 ? 'falta 1 día' : 'faltan '+ren.daysLeft+' días');
+      chips.push('<span class="hire-chip" title="Vigencia hasta el día '+ren.milestone+' desde su ingreso a 00 (90 → 180 → 365 → 730 → cada 365 días)">Renovación: '+esc(formatDateEs(ren.ymd))+' · día '+ren.milestone+' · '+left+'</span>');
+    }
     return '<div class="hire-chips">'+chips.join('')+'</div>';
   }
   // Cada pendiente tiene un "dueño" (owner): de quién es ese pendiente con el integrante. Los anteriores sin dueño = Emmanuel.
@@ -1555,7 +1665,8 @@
   function evalAsHtml(person){
     var me = currentEvaluator(person);
     return '<div class="eval-as">Evaluando como '
-      + '<select id="evalAs">'+evaluatorOptions(person).map(function(ev){ return '<option value="'+ev.key+'"'+(ev.key===me.key?' selected':'')+'>'+esc(ev.name)+'</option>'; }).join('')+'</select></div>';
+      + '<select id="evalAs">'+evaluatorOptions(person).map(function(ev){ return '<option value="'+ev.key+'"'+(ev.key===me.key?' selected':'')+'>'+esc(ev.name)+'</option>'; }).join('')+'</select>'
+      + '<label class="eval-omit"><input type="checkbox" id="omitChk"'+(isOmitted(person.id, state.monthCursor)?' checked':'')+'> No evaluar a esta persona en '+esc(monthLabel(state.monthCursor))+'</label></div>';
   }
   function historyRowsHtml(person, kind, month){
     var months6 = lastMonths(month, 6);
@@ -1837,6 +1948,8 @@
           setEvaluation(person.id, state.monthCursor, critId, cur === val ? null : val); // volver a pulsar = quitar mi calificación
         });
       });
+      var omitChk = document.getElementById('omitChk');
+      if(omitChk) omitChk.addEventListener('change', function(){ setOmit(person.id, state.monthCursor, omitChk.checked); });
       var evalAsSel = document.getElementById('evalAs');
       if(evalAsSel) evalAsSel.addEventListener('change', function(){ setCurrentEvaluator(evalAsSel.value); render(); });
       if(state.tab === 'minimos'){
@@ -1921,6 +2034,8 @@
     if(val == null) delete ratings[me.key]; else ratings[me.key] = val;
     if(Object.keys(ratings).length) results[critId] = ratings; else delete results[critId];
     var data = { personId: personId, month: month, results: results, updatedAt: Date.now() };
+    if(ev && typeof ev.manualScore === 'number') data.manualScore = ev.manualScore;
+    if(ev && ev.omit === true) data.omit = true;
     state.db.collection('evaluations').doc(docId).set(data).catch(function(e){ console.error(e); showToast('No se pudo guardar'); });
   }
   function setManualScore(personId, month, score){
@@ -1928,6 +2043,7 @@
     var docId = evalDocId(personId, month);
     var ev = getEvaluation(personId, month);
     var data = { personId: personId, month: month, results: (ev && ev.results) || {}, manualScore: score, updatedAt: Date.now() };
+    if(ev && ev.omit === true) data.omit = true;
     state.db.collection('evaluations').doc(docId).set(data).then(function(){ showToast('Calificación guardada'); }).catch(function(e){ console.error(e); showToast('No se pudo guardar'); });
   }
   function groupsByKind(kind){
@@ -2028,8 +2144,8 @@
       + '</select><p class="hint" style="margin:4px 0 0 0;">Para ubicarlo rápido en la lista lateral y en el organigrama.</p></div>'
       + '<div class="field"><label>Fecha de ingreso</label><input type="date" id="fHireDate" value="'+(existing&&existing.hireDate?esc(existing.hireDate):'')+'">'
       + '<p class="hint" style="margin:4px 0 0 0;">Con ella se calculan solos los días en 00 y el próximo aniversario.</p></div>'
-      + '<div class="field"><label>Próxima renovación de contrato</label><input type="date" id="fRenewalDate" value="'+(existing&&existing.renewalDate?esc(existing.renewalDate):'')+'">'
-      + '<p class="hint" style="margin:4px 0 0 0;">Se captura a mano — cada quien tiene su propio periodo de renovación.</p></div>'
+      + '<div class="field"><label>Próxima renovación de contrato</label><div style="font-size:12.5px;font-weight:700;">'+(function(){ var r = existing && existing.hireDate ? renewalInfo(existing.hireDate) : null; return r ? esc(formatDateEs(r.ymd))+' · día '+r.milestone : '— (se calcula al capturar la fecha de ingreso)'; })()+'</div>'
+      + '<p class="hint" style="margin:4px 0 0 0;">Se calcula sola desde la fecha de ingreso: 90 días, luego 180, 365, 730 y después cada 365 días.</p></div>'
       + '<div class="field"><label>Tipo de BASES</label><select id="fBasesGroup">'+basesOpts+'</select>'
       + '<p class="hint" style="margin:4px 0 0 0;">Si no es claro cuáles BASES le corresponden por su posición, elígelas aquí manualmente.</p></div>'
       + '<div class="field"><label>Tipo de MÍNIMOS</label><select id="fMinimosGroup">'+minimosOpts+'</select>'
@@ -2056,9 +2172,8 @@
       var area = ov.querySelector('#fArea').value;
       var reportsTo = ov.querySelector('#fReportsTo').value || null;
       var hireDate = ov.querySelector('#fHireDate').value || null;
-      var renewalDate = ov.querySelector('#fRenewalDate').value || null;
       var id = existing ? existing.id : uid('p');
-      var data = { name:name, position:pos, area:area, reportsTo:reportsTo, hireDate:hireDate, renewalDate:renewalDate };
+      var data = { name:name, position:pos, area:area, reportsTo:reportsTo, hireDate:hireDate };
       var op = existing
         ? state.db.collection('people').doc(id).update(data)
         : state.db.collection('people').doc(id).set(Object.assign({ createdAt: Date.now() }, data));
