@@ -1390,7 +1390,7 @@
     var byName = function(a,b){ return (a.person.name||'').localeCompare(b.person.name||''); };
     var talent = rows.filter(function(r){ return r.status === 'talent'; }).sort(function(a,b){ return (b.weighted - a.weighted) || byName(a,b); });
     var mid = rows.filter(function(r){ return r.status === 'mid'; }).sort(function(a,b){ return (b.weighted - a.weighted) || byName(a,b); });
-    var low = rows.filter(function(r){ return r.status === 'low'; }).sort(function(a,b){ return (a.weighted - b.weighted) || byName(a,b); });
+    var low = rows.filter(function(r){ return r.status === 'low'; }).sort(function(a,b){ return (b.weighted - a.weighted) || byName(a,b); });
     var pend = rows.filter(function(r){ return r.status === 'none'; }).sort(byName);
     var omit = rows.filter(function(r){ return r.status === 'omit'; }).sort(byName);
     function panel(cls, title, sub, list){
@@ -1417,9 +1417,9 @@
         + '<div class="top-legend"><span class="lg g">TOP PERFORMER 80–100%</span> <span class="lg y">MID PERFORMER 60–79%</span> <span class="lg r">LOW PERFORMER 0–59%</span> '
           + 'Cumplimiento = 60% del último mes evaluado + 40% de los previos. Toca a una persona para ver su diagnóstico.</div>'
         + '<div class="top-sides">'
-          + panel('talent','TOP PERFORMER','80% a 100% · de mayor a menor', talent)
-          + panel('mid','MID PERFORMER','60% a 79% · de mayor a menor', mid)
-          + panel('low','LOW PERFORMER','0% a 59% · de menor a mayor', low)
+          + panel('talent','TOP PERFORMER','100% a 80% · de mayor a menor', talent)
+          + panel('mid','MID PERFORMER','79% a 60% · de mayor a menor', mid)
+          + panel('low','LOW PERFORMER','59% a 0% · de mayor a menor', low)
         + '</div>'
         + noneHtml
       + '</div></div>';
@@ -1623,11 +1623,29 @@
       .replace(/\*\*(.+?)\*\*/g,'$1').replace(/__(.+?)__/g,'$1').replace(/`([^`]+)`/g,'$1')
       .replace(/\*\*/g,'').trim();
   }
+  // Separa un texto aplanado: los títulos "### …" se descartan y cada " - " inicia un punto nuevo
+  function flatSplit(t){
+    t = String(t||'').replace(/\u00a0/g,' ').trim();
+    if(!(/(^|\s)#{1,6}\s/.test(t) || /^[-*•]\s/.test(t))) return [];
+    var parts = t.split(/(?:^|\s)#{1,6}\s+/), out = [];
+    parts.forEach(function(seg, i){
+      var pieces = seg.split(/\s+[-•*–]\s+(?=\S)/).map(function(x){ return x.trim(); }).filter(Boolean);
+      if(i > 0 && pieces.length > 1) pieces.shift();   // el primer fragmento tras "###" es el título de sección
+      else if(i > 0 && pieces.length === 1) return;    // título suelto sin puntos
+      pieces.forEach(function(x){ var c = cleanItemText(x); if(c) out.push(c); });
+    });
+    return out;
+  }
   // Devuelve la lista de elementos de un texto pegado: una nota por cada viñeta; si no hay viñetas, el texto completo limpio.
   function parseBulletItems(text){
     if(!text) return [];
     var lines = String(text).replace(/\r/g,'').split('\n').map(function(l){ return l.trim(); }).filter(Boolean);
     var bullets = lines.filter(function(l){ return /^(?:[-*•–]\s+|\d+[.)]\s+|[-*]\s*\[[ xX]?\])/.test(l); });
+    if(bullets.length <= 1){
+      // El copiado a veces aplana todo en un solo párrafo: "### Título - punto - punto ### Otro título - punto…"
+      var flat = flatSplit(lines.join(' '));
+      if(flat.length > 1) return flat;
+    }
     var items = (bullets.length ? bullets : [lines.join(' ')]).map(cleanItemText).filter(Boolean);
     return items;
   }
@@ -1925,6 +1943,7 @@
       input.addEventListener('keydown', function(e){ if(e.key==='Enter') submit(); });
       function importGranolaText(text){
         var items = parseGranolaItems(text).map(cleanItemText).filter(Boolean);
+        if(items.length <= 1){ var alt = parseBulletItems(text); if(alt.length > 1) items = alt; }
         if(items.length <= 1){ // una sola viñeta: se limpia y se deja en el campo para confirmar con Enter
           var one = parseBulletItems(text);
           if(one.length === 1 && one[0] !== String(text).trim()){ input.value = one[0]; return true; }
