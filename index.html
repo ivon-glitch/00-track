@@ -138,6 +138,7 @@
     font-size:10.5px; font-weight:700; color:var(--muted); background:var(--bg); border:1px solid var(--line);
     border-radius:999px; padding:3px 9px; white-space:nowrap;
   }
+  @media (max-width: 860px){ .hire-chip{ white-space:normal; max-width:100%; line-height:1.35; border-radius:12px; } html,body{ overflow-x:hidden; max-width:100%; } }
 
   .tabs{ display:flex; gap:6px; padding:20px 32px 0 32px; border-bottom:1px solid var(--line); }
   .tab{
@@ -492,10 +493,11 @@
   .top-legend{ font-size:11.5px; color:var(--muted); line-height:1.7; margin:6px 0 12px 0; }
   .lg{ display:inline-block; padding:0 7px; border-radius:99px; font-weight:800; font-size:10.5px; }
   .lg.g{ background:var(--ok); color:#fff; } .lg.y{ background:#eab308; color:#3b2e00; } .lg.r{ background:#dc2626; color:#fff; }
-  .top-sides{ display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items:stretch; min-height:0; flex:1; }
+  .top-sides{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; align-items:stretch; min-height:0; flex:1; }
   .top-panel{ background:var(--card); border:1px solid var(--line); border-radius:14px; box-shadow:var(--shadow); overflow:hidden; display:flex; flex-direction:column; min-height:0; }
   .top-panel-head{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:14px 16px; color:#fff; flex:none; }
   .top-panel.talent .top-panel-head{ background:var(--ok); }
+  .top-panel.mid .top-panel-head{ background:#eab308; color:#3b2e00; }
   .top-panel.low .top-panel-head{ background:#dc2626; }
   .top-panel-title{ font-size:15px; font-weight:900; letter-spacing:.4px; }
   .top-panel-sub{ font-size:11px; font-weight:600; opacity:.9; margin-top:2px; }
@@ -1358,7 +1360,7 @@
       if(fails >= 2) out.recurrent.push(c.label);
     });
     // Clasificación: por debajo de 50% = LOW PERFORMER; 50% o más = TOP TALENT
-    out.status = out.weighted < 50 ? 'low' : 'talent';
+    out.status = out.weighted >= 80 ? 'talent' : (out.weighted >= 60 ? 'mid' : 'low');
     out.band = bandOf(out.weighted);
     out.evaluators = evaluatorsOfMonth(p, latest.m).map(function(k){ var info = evaluatorInfo(k); return { short: info.short, name: info.name, pct: pctByEvaluator(p, latest.m, k) }; })
       .filter(function(x){ return x.pct != null; });
@@ -1387,6 +1389,7 @@
     var rows = people.map(function(p){ return personMetrics(p, month); });
     var byName = function(a,b){ return (a.person.name||'').localeCompare(b.person.name||''); };
     var talent = rows.filter(function(r){ return r.status === 'talent'; }).sort(function(a,b){ return (b.weighted - a.weighted) || byName(a,b); });
+    var mid = rows.filter(function(r){ return r.status === 'mid'; }).sort(function(a,b){ return (b.weighted - a.weighted) || byName(a,b); });
     var low = rows.filter(function(r){ return r.status === 'low'; }).sort(function(a,b){ return (a.weighted - b.weighted) || byName(a,b); });
     var pend = rows.filter(function(r){ return r.status === 'none'; }).sort(byName);
     var omit = rows.filter(function(r){ return r.status === 'omit'; }).sort(byName);
@@ -1411,11 +1414,12 @@
         + '<div class="section-sub" style="margin:2px 0 0 0;">Ranking según las evaluaciones mensuales (BASES + MÍNIMOS) y el diagnóstico de cada persona.</div></div>'
         + '<div class="month-nav"><button class="month-btn" id="topPrev">‹</button><div class="month-label">'+monthLabel(month)+'</div><button class="month-btn" id="topNext">›</button></div></div>'
       + '<div class="top-wrap">'
-        + '<div class="top-legend"><b>TOP TALENT:</b> 50% o más · <b>LOW PERFORMER:</b> menos de 50%. Color de cada persona: <span class="lg g">80–100%</span> <span class="lg y">60–79%</span> <span class="lg r">0–59%</span>. '
+        + '<div class="top-legend"><span class="lg g">TOP PERFORMER 80–100%</span> <span class="lg y">MID PERFORMER 60–79%</span> <span class="lg r">LOW PERFORMER 0–59%</span> '
           + 'Cumplimiento = 60% del último mes evaluado + 40% de los previos. Toca a una persona para ver su diagnóstico.</div>'
         + '<div class="top-sides">'
-          + panel('talent','TOP TALENT','50% o más de cumplimiento · de mayor a menor', talent)
-          + panel('low','LOW PERFORMER','Menos de 50% de cumplimiento · de menor a mayor', low)
+          + panel('talent','TOP PERFORMER','80% a 100% · de mayor a menor', talent)
+          + panel('mid','MID PERFORMER','60% a 79% · de mayor a menor', mid)
+          + panel('low','LOW PERFORMER','0% a 59% · de menor a mayor', low)
         + '</div>'
         + noneHtml
       + '</div></div>';
