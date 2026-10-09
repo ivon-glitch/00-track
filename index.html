@@ -415,7 +415,7 @@
   }
 
   /* ---------- Pantalla de acceso y estado de sincronización ---------- */
-  body.locked .app-nav, body.locked .app, body.locked #orgchartView, body.locked #topView{ display:none !important; }
+  body.locked .app-nav, body.locked .app, body.locked #orgchartView, body.locked #topView, body.locked #soView, body.locked #soOv{ display:none !important; }
   .login-screen{ position:fixed; inset:0; z-index:200; background:var(--bg); display:flex; align-items:center; justify-content:center; padding:16px; overflow-y:auto; }
   .login-screen[hidden]{ display:none; }
   .login-card{ width:100%; max-width:360px; background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:28px 24px; text-align:center; }
@@ -477,7 +477,7 @@
     .app{ flex:1; min-height:0; }
     .sidebar{ height:100%; overflow:hidden; }
     .main{ overflow-y:auto; }
-    #orgchartView, #topView{ flex:1; min-height:0; overflow:auto; }
+    #orgchartView, #topView, #soView{ flex:1; min-height:0; overflow:auto; }
     .mobile-menu-btn{ display:flex; }
     .app.sidebar-collapsed .sidebar{ display:none; }
   }
@@ -540,6 +540,77 @@
     .top-sides{ grid-template-columns:1fr; }
     .top-list{ overflow:visible; }
   }
+
+  /* ---------- SALUD OPERACIONAL ---------- */
+  #soView{ display:none; overflow:auto; }
+  .so-wrap{ max-width:1180px; margin:0 auto; padding:18px 24px 70px; }
+  .so-subtabs{ display:flex; gap:22px; border-bottom:1px solid var(--line); margin-bottom:18px; overflow-x:auto; align-items:center; }
+  .so-stab{ padding:10px 2px; font-size:12.5px; font-weight:800; color:var(--muted); border:0; background:none; border-bottom:2px solid transparent; margin-bottom:-1px; white-space:nowrap; font-family:inherit; cursor:pointer; }
+  .so-stab.on{ color:var(--ink); border-bottom-color:var(--ink); }
+  .so-user{ margin-left:auto; font-size:11px; color:var(--muted); font-weight:700; white-space:nowrap; }
+  .so-link{ border:0; background:none; color:var(--ink); text-decoration:underline; font-weight:800; font-size:11px; cursor:pointer; font-family:inherit; padding:0 2px; }
+  #soView h1{ font-size:22px; font-weight:900; margin:0; } #soView h2{ margin:0 0 4px; font-size:18px; font-weight:900; } #soView h3{ margin:0; font-size:19px; font-weight:900; } #soView h4{ margin:0 0 10px; font-size:13px; font-weight:900; }
+  .so-sec{ font-size:12px; color:var(--muted); margin:3px 0 0; line-height:1.5; } .so-mut{ color:var(--muted); } .so-hint{ font-size:10.5px; color:var(--muted); font-weight:600; margin-top:4px; }
+  .so-card{ background:var(--card); border:1px solid var(--line); border-radius:16px; box-shadow:var(--shadow); }
+  .so-btn{ border:1px solid var(--line); background:var(--card); color:var(--ink); border-radius:10px; padding:9px 14px; font-size:12px; font-weight:800; font-family:inherit; cursor:pointer; }
+  .so-btn.p{ background:var(--ink); color:var(--bg); border-color:var(--ink); } .so-btn.sm{ padding:5px 10px; font-size:11px; } .so-btn:disabled{ opacity:.5; }
+  #soView input, #soView select, #soView textarea, .so-panel input, .so-panel select, .so-panel textarea{ font-family:inherit; font-size:13px; color:var(--ink); background:var(--card); border:1px solid var(--line); border-radius:10px; padding:9px 11px; width:100%; outline:none; }
+  #soView input:focus, #soView select:focus, .so-panel input:focus, .so-panel select:focus, .so-panel textarea:focus{ border-color:var(--ink); }
+  #soView input[type=checkbox], .so-panel input[type=checkbox]{ width:auto; }
+  .so-l{ display:block; font-size:11px; font-weight:800; margin:14px 0 5px; }
+  .so-chip{ display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:800; border-radius:99px; padding:3px 10px; border:1px solid var(--line); background:var(--bg); color:var(--muted); white-space:nowrap; }
+  .so-chk{ font-size:12px; font-weight:700; display:inline-flex; gap:5px; align-items:center; }
+  .so-alert{ background:#fee2e2; border:1px solid #fca5a5; color:#991b1b; border-radius:12px; padding:10px 14px; font-size:12px; font-weight:800; margin-bottom:14px; }
+  .so-empty{ text-align:center; color:var(--muted); padding:30px; font-size:13px; }
+  .so-login{ max-width:380px; margin:60px auto; padding:24px; }
+  .so-hero{ display:flex; flex-wrap:wrap; gap:16px; align-items:center; justify-content:space-between; margin-bottom:14px; }
+  .so-brand{ display:flex; gap:14px; align-items:center; } .so-logo{ width:56px; height:56px; border-radius:14px; background:#0b1a33; display:grid; place-items:center; flex:none; }
+  .so-brand h1{ font-size:26px; text-transform:uppercase; line-height:1.1; } .so-mes{ font-size:17px; font-weight:600; margin-top:2px; }
+  .so-gen{ display:flex; gap:16px; align-items:center; padding:12px 18px; } .so-gen small{ font-size:10.5px; font-weight:800; letter-spacing:.3px; display:block; margin-bottom:2px; }
+  .so-big{ font-size:48px; font-weight:900; line-height:1; } .so-big em{ font-style:normal; font-size:18px; color:var(--muted); font-weight:700; } .so-gchips{ display:grid; gap:6px; }
+  .so-tools{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-bottom:14px; } .so-tools select{ width:auto !important; }
+  .so-area{ padding:16px 20px 12px; margin-bottom:12px; }
+  .so-arow{ display:grid; grid-template-columns:96px minmax(180px,.9fr) 2.4fr; gap:18px; align-items:center; }
+  .so-ring{ width:92px; height:92px; border-radius:50%; display:grid; place-items:center; position:relative; } .so-ring i{ position:absolute; inset:9px; background:var(--card); border-radius:50%; } .so-ring span{ position:relative; font-size:26px; font-weight:900; }
+  .so-aname{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; } .so-sum{ font-size:12px; color:var(--muted); margin-top:7px; line-height:1.5; }
+  .so-kpis{ display:grid; grid-template-columns:repeat(5,1fr); align-items:stretch; }
+  .so-kpi{ text-align:center; padding:2px 6px; border:0; border-left:1px solid var(--line); cursor:pointer; background:none; color:var(--ink); font-family:inherit; } .so-kpi:first-child{ border-left:0; } .so-kpi:hover{ background:var(--bg); border-radius:8px; }
+  .so-kpi .ic{ font-size:20px; display:block; height:26px; } .so-kpi b{ display:block; font-size:20px; font-weight:900; margin-top:2px; } .so-kpi small{ display:block; font-size:10px; font-weight:600; color:var(--muted); line-height:1.3; }
+  .so-kpi.warn b{ color:#dc2626; } .so-kpi.nd b{ font-size:12px; color:var(--muted); }
+  .so-brow{ display:flex; gap:12px; align-items:center; margin-top:12px; } .so-bar{ flex:1; height:8px; border-radius:99px; background:var(--bad-bg); overflow:hidden; } .so-bar i{ display:block; height:100%; border-radius:99px; } .so-bsc{ font-size:12px; font-weight:700; color:var(--muted); white-space:nowrap; }
+  .so-comp{ font-size:10.5px; color:var(--muted-2); font-weight:600; margin-top:6px; } .so-falta{ font-size:11px; color:#a16207; font-weight:700; margin-top:6px; }
+  .so-grid3{ display:grid; grid-template-columns:1.2fr 1fr 1fr; gap:14px; } .so-pan{ padding:16px 18px; margin-bottom:14px; }
+  .so-trend{ display:flex; align-items:flex-end; gap:10px; height:120px; border-bottom:1px solid var(--line); padding-bottom:4px; }
+  .so-tcol{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; gap:4px; height:100%; font-size:10px; font-weight:800; } .so-tcol i{ width:100%; max-width:38px; border-radius:6px 6px 0 0; display:block; }
+  .so-tlab{ display:flex; gap:10px; font-size:10px; color:var(--muted); font-weight:700; margin-top:4px; } .so-tlab span{ flex:1; text-align:center; }
+  .so-row{ display:flex; gap:10px; align-items:center; justify-content:space-between; padding:9px 0; border-bottom:1px solid var(--line); font-size:12px; } .so-row:last-child{ border:0; }
+  .so-hb{ height:6px; border-radius:99px; background:var(--bad-bg); flex:1; overflow:hidden; } .so-hb i{ display:block; height:100%; background:var(--ink); }
+  .so-foot{ font-size:10.5px; color:var(--muted); margin-top:14px; line-height:1.5; }
+  #soView table, .so-panel table{ width:100%; border-collapse:collapse; font-size:12px; } #soView th{ font-size:10.5px; color:var(--muted); text-align:left; padding:8px; border-bottom:1px solid var(--line); font-weight:800; } #soView td{ padding:10px 8px; border-bottom:1px solid var(--line); vertical-align:top; }
+  .so-scroll{ overflow-x:auto; }
+  .so-itabs{ display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap; } .so-itab{ border:1px solid var(--line); background:var(--card); color:var(--muted); border-radius:99px; padding:8px 14px; font-size:12px; font-weight:800; font-family:inherit; cursor:pointer; }
+  .so-itab.on{ background:var(--ink); color:var(--bg); border-color:var(--ink); } .so-cnt{ display:inline-block; background:rgba(127,127,127,.2); border-radius:99px; padding:0 7px; margin-left:4px; }
+  .so-filters{ display:flex; flex-wrap:wrap; gap:8px; padding:12px; margin-bottom:12px; align-items:center; } .so-filters input#soQ{ flex:1 1 220px; width:auto; } .so-filters select{ width:auto !important; padding:8px 10px !important; font-size:12px !important; }
+  .so-lnk{ border:0; background:none; font-weight:900; font-size:12px; text-decoration:underline; color:var(--ink); padding:0; cursor:pointer; font-family:inherit; }
+  #soView select.so-est, #soView select.so-atr, #soView select.so-addp{ width:auto; max-width:210px; padding:5px 8px; font-size:11px; font-weight:700; border-radius:8px; }
+  #soView select.so-atr.pend{ background:var(--bad-bg); color:var(--muted); } #soView select.so-atr.ok{ background:#dbeafe; color:#1e40af; border-color:#bfdbfe; }
+  .so-pr{ display:flex; gap:6px; align-items:center; margin-bottom:5px; flex-wrap:wrap; } .so-pn{ font-size:12px; font-weight:700; min-width:105px; } .so-x{ border:0; background:none; color:var(--muted); font-size:12px; cursor:pointer; }
+  .so-two3{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; } .so-two4{ display:grid; grid-template-columns:repeat(4,1fr); gap:10px; } .so-semrow{ display:grid; grid-template-columns:90px 1fr; gap:8px; margin-bottom:6px; }
+  .so-ov{ position:fixed; inset:0; background:rgba(0,0,0,.45); display:none; justify-content:flex-end; z-index:60; } .so-ov.on{ display:flex; }
+  .so-panel{ background:var(--card); color:var(--ink); width:min(500px,100%); height:100%; overflow-y:auto; padding:20px; }
+  .so-ph{ display:flex; justify-content:space-between; align-items:center; gap:8px; } .so-btnrow{ display:flex; gap:8px; margin-top:18px; }
+  .so-two{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .so-seg{ display:grid; grid-template-columns:repeat(4,1fr); gap:6px; } .so-seg.two{ grid-template-columns:1fr 1fr; }
+  .so-seg button{ border:1px solid var(--line); background:var(--card); color:var(--ink); border-radius:10px; padding:8px 4px; font-size:11.5px; font-weight:800; font-family:inherit; cursor:pointer; } .so-seg button.on{ background:var(--ink); color:var(--bg); border-color:var(--ink); }
+  .so-imp{ font-size:11px; color:var(--muted); margin-top:6px; line-height:1.5; background:var(--bg); border-radius:8px; padding:8px 10px; }
+  .so-tipos{ max-height:190px; overflow-y:auto; border:1px solid var(--line); border-radius:10px; padding:6px; margin-top:6px; } .so-grp{ font-size:10px; font-weight:900; color:var(--muted); text-transform:uppercase; margin:6px 4px 3px; }
+  .so-tipo{ display:block; width:100%; text-align:left; border:1px solid transparent; background:none; color:var(--ink); border-radius:8px; padding:7px 9px; font-size:12px; font-weight:700; font-family:inherit; cursor:pointer; } .so-tipo:hover{ background:var(--bg); } .so-tipo.on{ background:var(--ink); color:var(--bg); }
+  .so-pls{ display:grid; grid-template-columns:1fr 1fr; gap:4px 10px; max-height:150px; overflow-y:auto; margin-top:6px; }
+  .so-panel details{ margin-top:14px; border:1px solid var(--line); border-radius:10px; padding:10px 12px; } .so-panel summary{ font-size:12px; font-weight:800; cursor:pointer; }
+  @media (max-width: 900px){
+    .so-wrap{ padding:14px 14px 70px; } .so-arow{ grid-template-columns:76px 1fr; } .so-arow .so-kpis{ grid-column:1 / -1; grid-template-columns:repeat(3,1fr); row-gap:10px; } .so-kpi{ border-left:0; }
+    .so-ring{ width:76px; height:76px; } .so-ring span{ font-size:22px; } .so-grid3{ grid-template-columns:1fr; } .so-two, .so-two3, .so-two4{ grid-template-columns:1fr; } .so-brand h1{ font-size:19px; } .so-big{ font-size:40px; } .so-gen{ width:100%; } .so-pn{ min-width:0; width:100%; } .so-user{ margin-left:0; }
+  }
 </style>
 </head>
 <body class="locked">
@@ -550,6 +621,7 @@
   </button>
   <button class="app-nav-btn" id="navTracker">EVALUACIÓN</button>
   <button class="app-nav-btn" id="navTop">TOP</button>
+  <button class="app-nav-btn" id="navSo">SALUD OPERACIONAL</button>
   <button class="app-nav-btn" id="navOrgchart">ORGANIGRAMA</button>
   <div class="app-nav-right">
     <span class="sync-pill" id="syncPill" data-s="loading"><i class="sync-dot"></i><span class="sync-text">Conectando…</span></span>
@@ -615,6 +687,7 @@
 
 <div id="orgchartView"></div>
 <div id="topView"></div>
+<div id="soView"></div>
 
 <div class="toast" id="toast"></div>
 
@@ -949,6 +1022,8 @@
         startPolling();
       });
     };
+    // Salud Operacional: las órdenes viajan con usuario/clave personal; el servidor valida rol y permisos
+    api.so = function(cmd, o){ return rpc(Object.assign({ action: 'so', cmd: cmd }, o || {}), 40000); };
     api.fetchPhotos = function(offset, limit){ return rpc({ action: 'photos', offset: offset || 0, limit: limit || 0 }, 60000); };
     return api;
   }
@@ -963,7 +1038,7 @@
       (remember ? localStorage : sessionStorage).setItem(PW_KEY, pw);
     }catch(e){}
   }
-  function clearPw(){ try{ localStorage.removeItem(PW_KEY); sessionStorage.removeItem(PW_KEY); localStorage.removeItem('cerocero_00track_cache'); localStorage.removeItem(PHOTOS_KEY); }catch(e){} }
+  function clearPw(){ try{ localStorage.removeItem(PW_KEY); sessionStorage.removeItem(PW_KEY); localStorage.removeItem('cerocero_00track_cache'); localStorage.removeItem(PHOTOS_KEY); localStorage.removeItem('cerocero_00track_so'); }catch(e){} }
 
   function showPanel(name, message){
     document.body.classList.add('locked');
@@ -1275,28 +1350,478 @@
     return 'oficina';
   }
 
+  // ================= SALUD OPERACIONAL =================
+  // Toda la lógica (puntaje, permisos, historial) vive en el servidor (Apps Script, SaludOp.gs). Aquí solo se dibuja y se envían órdenes.
+  var SO_KEY = 'cerocero_00track_so';
+  var so = { creds: null, user: null, perm: [], data: null, mes: currentMonthStr(), sub: 'tablero', tab: 'sin', area: 'todos', loading: false, err: '', booted: false,
+             f: { q: '', fp: 'todos', fo: 'todas', fi: 'todos', fpe: 'todas', fat: 'todas', fm: 'todos', fv: false } };
+  try{ so.creds = JSON.parse(localStorage.getItem(SO_KEY) || 'null'); }catch(e){}
+  var SO_ESTADOS = ['Abierta','En seguimiento','Pendiente de validación','Cerrada','Cancelada / duplicada'];
+  var SO_ATRIB = ['Pendiente de revisión','Responsabilidad confirmada','Participación sin responsabilidad directa','Falla de proceso, sistema o proveedor','Pendiente de determinar'];
+  var SO_IMP = {
+    'Bajo': 'Molestia menor, sin afectar al cliente ni la entrega. Ej.: etiqueta con retraso corregida el mismo día.',
+    'Medio': 'Retrabajo o demora interna sin afectar al cliente. Ej.: peso incorrecto detectado antes de enviar.',
+    'Alto': 'Afecta entregas, inventario o decisiones. Ej.: descuadre de inventario, colecta no realizada.',
+    'Crítico': 'Daño directo al cliente, pérdida económica o riesgo legal. Ej.: envío incorrecto ya entregado.' };
+  var SO_PAL = ['#3f9142','#2563eb','#e6a117','#e8751a','#dc2626'], SO_SYM = ['●','◆','▲','■','■'];
+  function soToday(){ try{ return new Date().toLocaleDateString('en-CA', { timeZone: 'America/Mexico_City' }); }catch(e){ return new Date().toISOString().slice(0,10); } }
+  function soCan(p){ return so.perm.indexOf(p) > -1; }
+  function soPname(id){ if(id === 'TBD') return 'Por determinar'; var p = state.people.filter(function(x){ return x.id === id; })[0]; return p ? p.name : (id || '—'); }
+  function soCfg(){ return so.data && so.data.config ? so.data.config.data : null; }
+  function soNameP(id){ var c = soCfg(); var p = c && c.procesos.filter(function(x){ return x.id === id; })[0]; return p ? p.name : id; }
+  function soNameA(id){ var c = soCfg(); var a = c && c.areas.filter(function(x){ return x.id === id; })[0]; return a ? a.name : id; }
+  function soBandIdx(score){
+    var c = soCfg(); if(score == null || !c) return -1;
+    var s = c.semaforo.slice().sort(function(a,b){ return b.min - a.min; });
+    for(var i = 0; i < s.length; i++) if(score >= s[i].min) return i;
+    return s.length - 1;
+  }
+  function soColor(score){
+    var c = soCfg(), i = soBandIdx(score); if(i < 0) return '#9aa3ad';
+    var n = c.semaforo.length, map = n === 2 ? [0,4] : n === 3 ? [0,2,4] : n === 4 ? [0,1,2,4] : n === 5 ? [0,1,2,3,4] : null;
+    var pos = map ? map[i] : Math.round(i * 4 / Math.max(1, n - 1));
+    return SO_PAL[pos];
+  }
+  function soBandText(score){
+    var c = soCfg(), i = soBandIdx(score); if(i < 0) return '— Datos insuficientes';
+    var s = c.semaforo.slice().sort(function(a,b){ return b.min - a.min; });
+    var n = s.length, map = n === 2 ? [0,4] : n === 3 ? [0,2,4] : n === 4 ? [0,1,2,4] : n === 5 ? [0,1,2,3,4] : null;
+    return SO_SYM[map ? map[i] : Math.min(4, i)] + ' ' + s[i].label;
+  }
+  function soChip(txt, color, solid){ return '<span class="so-chip"' + (color ? ' style="' + (solid ? 'background:'+color+';color:#fff;border-color:'+color : 'color:'+color+';border-color:'+color) + '"' : '') + '>' + txt + '</span>'; }
+  function soSel(opts, sel, attrs){
+    return '<select ' + (attrs || '') + '>' + opts.map(function(o){ var v = Array.isArray(o) ? o[0] : o, t = Array.isArray(o) ? o[1] : o; return '<option value="' + esc(v) + '"' + (v === sel ? ' selected' : '') + '>' + esc(t) + '</option>'; }).join('') + '</select>';
+  }
+  function soCall(cmd, o){ return state.db.so(cmd, Object.assign({ user: so.creds.id, userKey: so.creds.key }, o || {})); }
+  function soFail(res){
+    if(res && res.code === 'so_auth'){ so.creds = null; so.data = null; try{ localStorage.removeItem(SO_KEY); }catch(e){} so.err = 'Usuario o clave incorrectos.'; render(); return; }
+    showToast((res && res.error) || 'No se pudo completar la acción.');
+  }
+  function soLoad(quiet){
+    if(!so.creds || !state.db || so.loading) return Promise.resolve();
+    so.loading = true; if(!quiet) so.err = '';
+    return soCall('get', { mes: so.mes }).then(function(res){
+      so.loading = false;
+      if(res && res.ok){ so.data = res; so.user = res.user; so.perm = res.permisos || []; so.err = ''; try{ localStorage.setItem(SO_KEY, JSON.stringify(so.creds)); }catch(e){} }
+      else if(res && res.code === 'so_auth'){ soFail(res); return; }
+      else so.err = (res && res.error) || 'Sin respuesta del servidor.';
+      if(state.appView === 'so') render();
+    }).catch(function(){ so.loading = false; so.err = 'Sin conexión con el servidor.'; if(state.appView === 'so') render(); });
+  }
+  // ejecuta una orden y recarga; al terminar redibuja
+  function soDo(cmd, o, okMsg){
+    return soCall(cmd, o).then(function(res){
+      if(res && res.ok){ if(okMsg) showToast(okMsg); return soLoad(true).then(function(){ return res; }); }
+      soFail(res); return res;
+    }).catch(function(){ showToast('Sin conexión con el servidor.'); });
+  }
+  function soOverlay(html, onReady){
+    var ov = document.getElementById('soOv');
+    if(!ov){ ov = document.createElement('div'); ov.id = 'soOv'; ov.className = 'so-ov'; document.body.appendChild(ov); }
+    ov.innerHTML = '<div class="so-panel">' + html + '</div>'; ov.classList.add('on');
+    ov.onclick = function(e){ if(e.target === ov) soClose(); };
+    Array.prototype.forEach.call(ov.querySelectorAll('[data-x]'), function(b){ b.addEventListener('click', soClose); });
+    if(onReady) onReady(ov);
+  }
+  function soClose(){ var ov = document.getElementById('soOv'); if(ov) ov.classList.remove('on'); }
+  function soMonths(){ var out = [], m = currentMonthStr(); for(var i = 0; i < 12; i++){ out.push(m); m = shiftMonth(m, -1); } return out; }
+  function soIncById(f){ return (so.data.incidencias || []).filter(function(i){ return i.folio === f; })[0]; }
+  function soPersonasOf(f){ return (so.data.personas || []).filter(function(p){ return p.incId === f; }); }
+  function soVencida(i){ return i.estado !== 'Cerrada' && i.estado !== 'Cancelada / duplicada' && i.fechaCompromiso && i.fechaCompromiso < soToday(); }
+
+  // ---------- pantalla principal ----------
+  function renderSoView(){
+    var el = document.getElementById('soView');
+    if(!so.creds){ el.innerHTML = soLoginHtml(); soBindLogin(el); return; }
+    if(!so.data){
+      el.innerHTML = '<div class="so-wrap"><div class="so-empty">' + (so.err ? esc(so.err) + '<br><button class="so-btn" id="soRetry">Reintentar</button><button class="so-btn" id="soOut">Cambiar de usuario</button>' : 'Cargando Salud Operacional…') + '</div></div>';
+      var r = el.querySelector('#soRetry'); if(r) r.onclick = function(){ so.err = ''; soLoad(); render(); };
+      var o = el.querySelector('#soOut'); if(o) o.onclick = soLogout;
+      if(!so.err) soLoad();
+      return;
+    }
+    var subs = [['tablero','TABLERO'],['incidencias','INCIDENCIAS'],['acciones','ACCIONES'],['config','CONFIGURACIÓN']];
+    el.innerHTML = '<div class="so-wrap"><div class="so-subtabs">' + subs.map(function(s){ return '<button class="so-stab' + (so.sub === s[0] ? ' on' : '') + '" data-sub="' + s[0] + '">' + s[1] + '</button>'; }).join('')
+      + '<span class="so-user">' + esc(so.user.name) + ' · ' + esc({ admin: 'Administrador', coord: 'Coordinación', colab: 'Colaborador' }[so.user.role] || so.user.role) + ' <button class="so-link" id="soOut">Salir</button></span></div>'
+      + (so.err ? '<div class="so-alert">' + esc(so.err) + '</div>' : '')
+      + (so.sub === 'tablero' ? soTablero() : so.sub === 'incidencias' ? soIncidencias() : so.sub === 'acciones' ? soAcciones() : soConfig()) + '</div>';
+    soBind(el);
+  }
+  function soLoginHtml(){
+    return '<div class="so-wrap"><div class="so-card so-login"><h2>Salud Operacional</h2><div class="so-sec">Entra con tu usuario y clave personal (los crea el administrador desde el menú de la hoja).</div>'
+      + (so.err ? '<div class="so-alert">' + esc(so.err) + '</div>' : '')
+      + '<label class="so-l">Usuario</label><input id="soU" autocapitalize="none" autocomplete="username"><label class="so-l">Clave</label><input id="soP" type="password" autocomplete="current-password">'
+      + '<button class="so-btn p" id="soGo" style="margin-top:14px;width:100%">Entrar</button></div></div>';
+  }
+  function soBindLogin(el){
+    function go(){ var u = el.querySelector('#soU').value.trim().toLowerCase(), k = el.querySelector('#soP').value; if(!u || !k) return; so.creds = { id: u, key: k }; so.err = ''; so.data = null; so.loading = false; render(); }
+    el.querySelector('#soGo').onclick = go; el.querySelector('#soP').onkeydown = function(e){ if(e.key === 'Enter') go(); };
+  }
+  function soLogout(){ so.creds = null; so.data = null; so.user = null; so.perm = []; try{ localStorage.removeItem(SO_KEY); }catch(e){} render(); }
+
+  // ---------- TABLERO ----------
+  function soTablero(){
+    var d = so.data.dash, c = soCfg(), g = d.general, cur = d.mes === currentMonthStr();
+    var procs = d.procesos.filter(function(p){ return so.area === 'todos' || p.procesoId === so.area; });
+    var delta = d.variacion;
+    var past = d.mes < currentMonthStr(), cerrado = d.cierre && d.cierre.estado === 'cerrado';
+    var html = '<div class="so-hero"><div class="so-brand"><div class="so-logo"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h4l2.5-7 4 14 3-9 1.5 2H22"/></svg></div>'
+      + '<div><h1>Medidor de salud operacional</h1><div class="so-mes">' + esc(monthLabel(d.mes)) + (cerrado ? ' · 🔒 cerrado (reglas v' + d.cierre.cfgVersion + ')' : '') + '</div></div></div>'
+      + '<div class="so-card so-gen"><div><small>SALUD OPERACIONAL GENERAL</small><div class="so-big" style="color:' + soColor(g.score) + '">' + (g.score == null ? '—' : g.score) + '<em> /100</em></div></div>'
+      + '<div class="so-gchips">' + soChip(soBandText(g.score), soColor(g.score), true)
+      + (delta != null ? soChip((delta >= 0 ? '▲ +' : '▼ ') + delta + ' vs mes anterior') : '')
+      + (g.parcial ? soChip('Resultado parcial · cobertura ' + g.cobertura, '#e6a117') : soChip('Cobertura ' + g.cobertura)) + '</div></div></div>'
+      + '<div class="so-tools">' + soSel(soMonths().map(function(m){ return [m, monthLabel(m)]; }), d.mes, 'id="soMes"')
+      + soSel([['todos','Todos los procesos']].concat(c.procesos.filter(function(p){ return p.activo !== false; }).map(function(p){ return [p.id, p.name]; })), so.area, 'id="soArea"')
+      + '<button class="so-btn p" data-new>+ Registrar incidencia</button><button class="so-btn" id="soRef" title="Actualizar">↻</button>'
+      + (past && soCan('cierreMes') && !cerrado ? '<button class="so-btn" id="soCerrar">Cerrar mes</button>' : '')
+      + (cerrado && soCan('reabrirCierre') ? '<button class="so-btn" id="soReabrir">Reabrir cierre</button>' : '') + '</div>';
+    if(d.alertas.length) html += '<div class="so-alert">🚨 Alerta de intervención: ' + d.alertas.length + ' incidencia(s) crítica(s) abierta(s) (' + d.alertas.map(function(a){ return esc(a.folio) + ' · ' + esc(soNameP(a.procesoId)); }).join(', ') + '). Se muestra aunque el promedio sea alto.</div>';
+    html += procs.map(function(p){
+      var col = soColor(p.score);
+      var k = function(ic, v, s, cls){ return '<button class="so-kpi ' + (cls || '') + '" data-go="' + p.procesoId + '"><span class="ic">' + ic + '</span><b>' + v + '</b><small>' + s + '</small></button>'; };
+      var sum = p.incidencias || p.abiertas ? ('Falla más frecuente: ' + esc(p.fallaTop || '—') + (p.topCount ? ' (' + p.topCount + ')' : '') + (p.origenPrincipal ? ' · origen principal: ' + esc(soNameA(p.origenPrincipal)) : '') + '. ' + (p.vencidas ? p.vencidas + ' vencida(s) al corte.' : 'Sin vencidas al corte.')) : 'Sin incidencias en el mes' + (p.mesSinIncidencias ? ' (confirmado).' : '.');
+      return '<div class="so-card so-area"><div class="so-arow"><div class="so-ring" style="background:conic-gradient(' + col + ' ' + ((p.score || 0) * 3.6) + 'deg,var(--bad-bg) 0)"><i></i><span style="color:' + col + '">' + (p.score == null ? '—' : p.score) + '</span></div>'
+        + '<div><div class="so-aname"><h3>' + esc(p.nombre) + '</h3>' + soChip(soBandText(p.score), col, p.score != null) + (p.incompleto ? soChip('Puntaje incompleto', '#e6a117') : '') + '</div><div class="so-sum">' + sum + '</div></div>'
+        + '<div class="so-kpis">' + k('📦', p.incidencias, 'incidencias<br>(' + p.unidadesAfectadas + ' unid.)') + k('📂', p.abiertas, 'abiertas<br>al corte') + k('⏰', p.vencidas, 'vencidas', p.vencidas ? 'warn' : '')
+        + k('🔁', p.recurrencias, 'recurrencias<br>confirmadas') + (p.pctEnPlazo == null ? k('✅', 'Sin datos', 'en plazo', 'nd') : k('✅', Math.round(p.pctEnPlazo) + '%', 'en plazo<br>(' + p.enPlazo + '/' + p.denominadorPlazo + ')')) + '</div></div>'
+        + '<div class="so-brow"><div class="so-bar"><i style="width:' + (p.score || 0) + '%;background:' + col + '"></i></div><span class="so-bsc">' + (p.score == null ? '—' : p.score) + '/100</span></div>'
+        + '<div class="so-comp">Confiabilidad ' + soN(p.confiabilidad) + (p.carga != null ? ' (carga ' + p.carga + ' / umbral ' + (p.umbral || '—') + ' · ' + p.volumen + ' ' + esc(p.unidad) + ')' : '') + ' · Respuesta ' + soN(p.respuesta) + ' · Control de recurrencia ' + soN(p.control)
+        + (p.mediana != null ? '' : '') + (p.medianaDiasResolucion != null ? ' · Mediana de resolución ' + p.medianaDiasResolucion + ' d' : '') + (p.costoRetrabajo ? ' · Retrabajo $' + p.costoRetrabajo : '') + (p.horasRetrabajo ? ' · ' + p.horasRetrabajo + ' h' : '') + '</div>'
+        + (p.incompleto && p.faltan.length ? '<div class="so-falta">Falta para publicar el puntaje: ' + p.faltan.map(esc).join(', ') + (soCan('volumen') || soCan('config') ? ' · <button class="so-link" data-sub-go="config">ir a Configuración</button>' : '') + '</div>' : '') + '</div>';
+    }).join('');
+    var tmax = Math.max.apply(null, d.fallasTop.map(function(x){ return x.carga; }).concat([1])), omax = Math.max.apply(null, d.origen.map(function(x){ return x.incidencias; }).concat([1])), tendMax = 100;
+    html += '<div class="so-grid3"><div class="so-card so-pan"><h4>Tendencia mensual (general)</h4><div class="so-trend">' + d.tendencia.map(function(t){ return '<div class="so-tcol"><span>' + (t.score == null ? '—' : t.score) + '</span><i style="height:' + (t.score == null ? 6 : t.score) + '%;background:' + soColor(t.score) + '"></i></div>'; }).join('') + '</div><div class="so-tlab">' + d.tendencia.map(function(t){ return '<span>' + esc(monthLabel(t.mes).split(' ')[0].slice(0,3)) + '</span>'; }).join('') + '</div></div>'
+      + '<div class="so-card so-pan"><h4>Principales fallas (carga ponderada)</h4>' + (d.fallasTop.length ? d.fallasTop.slice(0,5).map(function(x){ return '<div class="so-row"><span style="flex:1.2">' + esc(x.tipo) + '</span><div class="so-hb"><i style="width:' + (100 * x.carga / tmax) + '%"></i></div><b>' + x.carga + '</b></div>'; }).join('') : '<div class="so-sec">Sin incidencias en el mes.</div>')
+      + '<h4 style="margin-top:14px">Dónde se originan</h4>' + (d.origen.length ? d.origen.map(function(x){ return '<div class="so-row"><span style="flex:1.2">' + esc(soNameA(x.areaId)) + '</span><div class="so-hb"><i style="width:' + (100 * x.incidencias / omax) + '%"></i></div><b>' + x.incidencias + '</b></div>'; }).join('') : '<div class="so-sec">—</div>') + '</div>'
+      + '<div class="so-card so-pan"><h4>Acciones pendientes</h4>' + (d.pendientes.length ? d.pendientes.slice(0,8).map(function(i){ return '<div class="so-row"><span>' + esc(i.folio) + ' · ' + esc(i.tipo) + '<br><small class="so-mut">' + esc(soNameP(i.procesoId)) + ' · compromiso ' + esc(i.fechaCompromiso || '—') + '</small></span>' + (i.vencida ? soChip('⏰ Vencida', '#dc2626') : soChip(esc(i.estado))) + '</div>'; }).join('') + (d.pendientes.length > 8 ? '<div class="so-sec">+' + (d.pendientes.length - 8) + ' más en INCIDENCIAS</div>' : '') : '<div class="so-sec">Nada pendiente al corte.</div>') + '</div></div>'
+      + '<div class="so-foot">ⓘ Metodología: índice interno propuesto (no es un estándar certificado). Salud del proceso = ' + Math.round(c.pesosComponentes.confiabilidad * 100) + '% Confiabilidad (volumen y severidad) + ' + Math.round(c.pesosComponentes.respuesta * 100) + '% Respuesta (cumplimiento de plazo) + ' + Math.round(c.pesosComponentes.recurrencia * 100) + '% Control de recurrencia. Reglas v' + d.cfgVersion + ' · corte ' + esc(d.corteDia) + '. No modifica el ranking TOP ni BASES/MÍNIMOS.</div>';
+    return html;
+  }
+  function soN(x){ return x == null ? 'Sin datos' : Math.round(x * 10) / 10; }
+
+  // ---------- INCIDENCIAS ----------
+  function soFiltered(){
+    var f = so.f, q = f.q.trim().toLowerCase(), today = soToday();
+    return (so.data.incidencias || []).filter(function(i){
+      var per = soPersonasOf(i.id);
+      if(f.fp !== 'todos' && i.procesoId !== f.fp) return false;
+      if(f.fo !== 'todas' && i.areaOrigen !== f.fo) return false;
+      if(f.fi !== 'todos' && i.impacto !== f.fi) return false;
+      if(f.fpe !== 'todas' && !per.some(function(p){ return p.personId === f.fpe; })) return false;
+      if(f.fat !== 'todas' && !per.some(function(p){ return p.atribucion === f.fat; })) return false;
+      if(f.fm !== 'todos' && (i.fechaEvento || '').slice(0, 7) !== f.fm) return false;
+      if(f.fv && !soVencida(i)) return false;
+      if(q && (i.folio + ' ' + i.tipoNombre + ' ' + soNameP(i.procesoId) + ' ' + per.map(function(p){ return soPname(p.personId); }).join(' ')).toLowerCase().indexOf(q) < 0) return false;
+      return true;
+    });
+  }
+  function soIncidencias(){
+    var all = soFiltered(), canEdit = soCan('editar'), canAt = soCan('atribuir');
+    var grp = { sin: all.filter(function(i){ return i.estado !== 'Cerrada' && i.estado !== 'Cancelada / duplicada'; }), res: all.filter(function(i){ return i.estado === 'Cerrada'; }), can: all.filter(function(i){ return i.estado === 'Cancelada / duplicada'; }) };
+    var lst = grp[so.tab].sort(function(a, b){ return (b.fechaEvento || '').localeCompare(a.fechaEvento || ''); });
+    var c = soCfg(), f = so.f;
+    var tb = function(k, t){ return '<button class="so-itab' + (so.tab === k ? ' on' : '') + '" data-itab="' + k + '">' + t + ' <span class="so-cnt">' + grp[k].length + '</span></button>'; };
+    var gente = [['todas','Toda persona'], ['TBD','Por determinar']].concat(state.people.slice().sort(function(a,b){ return (a.name||'').localeCompare(b.name||''); }).map(function(p){ return [p.id, p.name]; }));
+    var meses = [['todos','Todos los meses']].concat(soMonths().map(function(m){ return [m, monthLabel(m)]; }));
+    var html = '<div class="so-hero"><div><h1>Incidencias</h1><div class="so-sec">Un registro = un evento. ' + (canEdit ? 'Estado, atribución y personas se editan directamente en la tabla.' : 'Ves las incidencias en que participas o que reportaste.') + '</div></div><button class="so-btn p" data-new>+ Registrar incidencia</button></div>'
+      + '<div class="so-itabs">' + tb('sin', '⏳ Sin resolver') + tb('res', '✅ Resueltas') + tb('can', '🚫 Canceladas / duplicadas') + '</div>'
+      + '<div class="so-card so-filters"><input id="soQ" placeholder="🔎 Buscar folio, falla, proceso o persona…" value="' + esc(f.q) + '">'
+      + soSel([['todos','Todos los procesos']].concat(c.procesos.map(function(p){ return [p.id, p.name]; })), f.fp, 'data-f="fp"')
+      + soSel([['todas','Todas las áreas de origen']].concat(c.areas.map(function(a){ return [a.id, a.name]; })), f.fo, 'data-f="fo"')
+      + soSel([['todos','Todo impacto'], 'Bajo', 'Medio', 'Alto', 'Crítico'], f.fi, 'data-f="fi"')
+      + soSel(gente, f.fpe, 'data-f="fpe"') + soSel([['todas','Toda atribución']].concat(SO_ATRIB), f.fat, 'data-f="fat"') + soSel(meses, f.fm, 'data-f="fm"')
+      + '<label class="so-chk"><input type="checkbox" id="soFv"' + (f.fv ? ' checked' : '') + '> Solo vencidas</label><button class="so-btn sm" id="soLim">Limpiar</button></div>';
+    html += '<div class="so-card so-scroll"><table class="so-inc"><tr><th>Folio</th><th>Proceso · origen</th><th>Falla</th><th>Impacto</th><th>Evento</th><th>Compromiso</th><th>Estado</th><th>Personas involucradas · atribución</th></tr>'
+      + (lst.map(function(i){
+        var per = soPersonasOf(i.id), ven = soVencida(i);
+        var estCell = canEdit ? soSel(SO_ESTADOS, i.estado, 'class="so-est" data-est="' + i.folio + '"') : soChip(esc(i.estado));
+        var perCell = per.map(function(p){
+          var pend = p.atribucion.indexOf('Pendiente') === 0;
+          return '<div class="so-pr"><span class="so-pn">' + esc(soPname(p.personId)) + '</span>'
+            + (canAt ? soSel(SO_ATRIB, p.atribucion, 'class="so-atr ' + (pend ? 'pend' : 'ok') + '" data-atr="' + i.folio + '|' + esc(p.personId) + '"') + '<button class="so-x" title="Quitar" data-rm="' + i.folio + '|' + esc(p.personId) + '">✕</button>' : soChip(esc(p.atribucion), pend ? '' : '#2563eb')) + '</div>';
+        }).join('');
+        if(canAt){
+          var libres = [['', '+ persona'], ['TBD', 'Por determinar']].concat(state.people.filter(function(x){ return !per.some(function(p){ return p.personId === x.id; }); }).map(function(x){ return [x.id, x.name]; }));
+          perCell += soSel(libres.filter(function(o){ return o[0] !== 'TBD' || !per.some(function(p){ return p.personId === 'TBD'; }); }), '', 'class="so-addp" data-add="' + i.folio + '"');
+        }
+        var rec = i.recurrente === 'sugerida' ? '<br>' + soChip('🔁 posible recurrencia de ' + esc(i.recDe), '#e6a117') + (canEdit ? '<br><button class="so-btn sm" data-rec="' + i.folio + '|1">Confirmar</button> <button class="so-btn sm" data-rec="' + i.folio + '|0">Descartar</button>' : '') : (i.recurrente === 'confirmada' ? '<br>' + soChip('🔁 recurrente (de ' + esc(i.recDe) + ')', '#dc2626') : '');
+        return '<tr><td><button class="so-lnk" data-det="' + i.folio + '">' + esc(i.folio) + '</button>' + rec + '</td><td><b>' + esc(soNameP(i.procesoId)) + '</b><br><small class="so-mut">origen: ' + esc(soNameA(i.areaOrigen)) + '</small></td>'
+          + '<td>' + esc(i.tipoNombre) + '<br><small class="so-mut">' + (i.unidades || 0) + ' unid.</small></td><td>' + soChip(i.impacto, i.impacto === 'Crítico' ? '#dc2626' : i.impacto === 'Alto' ? '#e8751a' : '') + '</td><td>' + esc(i.fechaEvento) + '</td>'
+          + '<td>' + esc(i.fechaCompromiso || '—') + (ven ? '<br>' + soChip('⏰ Vencida', '#dc2626') : '') + (i.estado === 'Cerrada' && i.fechaSolucion ? '<br><small class="so-mut">cerró ' + esc(i.fechaSolucion) + (i.fechaSolucion > i.fechaCompromiso ? ' (tarde)' : ' (a tiempo)') + '</small>' : '') + '</td>'
+          + '<td>' + estCell + '</td><td>' + perCell + '</td></tr>';
+      }).join('') || '<tr><td colspan="8" class="so-empty">Sin incidencias con estos filtros.</td></tr>') + '</table></div>'
+      + '<div class="so-foot">Atribución por persona: ' + SO_ATRIB.join(' · ') + '. Toda vinculación nueva entra como “Pendiente de revisión”. Los cambios quedan en el historial (quién, qué, cuándo). Esto no modifica el ranking TOP ni BASES/MÍNIMOS.</div>';
+    return html;
+  }
+
+  // ---------- ACCIONES ----------
+  function soAcciones(){
+    var rows = (so.data.acciones || []).slice().sort(function(a, b){ return (a.fechaCompromiso || '').localeCompare(b.fechaCompromiso || ''); });
+    var me = so.user.personId, canAll = soCan('editar');
+    return '<div class="so-hero"><div><h1>Acciones</h1><div class="so-sec">Compromisos de solución. Se vinculan a una minuta por referencia, sin duplicar la tarea. Para crear una, abre la incidencia (folio) en INCIDENCIAS.</div></div></div>'
+      + '<div class="so-card so-scroll"><table><tr><th>Incidencia</th><th>Acción</th><th>Responsable</th><th>Validador</th><th>Compromiso</th><th>Minuta</th><th>Estado</th></tr>'
+      + (rows.map(function(a){
+        var mine = canAll || (me && a.responsable === me), vencida = a.estado !== 'hecha' && a.fechaCompromiso && a.fechaCompromiso < soToday();
+        return '<tr><td><button class="so-lnk" data-det="' + esc(a.incId) + '">' + esc(a.incId) + '</button></td><td>' + esc(a.titulo) + '</td><td>' + esc(soPname(a.responsable)) + '</td><td>' + esc(soPname(a.validador)) + '</td><td>' + esc(a.fechaCompromiso || '—') + (vencida ? '<br>' + soChip('⏰ Vencida', '#dc2626') : '') + '</td><td>' + (a.minutaRef ? soChip('🔗 ' + esc(a.minutaRef), '#2563eb') : '—') + '</td>'
+          + '<td>' + (mine ? soSel([['pendiente','Pendiente'],['en_proceso','En proceso'],['hecha','Hecha']], a.estado, 'class="so-est" data-aest="' + esc(a.id) + '"') : soChip(esc(a.estado))) + '</td></tr>';
+      }).join('') || '<tr><td colspan="7" class="so-empty">Aún no hay acciones registradas.</td></tr>') + '</table></div>';
+  }
+
+  // ---------- CONFIGURACIÓN ----------
+  function soConfig(){
+    var c = soCfg(), admin = soCan('config'), d = so.data, html = '<div class="so-hero"><div><h1>Configuración</h1><div class="so-sec">' + (admin ? 'Todo cambio crea una nueva versión de reglas; los meses ya cerrados conservan la versión con que se calcularon.' : 'Solo lectura. Las reglas las administra el Administrador.') + '</div></div><span class="so-chip">Reglas v' + d.config.version + ' · desde ' + esc(d.config.vigenteDesde) + '</span></div>';
+    // volúmenes del mes
+    var vols = {}; (d.volumenes || []).forEach(function(v){ vols[v.procesoId] = v; });
+    html += '<div class="so-card so-pan"><h4>Datos del mes: ' + esc(monthLabel(so.mes)) + '</h4><div class="so-sec">Volumen de operaciones de cada proceso. Sin volumen confirmado no se publica el puntaje (la ausencia de registros no equivale a operación perfecta).</div><div class="so-scroll"><table><tr><th>Proceso</th><th>Unidad de operación</th><th>Volumen</th><th>Mes confirmado</th><th>Sin incidencias</th><th></th></tr>'
+      + c.procesos.filter(function(p){ return p.activo !== false; }).map(function(p){
+        var v = vols[p.id] || {}, can = soCan('volumen');
+        return '<tr><td>' + esc(p.name) + '</td><td>' + esc(p.unidad) + '</td><td><input type="number" min="0" class="so-vol" data-vol="' + p.id + '" value="' + (v.volumen == null ? '' : v.volumen) + '"' + (can ? '' : ' disabled') + '></td>'
+          + '<td><label class="so-chk"><input type="checkbox" data-vc="' + p.id + '"' + (v.confirmado ? ' checked' : '') + (can ? '' : ' disabled') + '> Confirmado</label></td><td><label class="so-chk"><input type="checkbox" data-vz="' + p.id + '"' + (v.cero ? ' checked' : '') + (can ? '' : ' disabled') + '> Cero incidencias</label></td><td>' + (can ? '<button class="so-btn sm" data-vsave="' + p.id + '">Guardar</button>' : '') + '</td></tr>';
+      }).join('') + '</table></div></div>';
+    // reglas
+    var cw = c.pesosComponentes, pi = c.pesosImpacto;
+    var dis = admin ? '' : ' disabled';
+    html += '<div class="so-card so-pan"><h4>Modelo de puntaje</h4><div class="so-two3"><div><label class="so-l">% Confiabilidad</label><input type="number" id="cwC" value="' + Math.round(cw.confiabilidad * 100) + '"' + dis + '></div><div><label class="so-l">% Respuesta</label><input type="number" id="cwR" value="' + Math.round(cw.respuesta * 100) + '"' + dis + '></div><div><label class="so-l">% Control de recurrencia</label><input type="number" id="cwK" value="' + Math.round(cw.recurrencia * 100) + '"' + dis + '></div></div>'
+      + '<div class="so-two4"><div><label class="so-l">Peso Bajo</label><input type="number" id="piB" value="' + pi['Bajo'] + '"' + dis + '></div><div><label class="so-l">Peso Medio</label><input type="number" id="piM" value="' + pi['Medio'] + '"' + dis + '></div><div><label class="so-l">Peso Alto</label><input type="number" id="piA" value="' + pi['Alto'] + '"' + dis + '></div><div><label class="so-l">Peso Crítico</label><input type="number" id="piC" value="' + pi['Crítico'] + '"' + dis + '></div></div>'
+      + '<label class="so-l">Semáforo (puntaje mínimo · etiqueta)</label>' + c.semaforo.slice().sort(function(a,b){ return b.min - a.min; }).map(function(s, i){ return '<div class="so-semrow"><input type="number" data-sm="' + i + '" value="' + s.min + '"' + (admin && s.min !== 0 ? '' : ' disabled') + '><input data-sl="' + i + '" value="' + esc(s.label) + '"' + dis + '></div>'; }).join('')
+      + '<div class="so-two3"><div><label class="so-l">Ventana de recurrencia (días)</label><input type="number" id="cRd" value="' + (c.recurrenciaDias || 30) + '"' + dis + '></div><div><label class="so-l">Vigente desde (mes)</label>' + soSel(soMonths().map(function(m){ return [m, monthLabel(m)]; }), currentMonthStr(), 'id="cDesde"' + dis) + '</div></div>'
+      + '<h4 style="margin-top:14px">Procesos medidos</h4><div class="so-scroll"><table><tr><th>Proceso</th><th>Unidad de operación</th><th>Peso general</th><th>Carga = 0 pts (umbral)</th><th>Activo</th></tr>'
+      + c.procesos.map(function(p, i){ return '<tr><td>' + esc(p.name) + '</td><td><input data-pu="' + i + '" value="' + esc(p.unidad) + '"' + dis + '></td><td><input type="number" min="0" data-pp="' + i + '" value="' + p.peso + '"' + dis + '></td><td><input type="number" min="0" step="0.1" data-pt="' + i + '" value="' + (p.umbral == null ? '' : p.umbral) + '" placeholder="Sin definir"' + dis + '></td><td><input type="checkbox" data-pa="' + i + '"' + (p.activo !== false ? ' checked' : '') + dis + '></td></tr>'; }).join('') + '</table></div>'
+      + '<div class="so-sec">Carga = 100 × suma de pesos de impacto ÷ volumen del mes. Umbral = la carga que equivale a 0 puntos de confiabilidad (no hay un valor universal: se define por proceso).</div>'
+      + (admin ? '<button class="so-btn p" id="soSaveCfg" style="margin-top:10px">Guardar como nueva versión</button>' : '')
+      + (d.versionesConfig ? '<div class="so-sec" style="margin-top:10px">Versiones: ' + d.versionesConfig.map(function(v){ return 'v' + v.version + ' (desde ' + esc(v.vigenteDesde) + ', ' + esc(v.creadoPor) + ')'; }).join(' · ') + '</div>' : '') + '</div>';
+    // catálogo
+    html += '<div class="so-card so-pan"><h4>Catálogo de fallas</h4><div class="so-scroll"><table><tr><th>Falla</th><th>Proceso</th><th>Área de origen habitual</th><th>Impacto sugerido</th><th>Plazo (días)</th><th>Estado</th>' + (admin ? '<th></th>' : '') + '</tr>'
+      + d.tipos.map(function(t){ return '<tr><td>' + esc(t.nombre) + '</td><td>' + esc(soNameP(t.procesoId)) + '</td><td>' + esc(soNameA(t.areaOrigen)) + '</td><td>' + esc(t.impacto) + '</td><td>' + t.plazoDias + '</td><td>' + (t.activo === false ? soChip('Inactiva') : soChip('Activa', '#3f9142')) + '</td>' + (admin ? '<td><button class="so-btn sm" data-tedit="' + esc(t.id) + '">Editar</button></td>' : '') + '</tr>'; }).join('') + '</table></div>'
+      + (admin ? '<button class="so-btn sm" data-tedit="" style="margin-top:10px">+ Nueva falla</button>' : '') + '<div class="so-sec" style="margin-top:8px">Desactivar una falla no borra su historial. Los usuarios se crean desde el menú “Salud Operacional” de la hoja de Sheets.</div></div>';
+    return html;
+  }
+
+  // ---------- eventos ----------
+  function soBind(el){
+    var $ = function(s){ return el.querySelector(s); }, $$ = function(s, fn){ Array.prototype.forEach.call(el.querySelectorAll(s), fn); };
+    $$('[data-sub]', function(b){ b.onclick = function(){ so.sub = b.getAttribute('data-sub'); render(); }; });
+    $$('[data-sub-go]', function(b){ b.onclick = function(){ so.sub = b.getAttribute('data-sub-go'); render(); }; });
+    var out = $('#soOut'); if(out) out.onclick = soLogout;
+    $$('[data-new]', function(b){ b.onclick = soRegistrar; });
+    var m = $('#soMes'); if(m) m.onchange = function(){ so.mes = m.value; so.data = null; render(); };
+    var a = $('#soArea'); if(a) a.onchange = function(){ so.area = a.value; render(); };
+    var r = $('#soRef'); if(r) r.onclick = function(){ showToast('Actualizando…'); soLoad(true); };
+    $$('[data-go]', function(b){ b.onclick = function(){ so.f.fp = b.getAttribute('data-go'); so.tab = 'sin'; so.sub = 'incidencias'; render(); }; });
+    var ce = $('#soCerrar'); if(ce) ce.onclick = function(){
+      var g = so.data.dash.general;
+      if(confirm('¿Cerrar ' + monthLabel(so.mes) + '? Se guarda su resultado con la versión de reglas actual.' + (g.parcial ? '\n\nOjo: el resultado es PARCIAL (' + g.cobertura + ').' : ''))) soDo('cierre', { mes: so.mes }, 'Mes cerrado');
+    };
+    var re = $('#soReabrir'); if(re) re.onclick = function(){ if(confirm('¿Reabrir el cierre de ' + monthLabel(so.mes) + '?')) soDo('cierre', { mes: so.mes, op: 'reabrir' }, 'Cierre reabierto'); };
+    $$('[data-itab]', function(b){ b.onclick = function(){ so.tab = b.getAttribute('data-itab'); render(); }; });
+    var q = $('#soQ'); if(q) q.oninput = function(){ so.f.q = q.value; var p = q.selectionStart; render(); var q2 = document.querySelector('#soQ'); if(q2){ q2.focus(); q2.setSelectionRange(p, p); } };
+    $$('[data-f]', function(s){ s.onchange = function(){ so.f[s.getAttribute('data-f')] = s.value; render(); }; });
+    var fv = $('#soFv'); if(fv) fv.onchange = function(){ so.f.fv = fv.checked; render(); };
+    var li = $('#soLim'); if(li) li.onclick = function(){ so.f = { q: '', fp: 'todos', fo: 'todas', fi: 'todos', fpe: 'todas', fat: 'todas', fm: 'todos', fv: false }; render(); };
+    $$('[data-est]', function(s){ s.onchange = function(){ soCambiarEstado(soIncById(s.getAttribute('data-est')), s.value); }; });
+    $$('[data-atr]', function(s){ s.onchange = function(){ var p = s.getAttribute('data-atr').split('|'); soDo('persona', { folio: p[0], personId: p[1], op: 'atribucion', atribucion: s.value }); }; });
+    $$('[data-rm]', function(b){ b.onclick = function(){ var p = b.getAttribute('data-rm').split('|'); if(confirm('¿Quitar a ' + soPname(p[1]) + ' de ' + p[0] + '?')) soDo('persona', { folio: p[0], personId: p[1], op: 'remove' }); }; });
+    $$('[data-add]', function(s){ s.onchange = function(){ if(s.value) soDo('persona', { folio: s.getAttribute('data-add'), personId: s.value, op: 'add' }); }; });
+    $$('[data-rec]', function(b){ b.onclick = function(){ var p = b.getAttribute('data-rec').split('|'); soDo('recurrencia', { folio: p[0], confirmar: p[1] === '1' }, p[1] === '1' ? 'Recurrencia confirmada' : 'Recurrencia descartada'); }; });
+    $$('[data-det]', function(b){ b.onclick = function(){ soDetalle(b.getAttribute('data-det')); }; });
+    $$('[data-aest]', function(s){ s.onchange = function(){ soDo('accion_estado', { id: s.getAttribute('data-aest'), estado: s.value }, 'Acción actualizada'); }; });
+    $$('[data-vsave]', function(b){ b.onclick = function(){
+      var id = b.getAttribute('data-vsave'), v = $('[data-vol="' + id + '"]').value;
+      soDo('volumen', { mes: so.mes, procesoId: id, volumen: v === '' ? null : Number(v), confirmado: $('[data-vc="' + id + '"]').checked, cero: $('[data-vz="' + id + '"]').checked }, 'Datos del mes guardados');
+    }; });
+    var sc = $('#soSaveCfg'); if(sc) sc.onclick = function(){
+      var c = JSON.parse(JSON.stringify(soCfg())), n = function(id){ return Number($('#' + id).value); };
+      c.pesosComponentes = { confiabilidad: n('cwC') / 100, respuesta: n('cwR') / 100, recurrencia: n('cwK') / 100 };
+      c.pesosImpacto = { 'Bajo': n('piB'), 'Medio': n('piM'), 'Alto': n('piA'), 'Crítico': n('piC') };
+      c.recurrenciaDias = n('cRd') || 30;
+      var sem = c.semaforo.slice().sort(function(a,b){ return b.min - a.min; });
+      sem.forEach(function(s, i){ s.min = Number($('[data-sm="' + i + '"]').value); s.label = $('[data-sl="' + i + '"]').value.trim() || s.label; }); c.semaforo = sem;
+      c.procesos.forEach(function(p, i){ p.unidad = $('[data-pu="' + i + '"]').value; p.peso = Number($('[data-pp="' + i + '"]').value) || 0; var t = $('[data-pt="' + i + '"]').value; p.umbral = t === '' ? null : Number(t); p.activo = $('[data-pa="' + i + '"]').checked; });
+      if(Math.abs(c.pesosComponentes.confiabilidad + c.pesosComponentes.respuesta + c.pesosComponentes.recurrencia - 1) > 0.001){ showToast('Los tres porcentajes deben sumar 100.'); return; }
+      if(!confirm('Se creará una nueva versión de reglas vigente desde ' + monthLabel($('#cDesde').value) + '. Los meses cerrados no cambian. ¿Continuar?')) return;
+      soDo('config', { data: c, vigenteDesde: $('#cDesde').value }, 'Nueva versión de reglas guardada');
+    };
+    $$('[data-tedit]', function(b){ b.onclick = function(){ soTipoForm(b.getAttribute('data-tedit')); }; });
+  }
+
+  // ---------- cambio de estado (con revisión ampliada / motivo) ----------
+  function soCambiarEstado(i, nuevo){
+    if(!i || nuevo === i.estado) return;
+    var ext = i.impacto === 'Alto' || i.impacto === 'Crítico' || soVencida(i) || i.recurrente === 'sugerida' || i.recurrente === 'confirmada';
+    var need = [];
+    if(nuevo === 'Cancelada / duplicada') need.push(['motivoCancel', 'Motivo de cancelación o duplicado (obligatorio)', 'text']);
+    if(nuevo === 'Cerrada'){ need.push(['fechaSolucion', 'Fecha de solución', 'date']); if(ext){ need.push(['causa', 'Causa raíz', 'text', i.causa], ['accion', 'Acción correctiva / preventiva', 'text', i.accion], ['evidenciaCierre', 'Evidencia de cierre (enlace o descripción)', 'text', i.evidenciaCierre]); } }
+    if(nuevo === 'Pendiente de validación' && ext) need.push(['causa', 'Causa raíz', 'text', i.causa], ['accion', 'Acción correctiva / preventiva', 'text', i.accion]);
+    if(!need.length){ soDo('actualizar', { folio: i.folio, cambios: { estado: nuevo } }, 'Estado actualizado'); return; }
+    soOverlay('<div class="so-ph"><h2>' + esc(i.folio) + ' → ' + esc(nuevo) + '</h2><button class="so-btn sm" data-x>✕</button></div><div class="so-sec">' + (nuevo === 'Cancelada / duplicada' ? 'Toda cancelación requiere motivo.' : 'Revisión ampliada: impacto alto/crítico, vencida o recurrente.') + '</div>'
+      + need.map(function(n){ return '<label class="so-l">' + n[1] + '</label>' + (n[2] === 'date' ? '<input type="date" id="sn_' + n[0] + '" value="' + soToday() + '" max="' + soToday() + '">' : '<textarea rows="2" id="sn_' + n[0] + '">' + esc(n[3] || '') + '</textarea>'); }).join('')
+      + '<div class="so-hint" id="snErr" style="color:#b91c1c"></div><div class="so-btnrow"><button class="so-btn p" id="snOk" style="flex:1">Confirmar cambio</button><button class="so-btn" data-x>Cancelar</button></div>', function(ov){
+        ov.querySelector('#snOk').onclick = function(){
+          var ch = { estado: nuevo };
+          for(var k = 0; k < need.length; k++){ var v = ov.querySelector('#sn_' + need[k][0]).value.trim(); if(!v){ ov.querySelector('#snErr').textContent = 'Completa todos los campos obligatorios.'; return; } ch[need[k][0]] = v; }
+          soCall('actualizar', { folio: i.folio, cambios: ch }).then(function(res){ if(res && res.ok){ soClose(); showToast('Estado actualizado'); soLoad(true); } else if(res && res.code === 'so_auth') soFail(res); else ov.querySelector('#snErr').textContent = (res && res.error) || 'No se pudo guardar.'; });
+        };
+      });
+    // el select ya cambió visualmente: se restaura al redibujar
+    render();
+  }
+
+  // ---------- detalle de incidencia ----------
+  function soDetalle(folio){
+    var i = soIncById(folio); if(!i) return;
+    var c = soCfg(), canEdit = soCan('editar'), per = soPersonasOf(i.id);
+    var evid = (so.data.evidencias || []).filter(function(e){ return e.incId === i.id; });
+    var acc = (so.data.acciones || []).filter(function(a){ return a.incId === i.id; });
+    var hist = (so.data.historial || []).filter(function(h){ return h.incId === i.id; }).sort(function(a, b){ return a.ts - b.ts; });
+    var gente = [['', '—']].concat(state.people.map(function(p){ return [p.id, p.name]; }));
+    var dis = canEdit ? '' : ' disabled';
+    var fmtTs = function(ts){ try{ return new Date(ts).toLocaleString('es-MX', { timeZone: 'America/Mexico_City', dateStyle: 'short', timeStyle: 'short' }); }catch(e){ return ''; } };
+    soOverlay('<div class="so-ph"><h2>' + esc(i.folio) + '</h2><button class="so-btn sm" data-x>✕</button></div><div class="so-sec">' + esc(i.tipoNombre) + ' · ' + esc(soNameP(i.procesoId)) + ' · ' + esc(i.estado) + '</div>'
+      + '<div class="so-imp">' + esc(i.detalle || '') + '<br><small class="so-mut">Reportó ' + esc(i.reportante) + ' · evento ' + esc(i.fechaEvento) + ' · ' + (i.unidades || 0) + ' unid. afectadas' + (i.costo ? ' · $' + i.costo : '') + (i.horas ? ' · ' + i.horas + ' h' : '') + '</small></div>'
+      + '<div class="so-two"><div><label class="so-l">Área de origen</label>' + soSel(c.areas.map(function(a){ return [a.id, a.name]; }), i.areaOrigen, 'id="dO"' + dis) + '</div><div><label class="so-l">Impacto</label>' + soSel(['Bajo','Medio','Alto','Crítico'], i.impacto, 'id="dI"' + dis) + '</div>'
+      + '<div><label class="so-l">Responsable de resolver</label>' + soSel(gente, i.responsable || '', 'id="dR"' + dis) + '</div><div><label class="so-l">Persona que valida</label>' + soSel(gente, i.validador || '', 'id="dV"' + dis) + '</div>'
+      + '<div><label class="so-l">Fecha compromiso</label><input type="date" id="dF" value="' + esc(i.fechaCompromiso || '') + '"' + dis + '></div><div><label class="so-l">Ref. de minuta</label><input id="dM" value="' + esc(i.minutaRef || '') + '" placeholder="Ej. MIN-2026-09-14"' + dis + '></div></div>'
+      + '<label class="so-l">Causa raíz</label><textarea rows="2" id="dC"' + dis + '>' + esc(i.causa || '') + '</textarea><label class="so-l">Acción correctiva / preventiva</label><textarea rows="2" id="dA"' + dis + '>' + esc(i.accion || '') + '</textarea><label class="so-l">Evidencia de cierre</label><input id="dE" value="' + esc(i.evidenciaCierre || '') + '"' + dis + '>'
+      + (i.motivoCancel ? '<div class="so-hint">Motivo de cancelación: ' + esc(i.motivoCancel) + '</div>' : '')
+      + (canEdit ? '<div class="so-btnrow"><button class="so-btn p" id="dSave" style="flex:1">Guardar cambios</button></div>' : '')
+      + '<label class="so-l">Personas</label><div class="so-imp">' + (per.map(function(p){ return esc(soPname(p.personId)) + ' — ' + esc(p.atribucion); }).join('<br>') || '—') + '</div>'
+      + (evid.length ? '<label class="so-l">Evidencias</label><div class="so-imp">' + evid.map(function(e){ return esc(e.url); }).join('<br>') + '</div>' : '')
+      + '<label class="so-l">Acciones</label><div class="so-imp">' + (acc.map(function(a){ return esc(a.titulo) + ' — ' + esc(soPname(a.responsable)) + ' · ' + esc(a.fechaCompromiso || '') + ' · ' + esc(a.estado) + (a.minutaRef ? ' · 🔗 ' + esc(a.minutaRef) : ''); }).join('<br>') || 'Sin acciones.') + '</div>'
+      + (canEdit ? '<details><summary>+ Nueva acción</summary><label class="so-l">Acción</label><input id="nT"><div class="so-two"><div><label class="so-l">Responsable</label>' + soSel(gente, '', 'id="nR"') + '</div><div><label class="so-l">Compromiso</label><input type="date" id="nF" value="' + esc(i.fechaCompromiso || '') + '"></div></div><label class="so-l">Ref. de minuta (opcional)</label><input id="nM"><button class="so-btn p" id="nSave" style="margin-top:10px">Agregar acción</button></details>' : '')
+      + '<label class="so-l">Historial de cambios</label><div class="so-imp">' + (hist.map(function(h){ return fmtTs(h.ts) + ' · ' + esc(h.usuario) + ' · ' + esc(h.campo) + (h.de || h.a ? ': ' + esc(h.de || '—') + ' → ' + esc(h.a || '—') : '') + (h.nota ? ' (' + esc(h.nota) + ')' : ''); }).join('<br>') || '—') + '</div>', function(ov){
+        var sv = ov.querySelector('#dSave');
+        if(sv) sv.onclick = function(){
+          var ch = {}, v = function(id){ return ov.querySelector(id).value; };
+          if(v('#dO') !== i.areaOrigen) ch.areaOrigen = v('#dO'); if(v('#dI') !== i.impacto) ch.impacto = v('#dI');
+          if(v('#dR') !== (i.responsable || '')) ch.responsable = v('#dR'); if(v('#dV') !== (i.validador || '')) ch.validador = v('#dV');
+          if(v('#dF') && v('#dF') !== i.fechaCompromiso) ch.fechaCompromiso = v('#dF'); if(v('#dM') !== (i.minutaRef || '')) ch.minutaRef = v('#dM');
+          if(v('#dC') !== (i.causa || '')) ch.causa = v('#dC'); if(v('#dA') !== (i.accion || '')) ch.accion = v('#dA'); if(v('#dE') !== (i.evidenciaCierre || '')) ch.evidenciaCierre = v('#dE');
+          if(!Object.keys(ch).length){ showToast('Sin cambios'); return; }
+          soCall('actualizar', { folio: i.folio, cambios: ch }).then(function(res){ if(res && res.ok){ soClose(); showToast('Cambios guardados'); soLoad(true); } else soFail(res); });
+        };
+        var ns = ov.querySelector('#nSave');
+        if(ns) ns.onclick = function(){
+          soCall('accion_guardar', { folio: i.folio, titulo: ov.querySelector('#nT').value, responsable: ov.querySelector('#nR').value, fechaCompromiso: ov.querySelector('#nF').value, minutaRef: ov.querySelector('#nM').value }).then(function(res){ if(res && res.ok){ soClose(); showToast('Acción agregada'); soLoad(true); } else soFail(res); });
+        };
+      });
+  }
+
+  // ---------- captura rápida ----------
+  function soRegistrar(){
+    var c = soCfg(), tipos = so.data.tipos.filter(function(t){ return t.activo !== false; }), sel = { tipo: null, imp: 'Medio', resuelto: false, personas: {}, afect: {} };
+    var plazoOk = soCan('ajustarPlazo');
+    soOverlay('<div class="so-ph"><h2>Registrar incidencia</h2><button class="so-btn sm" data-x>✕</button></div><div class="so-sec">Folio, reportante, fecha de registro y proceso/área sugeridos: automáticos.</div>'
+      + '<label class="so-l">1 · Tipo de falla</label><input id="rQ" placeholder="🔎 Buscar tipo de falla…" autocomplete="off"><div class="so-tipos" id="rTipos"></div><div class="so-hint" id="rSug">Elige un tipo: proceso, área de origen, impacto y plazo se completan solos.</div>'
+      + '<label class="so-l">2 · Persona(s) involucrada(s)</label><input id="rPQ" placeholder="🔎 Buscar colaborador…" autocomplete="off"><div class="so-pls" id="rPers"></div><div class="so-hint">Puedes marcar varias, o “Por determinar”. Cada una entra “Pendiente de revisión”.</div>'
+      + '<label class="so-l">3 · Impacto</label><div class="so-seg" id="rImp">' + ['Bajo','Medio','Alto','Crítico'].map(function(k){ return '<button data-k="' + k + '">' + k + '</button>'; }).join('') + '</div><div class="so-imp" id="rImpT"></div>'
+      + '<label class="so-l">4 · Detalle</label><textarea rows="3" id="rDet" placeholder="¿Qué ocurrió?"></textarea>'
+      + '<label class="so-l">5 · ¿Quedó resuelto?</label><div class="so-seg two"><button id="rSi">Sí</button><button id="rNo" class="on">No</button></div>'
+      + '<div id="rRes"><div class="so-two"><div><label class="so-l">Responsable de solución</label>' + soSel([['', '—']].concat(state.people.map(function(p){ return [p.id, p.name]; })), '', 'id="rResp"') + '</div><div><label class="so-l">Fecha compromiso</label><input type="date" id="rCp"' + (plazoOk ? '' : ' disabled') + '></div></div><div class="so-hint" id="rCpH">Se sugiere según el plazo del tipo de falla' + (plazoOk ? '; puedes ajustarla.' : '; solo usuarios autorizados pueden ajustarla.') + '</div></div>'
+      + '<details><summary>Más detalles</summary><div class="so-two"><div><label class="so-l">Fecha real del evento</label><input type="date" id="rFe" value="' + soToday() + '" max="' + soToday() + '"></div><div><label class="so-l">Unidades afectadas</label><input type="number" min="0" id="rUn" placeholder="0"></div></div>'
+      + '<div class="so-two"><div><label class="so-l">Proceso afectado</label>' + soSel([['', 'Según tipo de falla']].concat(c.procesos.map(function(p){ return [p.id, p.name]; })), '', 'id="rPr"') + '</div><div><label class="so-l">Área de origen (corregir)</label>' + soSel([['', 'Según tipo de falla']].concat(c.areas.map(function(a){ return [a.id, a.name]; })), '', 'id="rAo"') + '</div></div>'
+      + '<label class="so-l">Áreas afectadas</label><div class="so-pls">' + c.areas.map(function(a){ return '<label class="so-chk"><input type="checkbox" data-ar="' + a.id + '"> ' + esc(a.name) + '</label>'; }).join('') + '</div>'
+      + '<div class="so-two"><div><label class="so-l">Costo de retrabajo ($)</label><input type="number" min="0" id="rCo"></div><div><label class="so-l">Horas de retrabajo</label><input type="number" min="0" step="0.5" id="rHo"></div></div><label class="so-l">Evidencia (opcional · enlace)</label><input id="rEv" placeholder="Enlace de Drive"></details>'
+      + '<div class="so-hint" id="rErr" style="color:#b91c1c"></div><div class="so-btnrow"><button class="so-btn p" id="rOk" style="flex:1">Guardar incidencia</button><button class="so-btn" data-x>Cancelar</button></div>', function(ov){
+        var $ = function(s){ return ov.querySelector(s); };
+        function paintTipos(){
+          var q = $('#rQ').value.trim().toLowerCase(), html = '';
+          c.procesos.forEach(function(p){
+            var l = tipos.filter(function(t){ return t.procesoId === p.id && (!q || (t.nombre + ' ' + p.name).toLowerCase().indexOf(q) > -1); });
+            if(l.length) html += '<div class="so-grp">' + esc(p.name) + '</div>' + l.map(function(t){ return '<button class="so-tipo' + (sel.tipo && sel.tipo.id === t.id ? ' on' : '') + '" data-t="' + esc(t.id) + '">' + esc(t.nombre) + '</button>'; }).join('');
+          });
+          $('#rTipos').innerHTML = html || '<div class="so-sec">Sin resultados.</div>';
+          Array.prototype.forEach.call($('#rTipos').querySelectorAll('[data-t]'), function(b){ b.onclick = function(){
+            sel.tipo = tipos.filter(function(t){ return t.id === b.getAttribute('data-t'); })[0]; sel.imp = sel.tipo.impacto; paintImp(); paintTipos();
+            var cp = new Date(); var d0 = soToday(), pl = sel.tipo.plazoDias || 1, dt = new Date(d0 + 'T12:00:00'); dt.setDate(dt.getDate() + pl);
+            $('#rCp').value = dt.toISOString().slice(0, 10);
+            $('#rSug').textContent = 'Proceso: ' + soNameP(sel.tipo.procesoId) + ' · Origen sugerido: ' + soNameA(sel.tipo.areaOrigen) + ' · Impacto sugerido: ' + sel.tipo.impacto + ' · Plazo: ' + pl + ' día(s)';
+          }; });
+        }
+        function paintPers(){
+          var q = $('#rPQ').value.trim().toLowerCase(), list = [{ id: 'TBD', name: 'Por determinar' }].concat(state.people.slice().sort(function(a, b){ return (a.name || '').localeCompare(b.name || ''); }));
+          list = list.filter(function(p){ return !q || p.name.toLowerCase().indexOf(q) > -1; });
+          $('#rPers').innerHTML = list.map(function(p){ return '<label class="so-chk"><input type="checkbox" data-p="' + esc(p.id) + '"' + (sel.personas[p.id] ? ' checked' : '') + '> ' + esc(p.name) + '</label>'; }).join('');
+          Array.prototype.forEach.call($('#rPers').querySelectorAll('[data-p]'), function(b){ b.onchange = function(){ if(b.checked) sel.personas[b.getAttribute('data-p')] = 1; else delete sel.personas[b.getAttribute('data-p')]; }; });
+        }
+        function paintImp(){ Array.prototype.forEach.call($('#rImp').querySelectorAll('button'), function(b){ b.classList.toggle('on', b.getAttribute('data-k') === sel.imp); }); $('#rImpT').textContent = SO_IMP[sel.imp]; }
+        Array.prototype.forEach.call($('#rImp').querySelectorAll('button'), function(b){ b.onclick = function(){ sel.imp = b.getAttribute('data-k'); paintImp(); }; });
+        $('#rQ').oninput = paintTipos; $('#rPQ').oninput = paintPers; paintTipos(); paintPers(); paintImp();
+        $('#rSi').onclick = function(){ sel.resuelto = true; $('#rSi').classList.add('on'); $('#rNo').classList.remove('on'); $('#rRes').style.display = 'none'; };
+        $('#rNo').onclick = function(){ sel.resuelto = false; $('#rNo').classList.add('on'); $('#rSi').classList.remove('on'); $('#rRes').style.display = 'block'; };
+        $('#rOk').onclick = function(){
+          var err = $('#rErr'); err.textContent = '';
+          if(!sel.tipo){ err.textContent = 'Elige el tipo de falla.'; return; }
+          if(!$('#rDet').value.trim()){ err.textContent = 'Escribe el detalle.'; return; }
+          var ids = Object.keys(sel.personas), det = { fechaEvento: $('#rFe').value || soToday(), unidades: Number($('#rUn').value) || 0, costo: Number($('#rCo').value) || 0, horas: Number($('#rHo').value) || 0, evidencia: $('#rEv').value.trim() };
+          if($('#rPr').value) det.procesoId = $('#rPr').value; if($('#rAo').value) det.areaOrigen = $('#rAo').value;
+          det.areasAfectadas = Array.prototype.map.call(ov.querySelectorAll('[data-ar]:checked'), function(x){ return x.getAttribute('data-ar'); });
+          var body = { tipoId: sel.tipo.id, personIds: ids.length ? ids : ['TBD'], impacto: sel.imp, detalle: $('#rDet').value.trim(), resuelto: sel.resuelto, detalles: det };
+          if(!sel.resuelto){ if($('#rResp').value) body.responsable = $('#rResp').value; if(plazoOk && $('#rCp').value) body.fechaCompromiso = $('#rCp').value; }
+          $('#rOk').disabled = true;
+          soCall('registrar', body).then(function(res){
+            $('#rOk').disabled = false;
+            if(res && res.ok){ soClose(); showToast('Registrada ' + res.folio + (res.recurrenciaSugerida ? ' · posible recurrencia de ' + res.recurrenciaSugerida : '')); so.sub = so.sub === 'tablero' ? 'tablero' : so.sub; soLoad(true); }
+            else if(res && res.code === 'so_auth') soFail(res); else err.textContent = (res && res.error) || 'No se pudo guardar.';
+          }).catch(function(){ $('#rOk').disabled = false; err.textContent = 'Sin conexión con el servidor.'; });
+        };
+      });
+  }
+
+  // ---------- catálogo (admin) ----------
+  function soTipoForm(id){
+    var c = soCfg(), t = id ? so.data.tipos.filter(function(x){ return x.id === id; })[0] : { nombre: '', descripcion: '', procesoId: c.procesos[0].id, areaOrigen: c.areas[0].id, impacto: 'Medio', plazoDias: 2, unidadOperacion: '', activo: true };
+    soOverlay('<div class="so-ph"><h2>' + (id ? 'Editar falla' : 'Nueva falla') + '</h2><button class="so-btn sm" data-x>✕</button></div>'
+      + '<label class="so-l">Nombre</label><input id="tN" value="' + esc(t.nombre) + '"><label class="so-l">Descripción</label><input id="tD" value="' + esc(t.descripcion || '') + '">'
+      + '<div class="so-two"><div><label class="so-l">Proceso</label>' + soSel(c.procesos.map(function(p){ return [p.id, p.name]; }), t.procesoId, 'id="tP"') + '</div><div><label class="so-l">Área de origen habitual</label>' + soSel(c.areas.map(function(a){ return [a.id, a.name]; }), t.areaOrigen, 'id="tA"') + '</div>'
+      + '<div><label class="so-l">Impacto sugerido</label>' + soSel(['Bajo','Medio','Alto','Crítico'], t.impacto, 'id="tI"') + '</div><div><label class="so-l">Plazo de solución (días)</label><input type="number" min="1" id="tZ" value="' + t.plazoDias + '"></div></div>'
+      + '<label class="so-l">Unidad de operación del proceso</label><input id="tU" value="' + esc(t.unidadOperacion || '') + '"><label class="so-chk" style="margin-top:12px"><input type="checkbox" id="tAc"' + (t.activo !== false ? ' checked' : '') + '> Activa (desactivarla no borra su historial)</label>'
+      + '<div class="so-hint" id="tErr" style="color:#b91c1c"></div><div class="so-btnrow"><button class="so-btn p" id="tOk" style="flex:1">Guardar</button><button class="so-btn" data-x>Cancelar</button></div>', function(ov){
+        ov.querySelector('#tOk').onclick = function(){
+          var v = function(s){ return ov.querySelector(s).value; };
+          soCall('catalogo', { tipo: { id: id || undefined, nombre: v('#tN'), descripcion: v('#tD'), procesoId: v('#tP'), areaOrigen: v('#tA'), impacto: v('#tI'), plazoDias: Number(v('#tZ')), unidadOperacion: v('#tU'), activo: ov.querySelector('#tAc').checked, order: t.order } }).then(function(res){
+            if(res && res.ok){ soClose(); showToast('Catálogo actualizado'); soLoad(true); } else if(res && res.code === 'so_auth') soFail(res); else ov.querySelector('#tErr').textContent = (res && res.error) || 'No se pudo guardar.';
+          });
+        };
+      });
+  }
+
+  // ---------- apartado en el perfil del colaborador ----------
+  function soPerfilHtml(person){
+    if(!so.creds) return '<div class="section-sub">Inicia sesión en SALUD OPERACIONAL para ver aquí las incidencias vinculadas a esta persona.</div>';
+    if(!so.data) { soLoad().then(function(){ if(state.appView === 'tracker' && state.tab === 'incidencias') render(); }); return '<div class="section-sub">Cargando incidencias…</div>'; }
+    var per = (so.data.personas || []).filter(function(p){ return p.personId === person.id; });
+    if(!per.length) return '<div class="section-sub">Sin incidencias operacionales vinculadas' + (so.user && so.user.role === 'colab' ? ' que puedas ver.' : '.') + '</div>';
+    var rows = per.map(function(p){ return { p: p, i: soIncById(p.incId) }; }).filter(function(x){ return x.i; }).sort(function(a, b){ return (b.i.fechaEvento || '').localeCompare(a.i.fechaEvento || ''); });
+    return '<div class="section-sub">Eventos vinculados y estado de atribución. Esto <b>no modifica</b> el ranking TOP ni los porcentajes de BASES o MÍNIMOS.</div><div class="so-card so-scroll"><table><tr><th>Folio</th><th>Falla · proceso</th><th>Evento</th><th>Estado</th><th>Atribución</th><th>Compromiso</th></tr>'
+      + rows.map(function(x){ var i = x.i; return '<tr><td>' + esc(i.folio) + '</td><td>' + esc(i.tipoNombre) + '<br><small class="so-mut">' + esc(soNameP(i.procesoId)) + '</small></td><td>' + esc(i.fechaEvento) + '</td><td>' + esc(i.estado) + '</td><td>' + esc(x.p.atribucion) + '</td><td>' + esc(i.fechaCompromiso || '—') + (soVencida(i) ? ' ' + soChip('⏰ Vencida', '#dc2626') : '') + '</td></tr>'; }).join('') + '</table></div>';
+  }
+
   // ---------------- Render ----------------
   var lastRenderKey = null;
   function render(){
-    var isOrg = state.appView === 'orgchart', isTop = state.appView === 'top';
+    var isOrg = state.appView === 'orgchart', isTop = state.appView === 'top', isSo = state.appView === 'so';
     // Al marcar un criterio (o cualquier cambio de datos) la pantalla se vuelve a dibujar: se conserva la posición de
     // desplazamiento para no regresar arriba. Solo se restaura si seguimos en la misma pantalla/pestaña/mes.
-    var key = [state.appView, state.selectedPersonId, state.tab, state.monthCursor, state.owner, state.topFilter].join('|');
-    var mainEl = document.getElementById('mainArea'), orgEl = document.getElementById('orgchartView'), topEl = document.getElementById('topView');
-    var keep = (key === lastRenderKey) ? { y: window.scrollY, m: mainEl.scrollTop, o: orgEl.scrollTop, t: topEl.scrollTop } : null;
-    document.getElementById('app').style.display = (isOrg || isTop) ? 'none' : 'flex';
+    var key = [state.appView, state.selectedPersonId, state.tab, state.monthCursor, state.owner, state.topFilter, so.sub, so.mes].join('|');
+    var mainEl = document.getElementById('mainArea'), orgEl = document.getElementById('orgchartView'), topEl = document.getElementById('topView'), soEl = document.getElementById('soView');
+    var keep = (key === lastRenderKey) ? { y: window.scrollY, m: mainEl.scrollTop, o: orgEl.scrollTop, t: topEl.scrollTop, s: soEl.scrollTop } : null;
+    document.getElementById('app').style.display = (isOrg || isTop || isSo) ? 'none' : 'flex';
+    soEl.style.display = isSo ? 'block' : 'none';
     orgEl.style.display = isOrg ? 'block' : 'none';
     topEl.style.display = isTop ? 'flex' : 'none';
-    document.getElementById('navTracker').classList.toggle('active', !isOrg && !isTop);
+    document.getElementById('navTracker').classList.toggle('active', !isOrg && !isTop && !isSo);
+    document.getElementById('navSo').classList.toggle('active', isSo);
     document.getElementById('navTop').classList.toggle('active', isTop);
     document.getElementById('navOrgchart').classList.toggle('active', isOrg);
-    document.getElementById('btnMobileMenu').style.display = (isOrg || isTop) ? 'none' : '';
+    document.getElementById('btnMobileMenu').style.display = (isOrg || isTop || isSo) ? 'none' : '';
     if(isOrg){ renderOrgChart(); }
     else if(isTop){ ensureGlobalData(); renderTopView(); }
+    else if(isSo){ renderSoView(); }
     else { renderSidebar(); renderMain(); }
     if(keep){
       window.scrollTo(0, keep.y);
-      mainEl.scrollTop = keep.m; orgEl.scrollTop = keep.o; topEl.scrollTop = keep.t;
+      mainEl.scrollTop = keep.m; orgEl.scrollTop = keep.o; topEl.scrollTop = keep.t; soEl.scrollTop = keep.s;
     }
     lastRenderKey = key;
   }
@@ -1500,6 +2025,7 @@
       + '<div class="tab'+(state.tab==='bases'?' active':'')+'" data-tab="bases">BASES</div>'
       + '<div class="tab'+(state.tab==='minimos'?' active':'')+'" data-tab="minimos">MÍNIMOS</div>'
       + '<div class="tab'+(state.tab==='diagnostico'?' active':'')+'" data-tab="diagnostico">DIAGNÓSTICO</div>'
+      + '<div class="tab'+(state.tab==='incidencias'?' active':'')+'" data-tab="incidencias">INCIDENCIAS OPERACIONALES</div>'
       + '</div>';
 
     html += '<div class="content" id="tabContent"></div>';
@@ -1525,6 +2051,7 @@
     if(state.tab === 'seguimiento') content.innerHTML = seguimientoHtml(person);
     else if(state.tab === 'bases') content.innerHTML = evalKindHtml(person, 'bases');
     else if(state.tab === 'minimos') content.innerHTML = minimosHtml(person);
+    else if(state.tab === 'incidencias') content.innerHTML = '<h2 class="section-title">Incidencias operacionales</h2>' + soPerfilHtml(person);
     else content.innerHTML = diagnosticoHtml(person);
 
     wireTabEvents(person);
@@ -2688,6 +3215,7 @@
   document.getElementById('navTracker').addEventListener('click', function(){ state.appView='tracker'; render(); });
   document.getElementById('navTop').addEventListener('click', function(){ state.appView='top'; render(); });
   document.getElementById('navOrgchart').addEventListener('click', function(){ state.appView='orgchart'; render(); });
+  document.getElementById('navSo').addEventListener('click', function(){ state.appView='so'; if(so.data) soLoad(true); render(); });
 
   boot();
 })();
